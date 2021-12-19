@@ -1,20 +1,12 @@
-import { useState } from 'react';
-import { Box } from "@mui/system";
 import { withStyles } from '@mui/styles';
 
 import {
+  Box,
   Typography,
-  Paper,
-  Button,
-  TextField,
-  IconButton,
-  InputAdornment 
+  Paper
 } from "@mui/material";
 
-import {
-  Visibility,
-  VisibilityOff
-} from '@mui/icons-material';
+import Login from '../components/Login'
 
 const styles = theme => ({
   root: {
@@ -42,48 +34,18 @@ const styles = theme => ({
   },
   paper: {
     padding: theme.spacing(4, 2)
-  },
-  formBox: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing(4)
   }
 })
 
 const LoginLayout = props => {
   const { classes } = props;
-  const [passwordVisible, setPasswordVisible] = useState(false);
 
   return (
     <Box className={classes.root}>
       <div className={classes.wrapper}>
         <Typography variant="h1" mb={5}><b>wee</b>xam</Typography>
         <Paper elevation={6} className={classes.paper}>
-
-            <Box className={classes.formBox}>
-              <TextField
-                label="Login"
-                variant="outlined"
-              />
-              <TextField
-                label="Password"
-                type={passwordVisible ? 'text' : 'password'}
-                variant="outlined"
-                InputProps={{
-                  endAdornment: <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={e => setPasswordVisible(!passwordVisible)}
-                      edge="end"
-                    >
-                      {passwordVisible ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }}
-              />
-              <Button fullWidth variant="contained">Login</Button>
-            </Box>
-
+          <Login />
         </Paper>
       </div>
     </Box>
