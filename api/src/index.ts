@@ -2,7 +2,6 @@ import express, { json, urlencoded, Request, Response } from "express";
 import helmet from 'helmet';
 import auth from './routes/auth';
 import errorMiddleware from './middleware/errorMiddleware';
-
 // import { db } from './Db';
 
 const app = express();

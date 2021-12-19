@@ -8,10 +8,10 @@ abstract class Model {
     }
 
     nextTableId = async (table: string): Promise<number> => {
-        const sql = `SELECT MAX(id)+1 AS id FROM ${table}`;
+        const sql = `SELECT MAX(id) AS id FROM ${table}`;
         const data: any = await this.db.query(sql);
 
-        return Number(data[0].id);
+        return Number(data[0].id) + 1;;
     }
 
     // getFoundRows = async (): Promise<number> => {

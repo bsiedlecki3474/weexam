@@ -5,6 +5,8 @@ const DB_USER = env.DB_USER || 'root';
 const DB_PASS = env.DB_PASS || '';
 const DB_DATABASE = env.DB_DATABASE || 'weexam';
 
+const JWT_SECRET = 'weexam_s&wf4j&fwDDCup9b';
+
 const url = {
   prod: '',
   dev: 'http://localhost:3456'
@@ -15,5 +17,6 @@ export {
   DB_USER,
   DB_PASS,
   DB_DATABASE,
-  url
+  url,
+  JWT_SECRET
 }
