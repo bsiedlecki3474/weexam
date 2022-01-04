@@ -12,14 +12,14 @@ class Db {
 
     init = (): this => {
         if (!this.isInit) {
-            this.connection = mysql2.createConnection({
-                host: DB_HOST,
-                user: DB_USER,
-                password: DB_PASS,
-                database: DB_DATABASE
-            });
-
             try {
+                this.connection = mysql2.createConnection({
+                    host: DB_HOST,
+                    user: DB_USER,
+                    password: DB_PASS,
+                    database: DB_DATABASE
+                });
+
                 this.checkConnection();
                 this.isInit = true;
                 return this;

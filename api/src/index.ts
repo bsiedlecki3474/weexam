@@ -1,6 +1,6 @@
 import express, { json, urlencoded, Request, Response } from "express";
 import helmet from 'helmet';
-import auth from './routes/auth';
+import { auth, user } from './routes';
 import errorMiddleware from './middleware/errorMiddleware';
 // import { db } from './Db';
 
@@ -23,6 +23,7 @@ app.get('/', async (req: Request, res: Response): Promise<Response> => {
 );
 
 app.use('/auth/', auth);
+app.use('/user/', user);
 
 app.use(errorMiddleware);
 

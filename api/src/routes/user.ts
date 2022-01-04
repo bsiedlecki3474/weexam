@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { signIn } from '../controller/auth';
+import { add, list } from '../controller/user';
 
 const router = Router();
 
-router.post('/signIn', signIn);
+router.post('/add', add);
+router.get('/list', list);
 
 // router.get('/', list);
 // router.post('/', create);
