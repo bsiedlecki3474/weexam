@@ -1,9 +1,19 @@
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { green } from '@mui/material/colors';
 import { useRoutes } from 'react-router-dom';
-import routes from './routes';
+// import routes from './routes';
+import store from './redux/store.js'
 
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { saveState } from './helpers/localStorage';
+
+import { Provider, useSelector } from 'react-redux';
+
+import Router from './router/Router.js'
+
+// window.onbeforeunload = () => {
+//   alert(1)
+//   saveState(store.getState());
+// }
 
 const theme = createTheme({
   palette: {
@@ -13,18 +23,32 @@ const theme = createTheme({
   }
 });
 
-function App() {
+const App = () => {
   // const { isLoggedIn } = useSelector((state) => state.auth);
-  const isLoggedIn = false;
-  const router = useRoutes(routes(isLoggedIn));
-  const queryClient = new QueryClient()
 
+  // console.log(useSelector((state) => state))
+  // const queryClient = new QueryClient()
+
+  // const state = store.getState();
+  // const auth = state.auth;
+  // const isAuthenticated = auth?.data?.token !== null;
+
+  
+  // const router = useRoutes(routes(isLoggedIn));
+  
+  // const isLoggedIn = false;
+  // console.log(store.getState())
+  
   return (
-    <ThemeProvider theme={theme}>
-      <QueryClientProvider client={queryClient}>
-        {router}
-      </QueryClientProvider>
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        {/* <QueryClientProvider client={queryClient}> */}
+          {/* {router} */}
+          <Router />
+        {/* </QueryClientProvider> */}
+      </ThemeProvider> 
+    </Provider>
+    
   )
 }
 

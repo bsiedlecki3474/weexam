@@ -1,6 +1,12 @@
+import MenuDrawer from "../components/MenuDrawer";
+
+import { Outlet } from "react-router-dom";
+
 const DashboardLayout = props => {
   return (
-    <p>dashboard</p>
+    <MenuDrawer>
+      <Outlet />
+    </MenuDrawer>
   )
 }
 

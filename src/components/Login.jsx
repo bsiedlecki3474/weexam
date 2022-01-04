@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { useMutation } from 'react-query';
 import { withStyles } from '@mui/styles';
-import axios from '../axios/axios';
+
+import { handleSignIn } from '../redux/actions/auth';
+
+import { connect } from "react-redux"
 
 import {
   Box,
@@ -10,7 +12,7 @@ import {
   Button,
   TextField,
   IconButton,
-  InputAdornment 
+  InputAdornment
 } from "@mui/material";
 
 import {
@@ -28,7 +30,7 @@ const styles = theme => ({
 })
 
 const Login = props => {
-  const { classes } = props;
+  const { classes, onHandleSignIn } = props;
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -37,47 +39,68 @@ const Login = props => {
   const changePassword = e => setPassword(e.target.value);
 
   const signIn = async e => {
+    e.preventDefault();
     try {
-      const res = await axios.post('/auth/signIn', { username, password });
-      return res?.data;
+      onHandleSignIn(username, password);
     } catch (e) {
       console.log(e, e?.response?.message)
     }
   }
 
   return (
-    <Box className={classes.root}>
-      <TextField
-        label="Username"
-        variant="outlined"
-        onChange={changeUsername}
-      />
-      <TextField
-        label="Password"
-        type={passwordVisible ? 'text' : 'password'}
-        variant="outlined"
-        onChange={changePassword}
-        InputProps={{
-          endAdornment: <InputAdornment position="end">
-            <IconButton
-              aria-label="toggle password visibility"
-              onClick={e => setPasswordVisible(!passwordVisible)}
-              edge="end"
-            >
-              {passwordVisible ? <VisibilityOff /> : <Visibility />}
-            </IconButton>
-          </InputAdornment>
-        }}
-      />
-      <Button
-        fullWidth
-        variant="contained"
-        onClick={signIn}
-      >
-        Username
-      </Button>
-    </Box>
+    <form onSubmit={signIn}>
+      <Box className={classes.root}>
+        <TextField
+          label="Username"
+          variant="outlined"
+          onChange={changeUsername}
+          required
+          InputProps={{
+            'autoComplete': 'username'
+          }}
+        />
+        <TextField
+          label="Password"
+          type={passwordVisible ? 'text' : 'password'}
+          variant="outlined"
+          onChange={changePassword}
+          required
+          InputProps={{
+            endAdornment: <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={e => setPasswordVisible(!passwordVisible)}
+                edge="end"
+                tabIndex={-1}
+              >
+                {passwordVisible ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>,
+            'autoComplete': 'current-password'
+          }}
+        />
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+        >
+          Login
+        </Button>
+      </Box>
+    </form>
   )
 }
 
-export default withStyles(styles)(Login);
+const mapStateToProps = state => {
+  return {
+    ...state
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onHandleSignIn: (username, password) => dispatch(handleSignIn(username, password))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Login));
