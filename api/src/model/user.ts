@@ -15,14 +15,6 @@ class User extends Model /*implements CRUD*/ {
 		}
 	}
 
-	setUserToken = async (body: any /* interface */) => {
-		const sql = `UPDATE wee_users SET token = ? WHERE id = ?`;
-
-		const data = await this.db.query(sql, [body.token, body.id]);
-
-		return data ? true : false;
-	}
-
 	single = async (username: string) => {
 		const sql = `SELECT
 			u.id,

@@ -1,9 +1,11 @@
 import { Router } from 'express';
-import { signIn } from '../controller/auth';
+import { signIn, signOut } from '../controller/auth';
+import authMiddleware from '../middleware/authMiddleware'
 
 const router = Router();
 
 router.post('/signIn', signIn);
+router.post('/signOut', authMiddleware, signOut);
 
 // router.get('/', list);
 // router.post('/', create);

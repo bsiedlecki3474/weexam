@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import { add, list } from '../controller/user';
+import authMiddleware from '../middleware/authMiddleware'
 
 const router = Router();
 
 router.post('/add', add);
-router.get('/list', list);
+router.get('/list', authMiddleware, list);
 
 // router.get('/', list);
 // router.post('/', create);

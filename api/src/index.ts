@@ -1,11 +1,18 @@
 import express, { json, urlencoded, Request, Response } from "express";
+import cors from 'cors';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser'
 import { auth, user } from './routes';
 import errorMiddleware from './middleware/errorMiddleware';
 // import { db } from './Db';
 
 const app = express();
 
+app.use(cors({
+  credentials: true,
+  origin: "http://localhost:3000"
+}));
+app.use(cookieParser());
 app.use(helmet());
 app.use((req, res, next) => {
 	res.header("Access-Control-Allow-Origin", "*");

@@ -21,9 +21,8 @@ class Auth {
         const valid = await bcrypt.compare(password, userData.password);
 
         if (valid) {
-          // const decoded = jwt.verify(token, JWT_SECRET);
-          const token = jwt.sign({ id: userData.id, username, password }, JWT_SECRET);
-          const isTokenSet = await user.setUserToken({ token, id: userData.id });
+          const token = jwt.sign({ id: userData.id, username, password, role: 'root' }, JWT_SECRET);
+          const isTokenSet = true;
 
           if (isTokenSet) {
             const response = {
@@ -31,7 +30,13 @@ class Auth {
               firstName: userData.firstName,
               lastName: userData.lastName
             }
-            res.status(200).send(response);
+            return res
+              .cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+              })
+              .status(200)
+              .send(response);
           } else {
             res.status(500).send('query error');
           }
@@ -45,8 +50,15 @@ class Auth {
       res.status(500).send(err);
     }
   }
+
+  signOut = (req: Request, res: Response) => {
+    return res
+      .clearCookie("token")
+      .status(200);
+  }
 }
 
 export const {
-  signIn
+  signIn,
+  signOut
 } = new Auth();
