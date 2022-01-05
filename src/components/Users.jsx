@@ -59,7 +59,7 @@ const Users = props => {
 const mapStateToProps = state => {
   console.log(state.users)
   return {
-    users: state.users?.data
+    users: state.user?.data
   }
 }
 
