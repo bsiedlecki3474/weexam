@@ -11,18 +11,11 @@ import { handleVerifyUser } from "../redux/actions/auth";
 import Progress from "../components/Progress";
 
 const Router = props => {
-  console.log(props)
   const { loggedIn, pending, onHandleVerifyUser } = props;
 
   useEffect(() => {
    onHandleVerifyUser();
   }, [])
-
-  console.warn('pending: ', pending, 'loggedIn: ', loggedIn);
-
-  // if (pending === false && loggedIn === false) {
-  //   return <p style="font-size: 100px;">przejsciowy state</p>
-  // }
 
   return pending || pending === undefined
         ? <Progress />
@@ -35,7 +28,6 @@ const Router = props => {
 }
 
 const mapStateToProps = state => {
-  console.log(state)
   return {
     pending: state.auth.pending,
     loggedIn: !!state.auth.data
