@@ -14,7 +14,7 @@ class User extends Model /*implements CRUD*/ {
 		}
 	}
 
-	single = async (username: string) => {
+	userByUsername = async (username: string) => {
 		const sql = `SELECT
 			u.id,
 			u.password,
@@ -31,6 +31,29 @@ class User extends Model /*implements CRUD*/ {
 			return {
 				id: user.id,
 				password: user.password,
+				firstName: user.first_name,
+				lastName: user.last_name,
+				role: user.role
+			}
+		}
+	}
+
+	userById = async (id: number) => {
+		const sql = `SELECT
+			u.id,
+			u.password,
+			u.first_name,
+			u.last_name,
+			u.role
+		FROM wee_users u
+		WHERE u.id = ?`;
+
+		const data = await this.db.query(sql, [id]);
+
+		if (data && data[0]) {
+			const user = data[0];
+			return {
+				id: user.id,
 				firstName: user.first_name,
 				lastName: user.last_name,
 				role: user.role

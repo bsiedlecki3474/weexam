@@ -5,6 +5,10 @@ import bcrypt from "bcryptjs"
 
 import { JWT_SECRET, COOKIE_PATH } from '../config'
 
+interface JwtPayload {
+  id: number
+}
+
 class Auth {
   signIn = async (req: Request, res: Response) => {
     try {
@@ -13,7 +17,7 @@ class Auth {
         return res.status(400).send();
       }
 
-      const userData = await user.single(username);
+      const userData = await user.userByUsername(username);
 
       if (userData) {
         const valid = await bcrypt.compare(password, userData.password);
@@ -21,14 +25,10 @@ class Auth {
         if (valid) {
 
           const token = jwt.sign({
-            id: userData.id,
-            username,
-            password,
-            role: userData.role
+            id: userData.id
           }, JWT_SECRET);
 
           const response = {
-            token,
             firstName: userData.firstName,
             lastName: userData.lastName
           }
@@ -65,7 +65,8 @@ class Auth {
   verifyUser = async (req: Request, res: Response) => {
     try {
       const token = req.cookies.jwt;
-      const data = jwt.verify(token, JWT_SECRET);
+      const { id } = jwt.verify(token, JWT_SECRET) as JwtPayload;
+      const data = await user.userById(id);
       return res.status(200).send(data)
     } catch (e) {
       return res.status(500).send(e);
