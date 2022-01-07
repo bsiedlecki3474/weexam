@@ -5,6 +5,18 @@ const signIn = async (username, password) => {
   return res.data
 }
 
+const signOut = async () => {
+  const res = await axios.post('/auth/signOut');
+  return res.data
+}
+
+const verifyUser = async () => {
+  const res = await axios.get('/auth/verifyUser')
+  return res.data
+}
+
 export {
-  signIn
+  signIn,
+  signOut,
+  verifyUser
 }

@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import { connect } from "react-redux"
+import { withStyles } from '@mui/styles';
 import {
   Box,
   Typography
@@ -7,13 +10,7 @@ import {
   MaterialTable
 } from './'
 
-import { withStyles } from '@mui/styles';
-
-
 import { handleGetUserList } from '../redux/actions/user';
-
-import { connect } from "react-redux"
-import { useEffect } from "react";
 
 const styles = theme => ({
   // userIcon: {

@@ -2,11 +2,15 @@ import {
 	SIGN_IN_PENDING,
 	SIGN_IN_SUCCESS,
 	SIGN_IN_ERROR,
-	SIGN_OUT
+	SIGN_OUT_PENDING,
+	SIGN_OUT_SUCCESS,
+	SIGN_OUT_ERROR,
+	VERIFY_USER_PENDING,
+  VERIFY_USER_SUCCESS,
+  VERIFY_USER_ERROR
 } from '../types/auth'
 
 const initialState = {
-	pending: false,
 	error: null,
 	data: null
 };
@@ -14,15 +18,19 @@ const initialState = {
 const auth = (state = initialState, action) => {
   switch (action.type) {
 		case SIGN_IN_PENDING:
+		case SIGN_OUT_PENDING:
+		case VERIFY_USER_PENDING:
 			return {...state, pending: true }
+
 		case SIGN_IN_SUCCESS:
-			// action.payload?.token && localStorage.setItem('token', action.payload.token);
+		case SIGN_OUT_SUCCESS:
+		case VERIFY_USER_SUCCESS:
 			return {...state, pending: false, data: action.payload }
+			
 		case SIGN_IN_ERROR:
+		case SIGN_OUT_ERROR:
+		case VERIFY_USER_ERROR:
 			return {...state, pending: false, error: action.payload }
-		case SIGN_OUT:
-			// localStorage.removeItem('token');
-			return {...state, data: [] }
 
 		default:
 			return state

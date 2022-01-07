@@ -5,7 +5,6 @@ import {
 } from '../types/user'
 
 const initialState = {
-	pending: false,
 	error: null,
 	data: null
 };
