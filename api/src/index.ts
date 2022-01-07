@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser'
 import { auth, user } from './routes';
 import errorMiddleware from './middleware/errorMiddleware';
+import { APP_URL } from './config';
 // import { db } from './Db';
 
 const app = express();
@@ -15,7 +16,8 @@ app.use(cors({
 app.use(cookieParser());
 app.use(helmet());
 app.use((req, res, next) => {
-	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Origin", APP_URL);
+	res.header('Access-Control-Allow-Credentials', "true");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	next();
 });

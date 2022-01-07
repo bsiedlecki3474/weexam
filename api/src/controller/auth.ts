@@ -3,7 +3,7 @@ import user from '../model/user';
 import jwt from 'jsonwebtoken';
 import bcrypt from "bcryptjs"
 
-import { JWT_SECRET } from '../config'
+import { JWT_SECRET, COOKIE_PATH } from '../config'
 
 class Auth {
   signIn = async (req: Request, res: Response) => {
@@ -13,52 +13,68 @@ class Auth {
         return res.status(400).send();
       }
 
-      console.log(req.body)
-
       const userData = await user.single(username);
 
       if (userData) {
         const valid = await bcrypt.compare(password, userData.password);
 
         if (valid) {
-          const token = jwt.sign({ id: userData.id, username, password, role: 'root' }, JWT_SECRET);
-          const isTokenSet = true;
 
-          if (isTokenSet) {
-            const response = {
-              token,
-              firstName: userData.firstName,
-              lastName: userData.lastName
-            }
-            return res
-              .cookie('token', token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-              })
-              .status(200)
-              .send(response);
-          } else {
-            res.status(500).send('query error');
+          const token = jwt.sign({
+            id: userData.id,
+            username,
+            password,
+            role: userData.role
+          }, JWT_SECRET);
+
+          const response = {
+            token,
+            firstName: userData.firstName,
+            lastName: userData.lastName
           }
+
+          return res
+            .cookie('jwt', token, {
+              path: COOKIE_PATH,
+              httpOnly: true,
+              secure: process.env.NODE_ENV === "production",
+            })
+            .status(200)
+            .send(response);
         } else {
-          res.status(401).send('invalid password');
+          return res.status(401).send('invalid password');
         }
       } else {
-        res.status(400).send('user not found');
+        return res.status(400).send('user not found');
       }
-    } catch (err) {
-      res.status(500).send(err);
+    } catch (e) {
+      return res.status(500).send(e);
     }
   }
 
   signOut = (req: Request, res: Response) => {
     return res
-      .clearCookie("token")
-      .status(200);
+      .clearCookie("jwt", {
+        path: COOKIE_PATH,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+      })
+      .status(200).send();
+  }
+
+  verifyUser = async (req: Request, res: Response) => {
+    try {
+      const token = req.cookies.jwt;
+      const data = jwt.verify(token, JWT_SECRET);
+      return res.status(200).send(data)
+    } catch (e) {
+      return res.status(500).send(e);
+    }
   }
 }
 
 export const {
   signIn,
-  signOut
+  signOut,
+  verifyUser
 } = new Auth();

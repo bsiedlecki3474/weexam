@@ -1,5 +1,4 @@
 import Model from './model'
-import { url } from '../config'
 import { CRUD } from 'interface/crud';
 
 class User extends Model /*implements CRUD*/ {
@@ -20,7 +19,8 @@ class User extends Model /*implements CRUD*/ {
 			u.id,
 			u.password,
 			u.first_name,
-			u.last_name
+			u.last_name,
+			u.role
 		FROM wee_users u
 		WHERE u.username = ?`;
 
@@ -32,7 +32,8 @@ class User extends Model /*implements CRUD*/ {
 				id: user.id,
 				password: user.password,
 				firstName: user.first_name,
-				lastName: user.last_name
+				lastName: user.last_name,
+				role: user.role
 			}
 		}
 	}

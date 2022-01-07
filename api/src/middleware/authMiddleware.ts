@@ -15,23 +15,17 @@ interface JwtPayload {
   role: string
 }
 
-const authorization = (
-  request: Request,
-  response: Response,
-  next: NextFunction
-) => {
-  console.log('cookies: ', request.cookies)
-  const token = request.cookies?.token;
+const authorization = (req: Request, res: Response, next: NextFunction) => {
+  const token = req.cookies?.jwt;
   if (!token) {
-    return response.sendStatus(403);
+    return res.sendStatus(403);
   }
   try {
-
     const data = jwt.verify(token, JWT_SECRET) as JwtPayload;
-    request.userRole = data.role;
+    req.userRole = data.role;
     return next();
   } catch {
-    return response.sendStatus(403);
+    return res.sendStatus(403);
   }
 };
 
