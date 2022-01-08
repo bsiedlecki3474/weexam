@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { connect } from "react-redux"
 import { withStyles } from '@mui/styles';
 import {
@@ -29,11 +29,24 @@ const Users = props => {
   }, [])
 
   const columns = [
+    { id: 'username', label: 'Username' },
     { id: 'firstName', label: 'First name' },
-    { id: 'lastName', label: 'Last name'}
+    { id: 'lastName', label: 'Last name' },
+    { id: 'role', label: 'Role' },
+    { id: 'createdOn', label: 'Created on' }
   ]
 
-  // onHandleGetUserList().then(res => console.log(res))
+  const data = users.map(row => ({
+    id: row.id,
+    username: row.username,
+    firstName: row.firstName,
+    lastName: row.lastName,
+    role: row.role,
+    createdOn: row.createdOn,
+    disabled: !row.isActive
+  }));
+
+  console.log(users)
 
   return (
     <Box>
@@ -41,14 +54,13 @@ const Users = props => {
         title="Users"
         checkboxes
         columns={columns}
-        data={users}
+        data={data}
       />
     </Box>
   )
 }
 
 const mapStateToProps = state => {
-  console.log(state.users)
   return {
     users: state.user?.data
   }
@@ -57,7 +69,5 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   onHandleGetUserList: () => dispatch(handleGetUserList())
 })
-
-// const mapDispatchToProps = null;
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Users));

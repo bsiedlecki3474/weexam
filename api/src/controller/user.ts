@@ -35,6 +35,7 @@ class User {
 
       res.status(200).send(response);
     } catch (e) {
+      console.error(e)
       res.status(500).send(e);
     }
   }
@@ -47,8 +48,9 @@ class User {
       } else {
         res.status(400).send('no data');
       }
-    } catch (err) {
-      res.status(500).send(err);
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
     }
   }
 }

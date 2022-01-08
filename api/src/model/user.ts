@@ -1,5 +1,7 @@
 import Model from './model'
 import { CRUD } from 'interface/crud';
+import { User as UserInterface } from '../interface/user'
+import { format } from 'date-fns'
 
 class User extends Model /*implements CRUD*/ {
 	add = async (body: any /* interface */) => {
@@ -64,17 +66,25 @@ class User extends Model /*implements CRUD*/ {
 	list = async () => {
 		const sql = `SELECT
 			u.id,
+			u.username,
 			u.first_name,
-			u.last_name
+			u.last_name,
+			u.role,
+			u.is_active,
+			u.created_on
 		FROM wee_users u`;
 
 		const data = await this.db.query(sql);
 
 		if (data) {
-			return data.map((el: { id: any; first_name: any; last_name: any; }) => ({
-				id: el.id,
-				firstName: el.first_name,
-				lastName: el.last_name
+			return data.map((row: UserInterface) => ({
+				id: row.id,
+				username: row.username,
+				firstName: row.first_name,
+				lastName: row.last_name,
+				role: row.role,
+				isActive: row.is_active,
+				createdOn: format(new Date(row.created_on), 'yyyy-MM-dd hh:mm')
 			}));
 		}
 	}
