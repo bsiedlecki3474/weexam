@@ -29,26 +29,20 @@ const Users = props => {
   }, [])
 
   const columns = [
-    { key: 'firstName', name: 'First name' },
-    { key: 'lastName', name: 'Last name'}
+    { id: 'firstName', label: 'First name' },
+    { id: 'lastName', label: 'Last name'}
   ]
 
   // onHandleGetUserList().then(res => console.log(res))
 
   return (
     <Box>
-      <p>users:</p>
-      <ol>{users?.map(el => 
-        <li key={el.id}>{el.firstName} {el.lastName}</li>
-      )}</ol>
-      <Box mb={2}>
-        <Typography component="h1" variant="h4">
-          Users
-        </Typography>
-      </Box>
-      <Box py={2}>
-        <MaterialTable />
-      </Box>
+      <MaterialTable
+        title="Users"
+        checkboxes
+        columns={columns}
+        data={users}
+      />
     </Box>
   )
 }
