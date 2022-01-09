@@ -17,8 +17,8 @@ const handleSignIn = (username, password) => async dispatch => {
   try {
     const data = await signIn(username, password)
     return dispatch({ type: SIGN_IN_SUCCESS, payload: data })
-  } catch (err) {
-    return dispatch({ type: SIGN_IN_ERROR, payload: err })
+  } catch (e) {
+    return dispatch({ type: SIGN_IN_ERROR, payload: e })
   }
 }
 
@@ -27,8 +27,8 @@ const handleSignOut = () => async dispatch => {
   try {
     const data = await signOut()
     return dispatch({ type: SIGN_OUT_SUCCESS, payload: data })
-  } catch (err) {
-    return dispatch({ type: SIGN_OUT_ERROR, payload: err })
+  } catch (e) {
+    return dispatch({ type: SIGN_OUT_ERROR, payload: e })
   }
 }
 
@@ -37,8 +37,8 @@ const handleVerifyUser = () => async dispatch => {
   try {
     const data = await verifyUser()
     return dispatch({ type: VERIFY_USER_SUCCESS, payload: data })
-  } catch (err) {
-    return dispatch({ type: VERIFY_USER_ERROR, payload: err })
+  } catch (e) {
+    return dispatch({ type: VERIFY_USER_ERROR, payload: e })
   }
 }
 

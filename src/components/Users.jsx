@@ -36,7 +36,7 @@ const Users = props => {
     { id: 'createdOn', label: 'Created on' }
   ]
 
-  const data = users.map(row => ({
+  const data = users && users.map(row => ({
     id: row.id,
     username: row.username,
     firstName: row.firstName,

@@ -56,7 +56,7 @@ const MenuDrawer = props => {
           </ListItemIcon>
           <ListItemText primary="Users" />
         </ListItem>
-        <ListItem button>
+        <ListItem button onClick={() => navigate('/groups')}>
           <ListItemIcon>
             <GroupsIcon />
           </ListItemIcon>

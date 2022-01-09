@@ -4,7 +4,8 @@ import { connect } from "react-redux";
 import { LoginLayout, DashboardLayout } from '../layouts'
 import {
   Profile,
-  Users
+  Users,
+  Groups
 } from '../components'
 
 import { handleVerifyUser } from "../redux/actions/auth";
@@ -23,6 +24,7 @@ const Router = props => {
         <Route path="/" element={loggedIn ? <DashboardLayout /> : <LoginLayout />}>
         <Route path="/profile" element={<Profile />} />
         <Route path="/users" element={<Users />} />
+        <Route path="/groups" element={<Groups />} />
       </Route>
     </Routes>
 }

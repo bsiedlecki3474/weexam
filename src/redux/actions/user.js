@@ -12,8 +12,8 @@ const handleGetUserList = () => async dispatch => {
   try {
     const data = await getUserList()
     return dispatch({ type: GET_USER_LIST_SUCCESS, payload: data })
-  } catch (err) {
-    return dispatch({ type: GET_USER_LIST_ERROR, payload: err })
+  } catch (e) {
+    return dispatch({ type: GET_USER_LIST_ERROR, payload: e })
   }
 }
 

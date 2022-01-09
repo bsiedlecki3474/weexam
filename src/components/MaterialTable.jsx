@@ -232,7 +232,7 @@ const EnhancedTable = props => {
         />
         <TableContainer sx={{height: 'calc(100% - 64px - 52px)'}}>
           <Table
-            sx={{ minWidth: 750 }}
+            sx={{ minWidth: 750, height: data ? 'initial' : '100%' }}
             size={dense ? 'small' : 'medium'}
           >
             <EnhancedTableHead
@@ -280,9 +280,9 @@ const EnhancedTable = props => {
                     );
                   })
                 : <TableRow
-                    style={{
-                      height: 333,
-                    }}
+                    // style={{
+                    //   height: 333,
+                    // }}
                   >
                     <TableCell colSpan={columns?.length + 1} align="center">
                       No data

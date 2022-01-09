@@ -1,5 +1,5 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
-import { auth, theme, user } from './reducers'
+import { auth, theme, user, group } from './reducers'
 import thunk from "redux-thunk" 
 import { logger } from './middleware'
 
@@ -8,7 +8,8 @@ import { saveState, loadState } from '../helpers/localStorage'
 const rootReducer = combineReducers({
   auth,
   theme,
-  user
+  user,
+  group
 });
 
 const persistedState = loadState();
