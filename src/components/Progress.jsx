@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, Paper, CircularProgress, Typography } from "@mui/material";
 import { withStyles } from '@mui/styles';
 
 const styles = theme => ({
@@ -16,9 +16,11 @@ const styles = theme => ({
 const Progress = props => {
   const { classes } = props;
   return (
-    <Box className={classes.root}>
-      <Typography variant="h3" mb={5}><b>wee</b>xam</Typography>
-      <CircularProgress size="3em" />
+    <Box>
+      <Paper className={classes.root}>
+        <Typography variant="h3" mb={5}><b>wee</b>xam</Typography>
+        <CircularProgress size="3em" />
+      </Paper>
     </Box>
   );
 }

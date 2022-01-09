@@ -13,6 +13,8 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ArticleIcon from '@mui/icons-material/Article';
 import MenuIcon from '@mui/icons-material/Menu';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import GroupsIcon from '@mui/icons-material/Groups';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -21,13 +23,15 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
 import { handleSignOut } from '../redux/actions/auth';
+import { handleToggleTheme } from '../redux/actions/theme';
+
 
 import { connect } from "react-redux"
 
 const drawerWidth = 240;
 
 const MenuDrawer = props => {
-  const { window, children, onHandleSignOut } = props;
+  const { window, children, theme, onHandleSignOut, onHandleToggleTheme } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -93,6 +97,12 @@ const MenuDrawer = props => {
             </IconButton>
             <IconButton
               color="inherit"
+              onClick={() => onHandleToggleTheme()}
+            >
+              {theme === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+            </IconButton>
+            <IconButton
+              color="inherit"
               onClick={() => navigate('/profile')}
             >
               <AccountCircleIcon />
@@ -152,10 +162,18 @@ MenuDrawer.propTypes = {
   window: PropTypes.func,
 };
 
-const mapDispatchToProps = dispatch => {
+const mapStateToProps = state => {
+  console.log('state:', state)
   return {
-    onHandleSignOut: () => dispatch(handleSignOut())
+    theme: state.theme
   }
 }
 
-export default connect(null, mapDispatchToProps)(MenuDrawer);
+const mapDispatchToProps = dispatch => {
+  return {
+    onHandleSignOut: () => dispatch(handleSignOut()),
+    onHandleToggleTheme: () => dispatch(handleToggleTheme())
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MenuDrawer);
