@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { green } from '@mui/material/colors';
+import { green, indigo } from '@mui/material/colors';
 
 import Router from './router/Router.js'
 
@@ -9,7 +9,10 @@ const ThemeWrapper = props => {
     palette: {
       mode: props.theme,
       primary: {
-        main: green[600],
+        main: props.theme === 'light' ? green[700] : green[500],
+      },
+      secondary: {
+        main: props.theme === 'light' ? indigo[800] : indigo[300],
       },
     }
   })
