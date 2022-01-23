@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 
 import Login from '../components/Login'
+import login1 from '../assets/login1.jpg'
 
 const styles = theme => ({
   root: {
@@ -16,7 +17,7 @@ const styles = theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    background: `url(${process.env.PUBLIC_URL + 'assets/login1.jpg'})`, // https://unsplash.com/@aaronburden
+    background: `url(${login1})`, // https://unsplash.com/@aaronburden
     '&::before': {
       content: "''",
       display: 'block',
