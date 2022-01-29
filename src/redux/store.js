@@ -1,5 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
-import { auth, theme, user, group } from './reducers'
+import { composeWithDevTools } from 'redux-devtools-extension'
+import { auth, theme, users, group } from './reducers'
 import thunk from "redux-thunk" 
 import { logger } from './middleware'
 
@@ -8,7 +9,7 @@ import { saveState, loadState } from '../helpers/localStorage'
 const rootReducer = combineReducers({
   auth,
   theme,
-  user,
+  users,
   group
 });
 
@@ -17,7 +18,7 @@ const persistedState = loadState();
 const store = createStore(
   rootReducer,
   persistedState,
-  applyMiddleware(thunk, logger)
+  composeWithDevTools(applyMiddleware(thunk, logger))
 )
 
 store.subscribe(() => {
