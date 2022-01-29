@@ -5,25 +5,22 @@ import { LoginLayout, DashboardLayout } from '../layouts'
 import {
   Profile,
   Users,
+  AddUser,
   Groups
 } from '../components'
 
-import { handleVerifyUser } from "../redux/actions/auth";
 import Progress from "../components/Progress";
 
 const Router = props => {
-  const { loggedIn, pending, onHandleVerifyUser } = props;
+  const { loggedIn, pending } = props;
 
-  useEffect(() => {
-   onHandleVerifyUser();
-  }, [])
-
-  return pending || pending === undefined
+  return pending // || pending === undefined
         ? <Progress />
         : <Routes>
         <Route path="/" element={loggedIn ? <DashboardLayout /> : <LoginLayout />}>
         <Route path="/profile" element={<Profile />} />
         <Route path="/users" element={<Users />} />
+        <Route path="/users/add" element={<AddUser />} />
         <Route path="/groups" element={<Groups />} />
       </Route>
     </Routes>
@@ -36,8 +33,4 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  onHandleVerifyUser: () => dispatch(handleVerifyUser())
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Router);
+export default connect(mapStateToProps)(Router);

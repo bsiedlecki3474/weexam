@@ -4,10 +4,14 @@ import { green, indigo } from '@mui/material/colors';
 
 import Router from './router/Router.js'
 
+const browserTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+console.log(browserTheme)
+
 const ThemeWrapper = props => {
   const theme = createTheme({
     palette: {
-      mode: props.theme,
+      mode: props.theme ?? (browserTheme ?? 'dark'),
       primary: {
         main: props.theme === 'light' ? green[700] : green[500],
       },

@@ -163,7 +163,6 @@ MenuDrawer.propTypes = {
 };
 
 const mapStateToProps = state => {
-  console.log('state:', state)
   return {
     theme: state.theme
   }

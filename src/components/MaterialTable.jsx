@@ -2,6 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -106,7 +107,7 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { title, numSelected, dense, handleChangeDense } = props;
+  const { title, numSelected, dense, handleChangeDense, handleAddNew } = props;
 
   return (
     <Toolbar
@@ -124,19 +125,19 @@ const EnhancedTableToolbar = (props) => {
           sx={{ flex: '1 1 100%' }}
           color="inherit"
           variant="subtitle1"
-          component="div"
         >
           {numSelected} selected
         </Typography>
       ) : (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          {title ?? 'Table'}
-        </Typography>
+        <Box sx={{ gap: 2 }} style={{ display: 'flex', flex: '1 1 100%' }}>
+          <Typography
+            variant="h6"
+            id="tableTitle"
+          >
+            {title ?? 'Table'}
+          </Typography>
+          <Button variant="outlined" size="small" onClick={handleAddNew}>add</Button>
+        </Box>
       )}
 
       {numSelected > 0 ? (
@@ -171,7 +172,7 @@ const styles = theme => ({
 
 const EnhancedTable = props => {
   console.log(props)
-  const { classes, title, columns, data, checkboxes } = props;
+  const { classes, title, columns, data, checkboxes, handleAddNew } = props;
 
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState(null);
@@ -226,6 +227,7 @@ const EnhancedTable = props => {
       <Paper sx={{ width: '100%', height: 'calc(100vh - 112px)' }}> {/* 64 + 48 */}
         <EnhancedTableToolbar
           title={title}
+          handleAddNew={handleAddNew}
           numSelected={selected.length}
           dense={dense}
           handleChangeDense={handleChangeDense}

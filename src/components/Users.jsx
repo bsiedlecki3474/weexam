@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom'
 import { connect } from "react-redux"
 import { withStyles } from '@mui/styles';
 import {
@@ -10,7 +11,7 @@ import {
   MaterialTable
 } from './'
 
-import { handleGetUserList } from '../redux/actions/user';
+import { handleGetUserList } from '../redux/actions/users';
 
 const styles = theme => ({
   // userIcon: {
@@ -22,6 +23,7 @@ const styles = theme => ({
 
 const Users = props => {
   const { classes, users, onHandleGetUserList } = props;
+  const navigate = useNavigate();
   console.log(props)
 
   useEffect(() => {
@@ -51,6 +53,7 @@ const Users = props => {
   return (
     <Box>
       <MaterialTable
+        handleAddNew={() => navigate('/users/add')}
         title="Users"
         checkboxes
         columns={columns}
@@ -61,8 +64,9 @@ const Users = props => {
 }
 
 const mapStateToProps = state => {
+  console.log(state)
   return {
-    users: state.user?.data
+    users: state.users?.data
   }
 }
 

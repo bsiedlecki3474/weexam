@@ -5,9 +5,9 @@ import {
   SIGN_OUT_PENDING,
   SIGN_OUT_SUCCESS,
   SIGN_OUT_ERROR,
-  VERIFY_USER_PENDING,
-  VERIFY_USER_SUCCESS,
-  VERIFY_USER_ERROR
+  // VERIFY_USER_PENDING,
+  // VERIFY_USER_SUCCESS,
+  // VERIFY_USER_ERROR
 } from "../types/auth"
 
 import { signIn, signOut, verifyUser } from '../../api/auth'
@@ -32,18 +32,18 @@ const handleSignOut = () => async dispatch => {
   }
 }
 
-const handleVerifyUser = () => async dispatch => {
-  dispatch({ type: VERIFY_USER_PENDING })
-  try {
-    const data = await verifyUser()
-    return dispatch({ type: VERIFY_USER_SUCCESS, payload: data })
-  } catch (e) {
-    return dispatch({ type: VERIFY_USER_ERROR, payload: e })
-  }
-}
+// const handleVerifyUser = () => async dispatch => {
+//   dispatch({ type: VERIFY_USER_PENDING })
+//   try {
+//     const data = await verifyUser()
+//     return dispatch({ type: VERIFY_USER_SUCCESS, payload: data })
+//   } catch (e) {
+//     return dispatch({ type: VERIFY_USER_ERROR, payload: e })
+//   }
+// }
 
 export {
   handleSignIn,
   handleSignOut,
-  handleVerifyUser
+  // handleVerifyUser
 }
