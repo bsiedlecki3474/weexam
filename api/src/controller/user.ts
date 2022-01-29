@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { user } from '../model';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import bcrypt from "bcryptjs"
 
 import { JWT_SECRET } from '../config'
@@ -12,14 +12,18 @@ class User {
         username,
         password,
         firstName,
-        lastName
+        lastName,
+        role,
+        isActive
       } = req.body;
 
       if (!username || !password)
         return res.status(400).send();
 
-      const id = await user.nextTableId('wee_users')
+      const token = req.cookies.jwt;
       const hash = await bcrypt.hash(password, 10);
+      const id = await user.nextTableId('wee_users');
+      const { userId } = jwt.verify(token, JWT_SECRET) as JwtPayload;
 
       const data = [
         id,
@@ -27,8 +31,9 @@ class User {
         hash,
         firstName,
         lastName,
-        1, // is_active
-        1 // createdBy
+        role,
+        isActive ?? 0,
+        userId // createdBy
       ];
 
       const response = await user.add(data);

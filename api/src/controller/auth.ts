@@ -1,13 +1,10 @@
 import { Request, Response } from 'express';
 import { user } from '../model';
+import { JwtPayload } from 'jsonwebtoken';
 import jwt from 'jsonwebtoken';
 import bcrypt from "bcryptjs"
 
 import { JWT_SECRET, COOKIE_PATH } from '../config'
-
-interface JwtPayload {
-  id: number
-}
 
 class Auth {
   signIn = async (req: Request, res: Response) => {
@@ -21,11 +18,10 @@ class Auth {
 
       if (userData) {
         const valid = await bcrypt.compare(password, userData.password);
-
         if (valid) {
 
           const token = jwt.sign({
-            id: userData.id
+            userId: userData.id
           }, JWT_SECRET);
 
           const response = {
@@ -65,8 +61,8 @@ class Auth {
   verifyUser = async (req: Request, res: Response) => {
     try {
       const token = req.cookies.jwt;
-      const { id } = jwt.verify(token, JWT_SECRET) as JwtPayload;
-      const data = await user.userById(id);
+      const { userId } = jwt.verify(token, JWT_SECRET) as JwtPayload;
+      const data = await user.userById(userId);
       return res.status(200).send(data)
     } catch (e) {
       return res.status(500).send(e);
