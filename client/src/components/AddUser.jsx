@@ -10,8 +10,8 @@ import {
 } from "@mui/material"
 
 import { Form, TextField, Select, Checkbox } from './Form'
-
 import { handleAddUser } from '../redux/actions/users';
+import lang from '../lang'
 
 const styles = theme => ({
 
@@ -90,7 +90,7 @@ class AddUser extends Component {
               required
               isLoading={isLoading || this.isDataLoading()}
               error={showErrors && !this.state.username}
-              helperText={"i18n.main?.validation?.empty"}
+              helperText={lang.main.validation.empty}
             />
 
             <TextField
@@ -101,7 +101,7 @@ class AddUser extends Component {
               required
               isLoading={isLoading || this.isDataLoading()}
               error={showErrors && !this.state.firstName}
-              helperText={"i18n.main?.validation?.empty"}
+              helperText={lang.main.validation.empty}
             />
 
             <TextField
@@ -132,7 +132,7 @@ class AddUser extends Component {
               handleChange={this.handleInputChange}
               required
               error={showErrors && !this.state.role}
-              helperText={"i18n.main?.validation?.empty"}
+              helperText={lang.main.validation.empty}
               isLoading={isLoading || this.isDataLoading()}
             />
 
@@ -144,13 +144,6 @@ class AddUser extends Component {
             />
           </Grid>
         </Form>
-        <Button onClick={() => this.setState({
-          firstName: 'asd',
-          lastName: 'asd',
-          username: 'asd',
-          password: 'qazwsx',
-          role: 'user'
-        })}>a</Button>
       </Box>
     )
   }
