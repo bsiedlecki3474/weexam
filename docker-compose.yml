@@ -9,6 +9,8 @@ services:
     command: sh -c "npm install && npm run start"
     ports: 
       - 3456:3456
+    depends_on: 
+      - db
   
   client:
     image: node:14.15.0
@@ -18,3 +20,22 @@ services:
     command: sh -c "npm install && npm run start"
     ports:
       - 3000:3000
+    depends_on:
+      - server
+
+  db:
+    image: mysql:8.0.23
+    volumes:
+      - mysql:/var/lib/mysql
+      - ./init.sql:/init.sql
+    # command: sh -c "mysqld && mysql -u root --password=root weexam < init.sql"
+    ports: 
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=weexam
+      - MYSQL_USER=weexam
+      - MYSQL_PASSWORD=weexam
+      - MYSQL_ROOT_PASSWORD=root
+
+volumes:
+  mysql:
