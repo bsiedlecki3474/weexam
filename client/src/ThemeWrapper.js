@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { green, indigo } from '@mui/material/colors';
+import { Snackbar } from './components'
 
 import Router from './router/Router.js'
 
@@ -23,6 +24,7 @@ const ThemeWrapper = props => {
   return (
     <ThemeProvider theme={theme}>
       <Router />
+      <Snackbar />
     </ThemeProvider> 
   )
 }

@@ -1,6 +1,8 @@
 import { Component, createRef } from "react";
 import { connect } from "react-redux"
 import { withStyles } from '@mui/styles';
+import withNavigation from "../hoc/withNavigation";
+
 import {
   Box,
   Button,
@@ -9,8 +11,10 @@ import {
   Collapse
 } from "@mui/material"
 
-import { Form, TextField, Select, Checkbox } from './Form'
 import { handleAddUser } from '../redux/actions/users';
+import { showSnackbar } from '../redux/actions/snackbar'
+
+import { Form, TextField, Select, Checkbox } from './Form'
 import lang from '../lang'
 
 const styles = theme => ({
@@ -58,15 +62,24 @@ class AddUser extends Component {
     ]
 
     const formSubmit = e => {
-      const { onHandleAddUser } = this.props;
-      console.log(e)
+      const { onHandleAddUser, showSnackbar, navigate } = this.props;
       this.setState({ showErrors: true }, () => {
         if (this.checkFormValidity()) {
           const { showErrors, isLoading, ...data } = this.state;
-          console.log(data)
-          onHandleAddUser(data).then(
-            alert('user added')
-          )
+          // tbd check for duplicates
+          onHandleAddUser(data).then(() => {
+            showSnackbar({
+              message: lang.users.snackbar.userAdded,
+              severity: 'success'
+            })
+            // tbd block request spam
+            setTimeout(() => navigate('/users/1'), 1000);
+          })
+        } else {
+          showSnackbar({
+            message: lang.main.validation.fillAllRequired,
+            severity: 'error'
+          })
         }
       })
     }
@@ -108,16 +121,18 @@ class AddUser extends Component {
               id="lastName"
               label="Last name"
               value={this.state.lastName}
+              required
               handleChange={this.handleInputChange}
               isLoading={isLoading || this.isDataLoading()}
             />
 
             <TextField
               id="password"
-              autocomplete="new-password"
+              autoComplete="new-password"
               type="password"
               label="Password"
               value={this.state.password}
+              required
               handleChange={this.handleInputChange}
               isLoading={isLoading || this.isDataLoading()}
             // // error={(showErrors && !enquiry.registrationDate) || enquiry.registrationDate < currentDate}
@@ -147,11 +162,11 @@ class AddUser extends Component {
       </Box>
     )
   }
-
 }
 
 const mapDispatchToProps = dispatch => ({
-  onHandleAddUser: data => dispatch(handleAddUser(data))
+  onHandleAddUser: data => dispatch(handleAddUser(data)),
+  showSnackbar: data => dispatch(showSnackbar(data))
 })
 
-export default connect(null, mapDispatchToProps)(withStyles(styles)(AddUser));
+export default connect(null, mapDispatchToProps)(withNavigation(withStyles(styles)(AddUser)));

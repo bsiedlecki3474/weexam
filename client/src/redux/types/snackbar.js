@@ -1,0 +1,3 @@
+export const HIDE_SNACKBAR = 'HIDE_SNACKBAR';
+export const SHOW_SNACKBAR = 'SHOW_SNACKBAR';
+export const CLEAR_SNACKBAR = 'CLEAR_SNACKBAR';
