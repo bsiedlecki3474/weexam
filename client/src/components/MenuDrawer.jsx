@@ -99,7 +99,7 @@ const MenuDrawer = props => {
               color="inherit"
               onClick={() => onHandleToggleTheme()}
             >
-              {theme === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+              {theme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
             </IconButton>
             <IconButton
               color="inherit"
