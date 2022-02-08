@@ -6,12 +6,11 @@ import { format } from 'date-fns'
 class User extends Model /*implements CRUD*/ {
 	add = async (body: any /* interface */) => {
 		const sql = `INSERT INTO wee_users (id, username, password, first_name, last_name, role, is_active, created_by, created_on) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())`;
-
 		const data = await this.db.query(sql, body);
-		console.log(data)
+
 		if (data) {
 			return {
-				id: body.id,
+				id: data?.insertId,
 			}
 		}
 	}
