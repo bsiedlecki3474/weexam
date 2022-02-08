@@ -62,7 +62,7 @@ class AddUser extends Component {
     ]
 
     const formSubmit = e => {
-      const { onHandleAddUser, showSnackbar, navigate } = this.props;
+      const { onHandleAddUser, showSnackbar, navigate, id } = this.props;
       this.setState({ showErrors: true }, () => {
         if (this.checkFormValidity()) {
           const { showErrors, isLoading, ...data } = this.state;
@@ -73,7 +73,7 @@ class AddUser extends Component {
               severity: 'success'
             })
             // tbd block request spam
-            setTimeout(() => navigate('/users/1'), 1000);
+            setTimeout(() => navigate('/users/' + id), 1000);
           })
         } else {
           showSnackbar({
@@ -164,9 +164,13 @@ class AddUser extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  id: state.addEntry?.data?.id
+})
+
 const mapDispatchToProps = dispatch => ({
   onHandleAddUser: data => dispatch(handleAddUser(data)),
   showSnackbar: data => dispatch(showSnackbar(data))
 })
 
-export default connect(null, mapDispatchToProps)(withNavigation(withStyles(styles)(AddUser)));
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(withStyles(styles)(AddUser)));

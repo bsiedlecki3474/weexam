@@ -22,8 +22,8 @@ const handleGetUserList = () => async dispatch => {
 const handleAddUser = (formData) => async dispatch => {
   dispatch({ type: ADD_USER_PENDING })
   try {
-    await addUser(formData)
-    return dispatch({ type: ADD_USER_SUCCESS })
+    const data = await addUser(formData)
+    return dispatch({ type: ADD_USER_SUCCESS, payload: data })
   } catch (e) {
     return dispatch({ type: ADD_USER_ERROR, payload: e })
   }

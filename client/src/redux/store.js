@@ -1,6 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
-import { auth, snackbar, theme, users, group } from './reducers'
+import { auth, snackbar, theme, users, group, addEntry } from './reducers'
 import thunk from "redux-thunk" 
 import { logger } from './middleware'
 
@@ -11,7 +11,8 @@ const rootReducer = combineReducers({
   snackbar,
   theme,
   users,
-  group
+  group,
+  addEntry
 });
 
 const persistedState = loadState();
