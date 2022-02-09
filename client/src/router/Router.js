@@ -5,9 +5,11 @@ import { LoginLayout, DashboardLayout } from '../layouts'
 import {
   Profile,
   Users,
+  Groups,
+  Tests,
   AddUser,
   AddGroup,
-  Groups
+  // AddTest
 } from '../components'
 
 import Progress from "../components/Progress";
@@ -24,6 +26,8 @@ const Router = props => {
         <Route path="/users/add" element={<AddUser />} />
         <Route path="/groups" element={<Groups />} />
         <Route path="/groups/add" element={<AddGroup />} />
+        <Route path="/tests" element={<Tests />} />
+        {/* <Route path="/tests/add" element={<AddTest />} /> */}
       </Route>
     </Routes>
 }

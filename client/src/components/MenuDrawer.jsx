@@ -44,7 +44,7 @@ const MenuDrawer = props => {
       <Toolbar />
       <Divider />
       <List>
-        <ListItem button>
+        <ListItem button onClick={() => navigate('/tests')}>
           <ListItemIcon>
             <ArticleIcon />
           </ListItemIcon>
