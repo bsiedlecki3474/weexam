@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom'
 import { connect } from "react-redux"
 import { withStyles } from '@mui/styles';
 import {
@@ -10,13 +11,14 @@ import {
   MaterialTable
 } from '.'
 
-import { handleGetGroupList } from '../redux/actions/group';
+import { handleGetGroupList } from '../redux/actions/groups';
 
 const styles = theme => ({
 })
 
 const Groups = props => {
   const { classes, groups, onHandleGetGroupList } = props;
+  const navigate = useNavigate();
   console.log(props)
 
   useEffect(() => {
@@ -42,6 +44,7 @@ const Groups = props => {
   return (
     <Box>
       <MaterialTable
+        handleAddNew={() => navigate('/groups/add')}
         title="Groups"
         checkboxes
         columns={columns}
@@ -53,7 +56,7 @@ const Groups = props => {
 
 const mapStateToProps = state => {
   return {
-    groups: state.group?.data
+    groups: state.groups?.data
   }
 }
 

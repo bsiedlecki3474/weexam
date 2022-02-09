@@ -5,6 +5,12 @@ const getGroupList = async () => {
   return res.data
 }
 
+const addGroup = async (data) => {
+  const res = await axios.post('/group/add', data);
+  return res.data;
+}
+
 export {
-  getGroupList
+  getGroupList,
+  addGroup
 }

@@ -6,6 +6,7 @@ import {
   Profile,
   Users,
   AddUser,
+  AddGroup,
   Groups
 } from '../components'
 
@@ -22,6 +23,7 @@ const Router = props => {
         <Route path="/users" element={<Users />} />
         <Route path="/users/add" element={<AddUser />} />
         <Route path="/groups" element={<Groups />} />
+        <Route path="/groups/add" element={<AddGroup />} />
       </Route>
     </Routes>
 }

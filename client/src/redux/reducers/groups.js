@@ -2,14 +2,14 @@ import {
   GET_GROUP_LIST_PENDING,
   GET_GROUP_LIST_SUCCESS,
   GET_GROUP_LIST_ERROR
-} from "../types/group"
+} from "../types/groups"
 
 const initialState = {
 	error: null,
 	data: null
 };
 
-const group = (state = initialState, action) => {
+const groups = (state = initialState, action) => {
   switch (action.type) {
 		case GET_GROUP_LIST_PENDING:
 			return {...state, pending: true }
@@ -22,4 +22,4 @@ const group = (state = initialState, action) => {
 	}
 }
 
-export default group;
+export default groups;

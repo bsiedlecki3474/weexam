@@ -11,7 +11,7 @@ import {
   Collapse
 } from "@mui/material"
 
-import { handleAddUser } from '../redux/actions/users';
+import { handleAddGroup } from '../redux/actions/groups';
 import { showSnackbar } from '../redux/actions/snackbar'
 
 import { Form, TextField, Select, Checkbox } from './Form'
@@ -21,7 +21,7 @@ const styles = theme => ({
 
 })
 
-class AddUser extends Component {
+class AddGroup extends Component {
   constructor(props) {
     super(props)
 
@@ -56,24 +56,19 @@ class AddUser extends Component {
     const { showErrors, isLoading } = this.state;
     const { classes } = this.props;
 
-    const roles = [
-      { id: 'admin', name: 'admin' },
-      { id: 'user', name: 'user' }
-    ]
-
     const formSubmit = e => {
-      const { onHandleAddUser, showSnackbar, navigate } = this.props;
+      const { onHandleAddGroup, showSnackbar, navigate } = this.props;
       this.setState({ showErrors: true }, () => {
         if (this.checkFormValidity()) {
           const { showErrors, isLoading, ...data } = this.state;
           // tbd check for duplicates
-          onHandleAddUser(data).then(res => {
+          onHandleAddGroup(data).then(res => {
             showSnackbar({
-              message: lang.users.snackbar.userAdded,
+              message: lang.groups.snackbar.groupAdded,
               severity: 'success'
             })
             // tbd block request spam
-            setTimeout(() => navigate('/users/' + res.data.id), 1000);
+            setTimeout(() => navigate('/groups/' + res.data.id), 1000);
           })
         } else {
           showSnackbar({
@@ -88,7 +83,7 @@ class AddUser extends Component {
       <Box sx={{ height: 'calc(100vh - 112px)' }}>
         <Form
           formRef={this.formRef}
-          title="Add user"
+          title="Add group"
           fullHeight
           submitButton={
             <Button variant="outlined" size="small" onClick={formSubmit}>add</Button>
@@ -96,67 +91,22 @@ class AddUser extends Component {
         >
           <Grid item xs={12} sm={6} md={6} lg={6}>
             <TextField
-              id="username"
-              label="Username"
-              value={this.state.username}
+              id="name"
+              label="Group name"
+              value={this.state.name}
               handleChange={this.handleInputChange}
               required
               isLoading={isLoading || this.isDataLoading()}
-              error={showErrors && !this.state.username}
+              error={showErrors && !this.state.name}
               helperText={lang.main.validation.empty}
             />
-
-            <TextField
-              id="firstName"
-              label="First name"
-              value={this.state.firstName}
-              handleChange={this.handleInputChange}
-              required
-              isLoading={isLoading || this.isDataLoading()}
-              error={showErrors && !this.state.firstName}
-              helperText={lang.main.validation.empty}
-            />
-
-            <TextField
-              id="lastName"
-              label="Last name"
-              value={this.state.lastName}
-              required
-              handleChange={this.handleInputChange}
-              isLoading={isLoading || this.isDataLoading()}
-            />
-
-            <TextField
-              id="password"
-              autoComplete="new-password"
-              type="password"
-              label="Password"
-              value={this.state.password}
-              required
-              handleChange={this.handleInputChange}
-              isLoading={isLoading || this.isDataLoading()}
-            // // error={(showErrors && !enquiry.registrationDate) || enquiry.registrationDate < currentDate}
-            // helperText={enquiry.registrationDate < currentDate ? i18n.main?.validation?.incorrect : i18n.main?.validation?.empty}
-            />
-
-            <Select
-              id="role"
-              value={this.state.role}
-              label="Role"
-              options={roles}
-              handleChange={this.handleInputChange}
-              required
-              error={showErrors && !this.state.role}
-              helperText={lang.main.validation.empty}
-              isLoading={isLoading || this.isDataLoading()}
-            />
-
 
             <Checkbox
-              label="Account active"
+              label="Group active"
               value={this.state.isActive}
               defaultChecked
             />
+
           </Grid>
         </Form>
       </Box>
@@ -169,8 +119,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  onHandleAddUser: data => dispatch(handleAddUser(data)),
+  onHandleAddGroup: data => dispatch(handleAddGroup(data)),
   showSnackbar: data => dispatch(showSnackbar(data))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(withStyles(styles)(AddUser)));
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(withStyles(styles)(AddGroup)));

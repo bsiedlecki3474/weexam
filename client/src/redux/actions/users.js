@@ -23,7 +23,7 @@ const handleAddUser = (formData) => async dispatch => {
   dispatch({ type: ADD_USER_PENDING })
   try {
     const data = await addUser(formData)
-    return dispatch({ type: ADD_USER_SUCCESS, payload: data })
+    return dispatch({ type: ADD_USER_SUCCESS, data })
   } catch (e) {
     return dispatch({ type: ADD_USER_ERROR, payload: e })
   }
