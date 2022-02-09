@@ -66,6 +66,34 @@ CREATE TABLE `wee_users` (
 insert  into `wee_users`(`id`,`username`,`password`,`first_name`,`last_name`,`role`,`is_active`,`created_on`,`created_by`,`modified_on`,`modified_by`) values 
 (1,'root','$2a$10$8dGOKOFbmSfGMvPMFBvcleaYcqvykdTYqCoFnXDFd8vIdpXmv0nvG','root','root','root',1,'2021-12-17 23:22:49',1,NULL,NULL);
 
+DROP TABLE IF EXISTS `wee_tests`;
+
+CREATE TABLE `wee_tests` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `start_date` datetime DEFAULT NULL,
+  `end_date` datetime DEFAULT NULL,
+  `duration` int unsigned default null,
+  `show_scores` tinyint unsigned NOT NULL DEFAULT '1',
+  `is_active` tinyint unsigned NOT NULL DEFAULT '0',
+  `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int unsigned DEFAULT NULL,
+  `modified_on` datetime DEFAULT NULL,
+  `modified_by` int unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+DROP TABLE IF EXISTS `wee_tests_groups`;
+
+CREATE TABLE `wee_tests_groups` (
+  `test_id` int unsigned NOT NULL,
+  `group_id` int unsigned NOT NULL,
+  PRIMARY KEY (`test_id`,`group_id`),
+  KEY `fk_wee_tests_groups_test_id` (`test_id`),
+  CONSTRAINT `fk_wee_tests_groups_test_id` FOREIGN KEY (`test_id`) REFERENCES `wee_tests` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_wee_tests_groups_group_id` FOREIGN KEY (`group_id`) REFERENCES `wee_groups` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
