@@ -83,7 +83,7 @@ class User extends Model /*implements CRUD*/ {
 				lastName: row.last_name,
 				role: row.role,
 				isActive: row.is_active,
-				createdOn: format(new Date(row.created_on), 'yyyy-MM-dd hh:mm')
+				createdOn: format(new Date(row.created_on), 'yyyy-MM-dd HH:mm')
 			}));
 		}
 	}

@@ -81,7 +81,7 @@ class Group extends Model /*implements CRUD*/ {
 				name: row.name,
 				members: row.members,
 				isActive: row.is_active,
-				createdOn: format(new Date(row.created_on), 'yyyy-MM-dd hh:mm')
+				createdOn: format(new Date(row.created_on), 'yyyy-MM-dd HH:mm')
 			}));
 		}
 	}
