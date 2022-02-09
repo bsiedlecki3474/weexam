@@ -2,7 +2,7 @@ import express, { json, urlencoded, Request, Response } from "express";
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser'
-import { auth, user, group } from './routes';
+import { auth, user, group, test } from './routes';
 import errorMiddleware from './middleware/errorMiddleware';
 import { APP_URL } from './config';
 // import { db } from './Db';
@@ -34,6 +34,7 @@ app.get('/', async (req: Request, res: Response): Promise<Response> => {
 app.use('/auth/', auth);
 app.use('/user/', user);
 app.use('/group/', group);
+app.use('/test/', test);
 
 app.use(errorMiddleware);
 
