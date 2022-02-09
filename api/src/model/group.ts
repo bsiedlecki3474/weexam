@@ -4,17 +4,16 @@ import { Group as GroupInterface } from '../interface/group'
 import { format } from 'date-fns'
 
 class Group extends Model /*implements CRUD*/ {
-	// add = async (body: any /* interface */) => {
-	// 	const sql = `INSERT INTO wee_users (id, username, password, first_name, last_name, is_active, created_by, created_on) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`;
+	add = async (body: any /* interface */) => {
+		const sql = `INSERT INTO wee_groups (id, name, is_active, created_by, created_on) VALUES (?, ?, ?, ?, NOW())`;
+		const data = await this.db.query(sql, body);
 
-	// 	const data = await this.db.query(sql, body);
-
-	// 	if (data) {
-	// 		return {
-	// 			id: body.id,
-	// 		}
-	// 	}
-	// }
+		if (data) {
+			return {
+				id: data?.insertId,
+			}
+		}
+	}
 
 	// userByUsername = async (username: string) => {
 	// 	const sql = `SELECT
