@@ -1,7 +1,7 @@
 import { Component, createRef } from "react";
 import { connect } from "react-redux"
 import { withStyles } from '@mui/styles';
-import withNavigation from "../hoc/withNavigation";
+import withNavigation from "../../hoc/withNavigation";
 
 import {
   Box,
@@ -11,11 +11,11 @@ import {
   Collapse
 } from "@mui/material"
 
-import { handleAddTest } from '../redux/actions/tests';
-import { showSnackbar } from '../redux/actions/snackbar'
+import { handleAddTest } from '../../redux/actions/tests';
+import { showSnackbar } from '../../redux/actions/snackbar'
 
-import { Form, TextField, Select, Checkbox } from './Form'
-import lang from '../lang'
+import { Form, TextField, Select, Checkbox } from '../form'
+import lang from '../../lang'
 
 const styles = theme => ({
   checkboxContainer: {

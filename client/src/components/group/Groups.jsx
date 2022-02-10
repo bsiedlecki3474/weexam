@@ -9,9 +9,9 @@ import {
 
 import {
   MaterialTable
-} from '.'
+} from '../'
 
-import { handleGetGroupList } from '../redux/actions/groups';
+import { handleGetGroupList } from '../../redux/actions/groups';
 
 const styles = theme => ({
 })

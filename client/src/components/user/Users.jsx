@@ -9,9 +9,9 @@ import {
 
 import {
   MaterialTable
-} from './'
+} from '../'
 
-import { handleGetUserList } from '../redux/actions/users';
+import { handleGetUserList } from '../../redux/actions/users';
 
 const styles = theme => ({
   // userIcon: {

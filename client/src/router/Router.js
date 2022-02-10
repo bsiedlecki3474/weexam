@@ -3,14 +3,23 @@ import { Routes, Route } from "react-router-dom";
 import { connect } from "react-redux";
 import { LoginLayout, DashboardLayout } from '../layouts'
 import {
-  Profile,
-  Users,
-  Groups,
-  Tests,
-  AddUser,
-  AddGroup,
-  AddTest
+  Profile
 } from '../components'
+
+import {
+  Users,
+  AddUser
+} from '../components/user'
+
+import {
+  Groups,
+  AddGroup
+} from '../components/group'
+
+import {
+  Tests,
+  AddTest
+} from '../components/test'
 
 import Progress from "../components/Progress";
 
