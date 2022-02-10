@@ -5,12 +5,12 @@ const getTestList = async () => {
   return res.data;
 }
 
-// const addTest = async (data) => {
-//   const res = await axios.post('/test/add', data);
-//   return res.data;
-// }
+const addTest = async (data) => {
+  const res = await axios.post('/test/add', data);
+  return res.data;
+}
 
 export {
   getTestList,
-  // addTest
+  addTest
 }

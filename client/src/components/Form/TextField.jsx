@@ -16,6 +16,11 @@ const TextField = props => {
     helperText: {
       position: 'absolute',
       bottom: '-' + theme.spacing(3)
+    },
+    calendarIcon: {
+      '&::-webkit-calendar-picker-indicator': {
+        filter: theme.palette.mode === 'dark' ? 'invert(1)' : 'none'
+      }
     }
   }));
 
@@ -25,25 +30,25 @@ const TextField = props => {
     isLoading
       ? <Skeleton className={classes.skeleton} variant="rect" height={45} />
       : <MdlTextField
-            {...props}
-            id={id}
-            label={label}
-            value={value || null}
-            type={type ?? "text"}
-            InputProps={{ endAdornment, startAdornment }}
-            InputLabelProps={{ shrink: type === "date" || !!value }}
-            onChange={e => handleChange(e, id)}
-            color={"secondary" ?? color}
-            variant={variant ?? 'standard'}
-            fullWidth={fullWidth ?? true}
-            isLoading={isLoading}
-            required={required ?? false}
-            margin={margin ?? "normal"}
-            inputProps={validation}
-            error={error}
-            helperText={!isLoading && error && helperText}
-            FormHelperTextProps={{ className: classes.helperText }}
-          />
+          {...props}
+          id={id}
+          label={label}
+          value={value || null}
+          type={type ?? "text"}
+          InputProps={{ endAdornment, startAdornment }}
+          InputLabelProps={{ shrink: ['date', 'datetime-local'].includes(type) || !!value }}
+          onChange={e => handleChange(e, id)}
+          color={"secondary" ?? color}
+          variant={variant ?? 'standard'}
+          fullWidth={fullWidth ?? true}
+          isLoading={isLoading}
+          required={required ?? false}
+          margin={margin ?? "normal"}
+          inputProps={{ validation, className: classes.calendarIcon }}
+          error={error}
+          helperText={!isLoading && error && helperText}
+          FormHelperTextProps={{ className: classes.helperText }}
+        />
   );
 }
 

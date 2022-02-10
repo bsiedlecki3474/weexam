@@ -9,7 +9,7 @@ import {
   Tests,
   AddUser,
   AddGroup,
-  // AddTest
+  AddTest
 } from '../components'
 
 import Progress from "../components/Progress";
@@ -27,7 +27,7 @@ const Router = props => {
         <Route path="/groups" element={<Groups />} />
         <Route path="/groups/add" element={<AddGroup />} />
         <Route path="/tests" element={<Tests />} />
-        {/* <Route path="/tests/add" element={<AddTest />} /> */}
+        <Route path="/tests/add" element={<AddTest />} />
       </Route>
     </Routes>
 }

@@ -4,7 +4,7 @@ import Groups from './Groups'
 import Tests from './Tests'
 import AddUser from './AddUser'
 import AddGroup from './AddGroup'
-// import AddTest from './AddTest'
+import AddTest from './AddTest'
 import MaterialTable from './MaterialTable'
 import Snackbar from './Snackbar'
 
@@ -15,7 +15,7 @@ export {
   Tests,
   AddUser,
   AddGroup,
-  // AddTest,
+  AddTest,
   MaterialTable,
   Snackbar
 }
