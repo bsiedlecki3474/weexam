@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { /*add,*/ list } from '../controller/test';
+import { add, list } from '../controller/test';
 import authMiddleware from '../middleware/authMiddleware'
 
 const router = Router();
 
-// router.post('/add', authMiddleware, add);
+router.post('/add', authMiddleware, add);
 router.get('/list', authMiddleware, list);
 
 // router.get('/', list);
