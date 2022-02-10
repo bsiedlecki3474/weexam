@@ -102,6 +102,7 @@ class AddGroup extends Component {
             />
 
             <Checkbox
+              id="isActive"
               label="Group active"
               value={this.state.isActive}
               defaultChecked

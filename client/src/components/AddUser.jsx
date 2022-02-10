@@ -153,6 +153,7 @@ class AddUser extends Component {
 
 
             <Checkbox
+              id="isActive"
               label="Account active"
               value={this.state.isActive}
               defaultChecked
