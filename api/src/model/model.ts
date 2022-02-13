@@ -1,33 +1,46 @@
 import { db } from '../Db';
+import { format } from 'date-fns'
 
 abstract class Model {
-    public db:any = null;
+	public db:any = null;
 
-    constructor() {
-        this.db = db;
-    }
+	constructor() {
+		this.db = db;
+	}
 
-    nextTableId = async (table: string): Promise<number> => {
-        const sql = `SELECT MAX(id) AS id FROM ${table}`;
-        const data: any = await this.db.query(sql);
+	nextTableId = async (table: string): Promise<number> => {
+		const sql = `SELECT MAX(id) AS id FROM ${table}`;
+		const data: any = await this.db.query(sql);
 
-        return Number(data[0].id) + 1;;
-    }
+		return Number(data[0].id) + 1;;
+	}
 
-    // getFoundRows = async (): Promise<number> => {
-    //     const sql = `SELECT FOUND_ROWS() AS \`records_filtered\``;
-    //     const data: any = await this.db.query(sql);
+	prepareUserDateTime = async (
+		firstName: string,
+		lastName: string,
+		datetime: string
+	): Promise<string> => {
+		const formattedDatetime = datetime ? format(new Date(datetime), 'yyyy-MM-dd HH:mm') : null;
 
-    //     return Number(data[0].records_filtered);
-    // }
+		return firstName && lastName
+			? `${firstName} ${lastName}, ${formattedDatetime}`
+			: formattedDatetime
+	}
 
-    // prepareParams = (arr: string[]): string => arr.map((): string => '?').join(',');
+	// getFoundRows = async (): Promise<number> => {
+	//     const sql = `SELECT FOUND_ROWS() AS \`records_filtered\``;
+	//     const data: any = await this.db.query(sql);
 
-    // getLimit = (page: number, rowsPerPage: number): (string|number) => {
-    //     return page && rowsPerPage
-    //       ? `${page * rowsPerPage}, ${rowsPerPage}`
-    //       : 25;
-    // }
+	//     return Number(data[0].records_filtered);
+	// }
+
+	// prepareParams = (arr: string[]): string => arr.map((): string => '?').join(',');
+
+	// getLimit = (page: number, rowsPerPage: number): (string|number) => {
+	//     return page && rowsPerPage
+	//       ? `${page * rowsPerPage}, ${rowsPerPage}`
+	//       : 25;
+	// }
 }
 
 export default Model;

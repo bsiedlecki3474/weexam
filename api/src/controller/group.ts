@@ -36,9 +36,75 @@ class Group {
     }
   }
 
+  addUserToGroup = async (req: Request, res: Response) => {
+    try {
+      const {
+        userId,
+        groupId
+      } = req.body;
+
+      if (!userId || !groupId)
+        return res.status(400).send();
+
+      const data = [
+        userId,
+        groupId
+      ];
+
+      const response = await group.addUserToGroup(data);
+
+      res.status(200).send(response);
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
   list = async (req: Request, res: Response) => {
     try {
       const data = await group.list();
+      if (data) {
+        res.status(200).send(data);
+      } else {
+        res.status(400).send('no data');
+      }
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
+  single = async (req: Request, res: Response) => {
+    try {
+      const data = await group.single(Number(req.params.id));
+      if (data) {
+        res.status(200).send(data);
+      } else {
+        res.status(400).send('no data');
+      }
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
+  usersInGroup = async (req: Request, res: Response) => {
+    try {
+      const data = await group.usersInGroup(Number(req.params.id));
+      if (data) {
+        res.status(200).send(data);
+      } else {
+        res.status(400).send('no data');
+      }
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
+  usersNotInGroup = async (req: Request, res: Response) => {
+    try {
+      const data = await group.usersNotInGroup(Number(req.params.id));
       if (data) {
         res.status(200).send(data);
       } else {
@@ -53,5 +119,9 @@ class Group {
 
 export const {
   add,
-  list
+  addUserToGroup,
+  list,
+  single,
+  usersInGroup,
+  usersNotInGroup
 } = new Group();

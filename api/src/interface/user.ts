@@ -7,3 +7,9 @@ export interface User {
   is_active: number,
   created_on: string,
 }
+
+export interface SimpleUser {
+  id: number,
+  first_name: string,
+  last_name: string,
+}
