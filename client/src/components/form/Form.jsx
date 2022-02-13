@@ -50,7 +50,7 @@ const Form = props => {
       <Paper>
         <CardContent className={classes.cardContent}>
           <Typography variant="h6">{title}</Typography>
-          <Grid container className={classes.gridContainer} spacing={2}>
+          <Grid container className={classes.gridContainer} spacing={4}>
             {children}
           </Grid>
         </CardContent>

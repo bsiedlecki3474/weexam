@@ -11,7 +11,7 @@ import {
   MaterialTable
 } from '../'
 
-import { handleGetGroupList } from '../../redux/actions/groups';
+import { handleGetGroupList } from '../../redux/actions/groups/groups';
 
 const styles = theme => ({
 })

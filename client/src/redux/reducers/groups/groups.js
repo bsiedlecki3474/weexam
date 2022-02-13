@@ -2,7 +2,7 @@ import {
   GET_GROUP_LIST_PENDING,
   GET_GROUP_LIST_SUCCESS,
   GET_GROUP_LIST_ERROR
-} from "../types/groups"
+} from "../../types/groups/groups"
 
 const initialState = {
 	error: null,
