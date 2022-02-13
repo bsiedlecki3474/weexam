@@ -19,7 +19,7 @@ class Test extends Model /*implements CRUD*/ {
 		const sql = `SELECT
 			t.id,
 			t.name,
-			GROUP_CONCAT(g.name SEPARATOR ", ") AS 'group_name',
+			GROUP_CONCAT(DISTINCT g.name SEPARATOR ", ") AS 'group_name',
 			t.start_date,
 			t.end_date,
 			t.duration,
