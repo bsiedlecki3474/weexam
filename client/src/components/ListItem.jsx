@@ -1,6 +1,4 @@
-import DeleteIcon from '@mui/icons-material/Delete';
 import PersonIcon from '@mui/icons-material/Person';
-
 
 import {
   ListItem as MdlListItem,
@@ -9,15 +7,9 @@ import {
   ListItemText
 } from '@mui/material';
 
-const ListItem = ({ primary, secondary }) => {
+const ListItem = ({ primary, secondary, action }) => {
   return (
-    <MdlListItem
-      secondaryAction={
-        <IconButton edge="end" size="small">
-          <DeleteIcon fontSize="inherit" />
-        </IconButton>
-      }
-    >
+    <MdlListItem secondaryAction={action}>
       <ListItemIcon>
         <PersonIcon />
       </ListItemIcon>

@@ -5,6 +5,7 @@ import withParams from "../../hoc/withParams";
 import ListItem from '../ListItem'
 
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import {
   Box,
@@ -22,7 +23,8 @@ import {
   handleGetSingleGroup,
   handleGetUsersInGroup,
   handleGetUsersNotInGroup,
-  handleAddUserToGroup
+  handleAddUserToGroup,
+  handleRemoveUserFromGroup
 } from '../../redux/actions/groups/group';
 import { showSnackbar } from '../../redux/actions/snackbar'
 
@@ -92,17 +94,41 @@ class EditGroup extends Component {
 
   handleAddUserClick = e => {
     const { addUser } = this.state;
-    const { params, onHandleAddUserToGroup } = this.props;
+    const { params, showSnackbar, onHandleAddUserToGroup } = this.props;
     const { id } = params;
 
     onHandleAddUserToGroup(addUser?.id, id).then(res => {
-      console.log(addUser)
       this.setState({
         usersInGroup: [...this.state.usersInGroup, addUser],
         usersNotInGroup: this.state.usersNotInGroup.filter(el => el.id !== addUser.id),
         addUser: null
       })
+
+      showSnackbar({
+        message: lang.groups.snackbar.userAdded,
+        severity: 'success'
+      })
     })
+  }
+
+  handleRemoveUserClick = userId => e => {
+    if (window.confirm(lang.groups.snackbar.confirmRemoveGroupUser)) {
+      const { params, showSnackbar, onHandleRemoveUserFromGroup } = this.props;
+      const { id } = params;
+      onHandleRemoveUserFromGroup(userId, id).then(res => {
+        const user = this.state.usersNotInGroup.find(el => el.id == userId)
+
+        this.setState({
+          usersInGroup: this.state.usersInGroup.filter(el => el.id !== userId),
+          usersNotInGroup: [...this.state.usersNotInGroup, user]
+        })
+
+        showSnackbar({
+          message: lang.groups.snackbar.userRemoved,
+          severity: 'success'
+        })
+      })
+    }
   }
 
   render() {
@@ -183,7 +209,11 @@ class EditGroup extends Component {
                   />
                 }
               />
-              <IconButton className={classes.addUserButton} onClick={this.handleAddUserClick}>
+              <IconButton
+                className={classes.addUserButton}
+                onClick={this.handleAddUserClick}
+                disabled={addUser === null}
+              >
                 <PersonAddAlt1Icon />
               </IconButton>
               {/* <Button variant="outlined" size="small" onClick={this.handleAddUserClick}>add</Button> */}
@@ -195,6 +225,11 @@ class EditGroup extends Component {
                 <ListItem 
                   key={user.id}
                   primary={`${user.firstName} ${user.lastName}`}
+                  action={
+                    <IconButton edge="end" size="small" onClick={this.handleRemoveUserClick(user.id)}>
+                      <DeleteIcon fontSize="inherit" />
+                    </IconButton>
+                  }
                 />  
               )}
               
@@ -211,6 +246,7 @@ const mapDispatchToProps = dispatch => ({
   onHandleGetUsersInGroup: id => dispatch(handleGetUsersInGroup(id)),
   onHandleGetUsersNotInGroup: id => dispatch(handleGetUsersNotInGroup(id)),
   onHandleAddUserToGroup: (userId, groupId) => dispatch(handleAddUserToGroup(userId, groupId)),
+  onHandleRemoveUserFromGroup: (userId, groupId) => dispatch(handleRemoveUserFromGroup(userId, groupId)),
   showSnackbar: data => dispatch(showSnackbar(data))
 })
 

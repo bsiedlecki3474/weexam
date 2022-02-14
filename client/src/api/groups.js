@@ -25,6 +25,11 @@ const addUserToGroup = async (userId, groupId) => {
   return res.data;
 }
 
+const removeUserFromGroup = async (userId, groupId) => {
+  const res = await axios.post('/group/removeUserFromGroup', { userId, groupId });
+  return res.data;
+}
+
 const addGroup = async (data) => {
   const res = await axios.post('/group/add', data);
   return res.data;
@@ -36,5 +41,6 @@ export {
   getUsersInGroup,
   getUsersNotInGroup,
   addUserToGroup,
+  removeUserFromGroup,
   addGroup
 }

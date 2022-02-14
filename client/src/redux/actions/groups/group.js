@@ -13,14 +13,19 @@ import {
 
   ADD_USER_TO_GROUP_PENDING,
   ADD_USER_TO_GROUP_SUCCESS,
-  ADD_USER_TO_GROUP_ERROR
+  ADD_USER_TO_GROUP_ERROR,
+
+  REMOVE_USER_FROM_GROUP_PENDING,
+  REMOVE_USER_FROM_GROUP_SUCCESS,
+  REMOVE_USER_FROM_GROUP_ERROR
 } from "../../types/groups/group"
 
 import {
   getSingleGroup,
   getUsersInGroup,
   getUsersNotInGroup,
-  addUserToGroup
+  addUserToGroup,
+  removeUserFromGroup
 } from '../../../api/groups'
 
 const handleGetSingleGroup = (id) => async dispatch => {
@@ -63,10 +68,20 @@ const handleAddUserToGroup = (userId, groupId) => async dispatch => {
   }
 }
 
+const handleRemoveUserFromGroup = (userId, groupId) => async dispatch => {
+  dispatch({ type: REMOVE_USER_FROM_GROUP_PENDING })
+  try {
+    const data = await removeUserFromGroup(userId, groupId)
+    return dispatch({ type: REMOVE_USER_FROM_GROUP_SUCCESS, data })
+  } catch (e) {
+    return dispatch({ type: REMOVE_USER_FROM_GROUP_ERROR, payload: e })
+  }
+}
 
 export {
   handleGetSingleGroup,
   handleGetUsersInGroup,
   handleGetUsersNotInGroup,
-  handleAddUserToGroup
+  handleAddUserToGroup,
+  handleRemoveUserFromGroup
 }
