@@ -25,6 +25,15 @@ class Group extends Model /*implements CRUD*/ {
 		}
 	}
 
+	removeUserFromGroup = async (body: any /* interface */) => {
+		const sql = `DELETE FROM wee_groups_users WHERE user_id = ? AND group_id = ?`;
+		const data = await this.db.query(sql, body);
+
+		if (data) {
+			return true;
+		}
+	}
+
 	list = async () => {
 		const sql = `SELECT
 			g.id,

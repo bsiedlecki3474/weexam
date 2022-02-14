@@ -60,6 +60,30 @@ class Group {
     }
   }
 
+  removeUserFromGroup = async (req: Request, res: Response) => {
+    try {
+      const {
+        userId,
+        groupId
+      } = req.body;
+
+      if (!userId || !groupId)
+        return res.status(400).send();
+
+      const data = [
+        userId,
+        groupId
+      ];
+
+      const response = await group.removeUserFromGroup(data);
+
+      res.status(200).send(response);
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
   list = async (req: Request, res: Response) => {
     try {
       const data = await group.list();
@@ -120,6 +144,7 @@ class Group {
 export const {
   add,
   addUserToGroup,
+  removeUserFromGroup,
   list,
   single,
   usersInGroup,
