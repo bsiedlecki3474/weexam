@@ -163,6 +163,12 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const styles = theme => ({
+  root: {
+    '& a': {
+      fontWeight: 'bold',
+      cursor: 'pointer'
+    }
+  },
   disabled: {
     '& > td, & > th, & > td *, & > th *': {
       color: theme.palette.text.disabled + ' !important'
@@ -236,6 +242,7 @@ const EnhancedTable = props => {
           <Table
             sx={{ minWidth: 750, height: data ? 'initial' : '100%' }}
             size={dense ? 'small' : 'medium'}
+            className={classes.root}
           >
             <EnhancedTableHead
               checkboxes={checkboxes}

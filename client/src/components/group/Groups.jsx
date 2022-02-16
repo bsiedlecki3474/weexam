@@ -26,14 +26,14 @@ const Groups = props => {
   }, [])
 
   const columns = [
-    { id: 'name', label: 'Username' },
+    { id: 'name', label: 'Group name' },
     { id: 'members', label: 'Members' },
     { id: 'createdOn', label: 'Created on' }
   ]
 
   const data = groups && groups.map(row => ({
     id: row.id,
-    name: row.name,
+    name: <a onClick={e => navigate('/groups/' + row.id)}>{row.name}</a>,
     members: row.members,
     createdOn: row.createdOn,
     disabled: !row.isActive
