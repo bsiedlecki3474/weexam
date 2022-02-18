@@ -10,7 +10,19 @@ const addTest = async (data) => {
   return res.data;
 }
 
+const getSingleTest = async (id) => {
+  const res = await axios.get(`/test/${id}`);
+  return res.data
+}
+
+const getAssignedGroups = async (id) => {
+  const res = await axios.get(`/test/${id}/groups`);
+  return res.data
+}
+
 export {
   getTestList,
-  addTest
+  addTest,
+  getSingleTest,
+  getAssignedGroups
 }

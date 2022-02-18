@@ -56,9 +56,40 @@ class Test {
       res.status(500).send(e);
     }
   }
+
+  single = async (req: Request, res: Response) => {
+    try {
+      const data = await test.single(Number(req.params.id));
+      if (data) {
+        res.status(200).send(data);
+      } else {
+        res.status(400).send('no data');
+      }
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
+  groups = async (req: Request, res: Response) => {
+    try {
+      const data = await test.groups(Number(req.params.id));
+      if (data) {
+        res.status(200).send(data);
+      } else {
+        res.status(400).send('no data');
+      }
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
 }
 
 export const {
   add,
-  list
+  list,
+  single,
+  groups
 } = new Test();

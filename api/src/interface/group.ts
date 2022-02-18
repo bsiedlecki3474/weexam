@@ -5,3 +5,8 @@ export interface Group {
   is_active: number,
   created_on: string,
 }
+
+export interface SimpleGroup {
+  id: number,
+  name: string
+}
