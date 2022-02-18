@@ -6,8 +6,7 @@ import {
   removeUserFromGroup,
   list,
   single,
-  usersInGroup,
-  usersNotInGroup
+  users
 } from '../controller/group';
 
 const router = Router();
@@ -17,8 +16,7 @@ router.post('/addUserToGroup', authMiddleware, addUserToGroup);
 router.post('/removeUserFromGroup', authMiddleware, removeUserFromGroup);
 router.get('/list', authMiddleware, list);
 router.get('/:id', authMiddleware, single);
-router.get('/:id/usersInGroup', authMiddleware, usersInGroup);
-router.get('/:id/usersNotInGroup', authMiddleware, usersNotInGroup);
+router.get('/:id/users', authMiddleware, users);
 
 // router.get('/', list);
 // router.post('/', create);

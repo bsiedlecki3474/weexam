@@ -96,7 +96,7 @@ class Group extends Model /*implements CRUD*/ {
 		}
 	}
 
-	usersInGroup = async (id: number) => {
+	users = async (id: number) => {
 		const sql = `SELECT
 			u.id,
 			u.first_name,
@@ -104,28 +104,6 @@ class Group extends Model /*implements CRUD*/ {
 		FROM wee_users u
 		LEFT JOIN wee_groups_users gu ON gu.user_id = u.id
 		WHERE u.is_active = 1 AND gu.group_id = ?
-		ORDER BY u.first_name, u.last_name`;
-
-		const data = await this.db.query(sql, [id]);
-
-		if (data) {
-			return data.map((row: UserInterface) => ({
-				id: row.id,
-				firstName: row.first_name,
-				lastName: row.last_name
-			}));
-		}
-	}
-
-	usersNotInGroup = async (id: number) => {
-		const sql = `SELECT
-			u.id,
-			u.first_name,
-			u.last_name
-		FROM wee_users u
-		LEFT JOIN wee_groups_users gu ON gu.user_id = u.id
-		WHERE u.is_active = 1
-    GROUP BY u.id HAVING COUNT(gu.group_id) = 0
 		ORDER BY u.first_name, u.last_name`;
 
 		const data = await this.db.query(sql, [id]);

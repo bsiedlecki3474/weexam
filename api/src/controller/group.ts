@@ -112,23 +112,9 @@ class Group {
     }
   }
 
-  usersInGroup = async (req: Request, res: Response) => {
+  users = async (req: Request, res: Response) => {
     try {
-      const data = await group.usersInGroup(Number(req.params.id));
-      if (data) {
-        res.status(200).send(data);
-      } else {
-        res.status(400).send('no data');
-      }
-    } catch (e) {
-      console.error(e)
-      res.status(500).send(e);
-    }
-  }
-
-  usersNotInGroup = async (req: Request, res: Response) => {
-    try {
-      const data = await group.usersNotInGroup(Number(req.params.id));
+      const data = await group.users(Number(req.params.id));
       if (data) {
         res.status(200).send(data);
       } else {
@@ -147,6 +133,5 @@ export const {
   removeUserFromGroup,
   list,
   single,
-  usersInGroup,
-  usersNotInGroup
+  users
 } = new Group();
