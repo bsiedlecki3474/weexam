@@ -22,11 +22,11 @@ import {
 
 import {
   handleGetSingleGroup,
-  handleGetUsersInGroup,
-  handleGetUsersNotInGroup,
-  handleAddUserToGroup,
+  handleGetAssignedUsers,
   handleRemoveUserFromGroup
 } from '../../redux/actions/groups/group';
+import { handleGetUserList } from '../../redux/actions/users';
+
 import { showSnackbar } from '../../redux/actions/snackbar'
 
 import { Form, TextField, Select, Checkbox } from '../form'
@@ -62,14 +62,16 @@ class EditGroup extends Component {
     console.log(this.props)
     const {
       params,
+      onHandleGetUserList,
       onHandleGetSingleGroup,
-      onHandleGetUsersInGroup,
-      onHandleGetUsersNotInGroup
+      onHandleGetAssignedUsers
     } = this.props;
     const { id } = params;
+    onHandleGetUserList();
     onHandleGetSingleGroup(id).then(res => this.setState(state => ({...state, ...res.data})))
-    onHandleGetUsersInGroup(id).then(res => this.setState(state => ({...state, usersInGroup: res.data})))
-    onHandleGetUsersNotInGroup(id).then(res => this.setState(state => ({...state, usersNotInGroup: res.data})))
+    onHandleGetAssignedUsers(id).then(res => this.setState(state => ({...state, assignedUsers: res.data})))
+    // onHandleGetUsersInGroup(id).then(res => this.setState(state => ({...state, usersInGroup: res.data})))
+    // onHandleGetUsersNotInGroup(id).then(res => this.setState(state => ({...state, usersNotInGroup: res.data})))
   }
 
   checkFormValidity = () => this.formRef.current.checkValidity();
@@ -94,48 +96,48 @@ class EditGroup extends Component {
   handleChangeAddUser = option => this.setState({ addUser: option });
 
   handleAddUserClick = e => {
-    const { addUser } = this.state;
-    const { params, showSnackbar, onHandleAddUserToGroup } = this.props;
-    const { id } = params;
+    // const { addUser } = this.state;
+    // const { params, showSnackbar, onHandleAddUserToGroup } = this.props;
+    // const { id } = params;
 
-    onHandleAddUserToGroup(addUser?.id, id).then(res => {
-      this.setState({
-        usersInGroup: [...this.state.usersInGroup, addUser],
-        usersNotInGroup: this.state.usersNotInGroup.filter(el => el.id !== addUser.id),
-        addUser: null
-      })
+    // onHandleAddUserToGroup(addUser?.id, id).then(res => {
+    //   this.setState({
+    //     usersInGroup: [...this.state.usersInGroup, addUser],
+    //     usersNotInGroup: this.state.usersNotInGroup.filter(el => el.id !== addUser.id),
+    //     addUser: null
+    //   })
 
-      showSnackbar({
-        message: lang.groups.snackbar.userAdded,
-        severity: 'success'
-      })
-    })
+    //   showSnackbar({
+    //     message: lang.groups.snackbar.userAdded,
+    //     severity: 'success'
+    //   })
+    // })
   }
 
   handleRemoveUserClick = userId => e => {
-    if (window.confirm(lang.groups.snackbar.confirmRemoveGroupUser)) {
-      const { params, showSnackbar, onHandleRemoveUserFromGroup } = this.props;
-      const { id } = params;
-      onHandleRemoveUserFromGroup(userId, id).then(res => {
-        const user = this.state.usersNotInGroup.find(el => el.id == userId)
+    // if (window.confirm(lang.groups.snackbar.confirmRemoveGroupUser)) {
+    //   const { params, showSnackbar, onHandleRemoveUserFromGroup } = this.props;
+    //   const { id } = params;
+    //   onHandleRemoveUserFromGroup(userId, id).then(res => {
+    //     const user = this.state.usersNotInGroup.find(el => el.id == userId)
 
-        this.setState({
-          usersInGroup: this.state.usersInGroup.filter(el => el.id !== userId),
-          usersNotInGroup: [...this.state.usersNotInGroup, user]
-        })
+    //     this.setState({
+    //       usersInGroup: this.state.usersInGroup.filter(el => el.id !== userId),
+    //       usersNotInGroup: [...this.state.usersNotInGroup, user]
+    //     })
 
-        showSnackbar({
-          message: lang.groups.snackbar.userRemoved,
-          severity: 'success'
-        })
-      })
-    }
+    //     showSnackbar({
+    //       message: lang.groups.snackbar.userRemoved,
+    //       severity: 'success'
+    //     })
+    //   })
+    // }
   }
 
   render() {
-    const { showErrors, isLoading, addUser, usersInGroup, usersNotInGroup } = this.state;
-    const { classes, params } = this.props;
-    const { id } = params;
+    const { showErrors, isLoading, addUser, assignedUsers } = this.state;
+    const { classes, users } = this.props;
+    const assignedUsersIds = assignedUsers ? assignedUsers.map(el => el.id) : [];
 
     const formSubmit = e => {
       const { onHandleAddGroup, showSnackbar, navigate } = this.props;
@@ -194,7 +196,7 @@ class EditGroup extends Component {
 
             <Box className={classes.addContainer}>
               <Autocomplete
-                options={usersNotInGroup ?? []}
+                options={users?.filter(el => !assignedUsersIds.includes(el.id)) ?? []}
                 getOptionLabel={option => `${option.firstName} ${option.lastName}`}
                 onChange={(e, value) => this.handleChangeAddUser(value)}
                 value={addUser}
@@ -222,7 +224,7 @@ class EditGroup extends Component {
            
 
             <List dense>
-              {usersInGroup && usersInGroup.map(user => 
+              {assignedUsers && assignedUsers.map(user => 
                 <ListItem 
                   key={user.id}
                   primary={`${user.firstName} ${user.lastName}`}
@@ -245,10 +247,9 @@ class EditGroup extends Component {
 
 const mapDispatchToProps = dispatch => ({
   onHandleGetSingleGroup: id => dispatch(handleGetSingleGroup(id)),
-  onHandleGetUsersInGroup: id => dispatch(handleGetUsersInGroup(id)),
-  onHandleGetUsersNotInGroup: id => dispatch(handleGetUsersNotInGroup(id)),
-  onHandleAddUserToGroup: (userId, groupId) => dispatch(handleAddUserToGroup(userId, groupId)),
+  onHandleGetAssignedUsers: id => dispatch(handleGetAssignedUsers(id)),
   onHandleRemoveUserFromGroup: (userId, groupId) => dispatch(handleRemoveUserFromGroup(userId, groupId)),
+  onHandleGetUserList: () => dispatch(handleGetUserList()),
   showSnackbar: data => dispatch(showSnackbar(data))
 })
 

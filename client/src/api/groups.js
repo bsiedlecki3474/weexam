@@ -10,13 +10,8 @@ const getSingleGroup = async (id) => {
   return res.data
 }
 
-const getUsersInGroup = async (id) => {
-  const res = await axios.get(`/group/${id}/usersInGroup`);
-  return res.data
-}
-
-const getUsersNotInGroup = async (id) => {
-  const res = await axios.get(`/group/${id}/usersNotInGroup`);
+const getAssignedUsers = async (id) => {
+  const res = await axios.get(`/group/${id}/users`);
   return res.data
 }
 
@@ -38,8 +33,7 @@ const addGroup = async (data) => {
 export {
   getGroupList,
   getSingleGroup,
-  getUsersInGroup,
-  getUsersNotInGroup,
+  getAssignedUsers,
   addUserToGroup,
   removeUserFromGroup,
   addGroup

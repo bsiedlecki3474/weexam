@@ -67,14 +67,13 @@ class EditTest extends Component {
     console.log(this.props)
     const {
       params,
-      onHandleGetSingleTest,
       onHandleGetGroupList,
+      onHandleGetSingleTest,
       onHandleGetAssignedGroups
     } = this.props;
     const { id } = params;
+    onHandleGetGroupList()
     onHandleGetSingleTest(id).then(res => this.setState(state => ({...state, ...res.data})))
-    // onHandleGetGroupList(id).then(res => thi.setState(state => ({...state, groupList: res.data}))),
-    onHandleGetGroupList()//.then(res => this.setState(state => ({...state, groupList: res.data})))
     onHandleGetAssignedGroups(id).then(res => this.setState(state => ({...state, assignedGroups: res.data})))
   }
 
@@ -141,7 +140,7 @@ class EditTest extends Component {
   render() {
     const { showErrors, isLoading, addGroup, assignedGroups } = this.state;
     const { classes, groups } = this.props;
-    const assignedGroupIds = assignedGroups ? assignedGroups.map(el => el.id) : []
+    const assignedGroupIds = assignedGroups ? assignedGroups.map(el => el.id) : [];
 
     const formSubmit = e => {
       const { onHandleAddTest, showSnackbar, navigate } = this.props;

@@ -3,13 +3,9 @@ import {
   GET_GROUP_SUCCESS,
   GET_GROUP_ERROR,
 
-  GET_USERS_IN_GROUP_PENDING,
-  GET_USERS_IN_GROUP_SUCCESS,
-  GET_USERS_IN_GROUP_ERROR,
-
-  GET_USERS_NOT_IN_GROUP_PENDING,
-  GET_USERS_NOT_IN_GROUP_SUCCESS,
-  GET_USERS_NOT_IN_GROUP_ERROR,
+  GET_ASSIGNED_USERS_PENDING,
+  GET_ASSIGNED_USERS_SUCCESS,
+  GET_ASSIGNED_USERS_ERROR,
 
   ADD_USER_TO_GROUP_PENDING,
   ADD_USER_TO_GROUP_SUCCESS,
@@ -22,8 +18,7 @@ import {
 
 import {
   getSingleGroup,
-  getUsersInGroup,
-  getUsersNotInGroup,
+  getAssignedUsers,
   addUserToGroup,
   removeUserFromGroup
 } from '../../../api/groups'
@@ -38,23 +33,13 @@ const handleGetSingleGroup = (id) => async dispatch => {
   }
 }
 
-const handleGetUsersInGroup = (id) => async dispatch => {
-  dispatch({ type: GET_USERS_IN_GROUP_PENDING })
+const handleGetAssignedUsers = (id) => async dispatch => {
+  dispatch({ type: GET_ASSIGNED_USERS_PENDING })
   try {
-    const data = await getUsersInGroup(id)
-    return dispatch({ type: GET_USERS_IN_GROUP_SUCCESS, data })
+    const data = await getAssignedUsers(id)
+    return dispatch({ type: GET_ASSIGNED_USERS_SUCCESS, data })
   } catch (e) {
-    return dispatch({ type: GET_USERS_IN_GROUP_ERROR, payload: e })
-  }
-}
-
-const handleGetUsersNotInGroup = (id) => async dispatch => {
-  dispatch({ type: GET_USERS_NOT_IN_GROUP_PENDING })
-  try {
-    const data = await getUsersNotInGroup(id)
-    return dispatch({ type: GET_USERS_NOT_IN_GROUP_SUCCESS, data })
-  } catch (e) {
-    return dispatch({ type: GET_USERS_NOT_IN_GROUP_ERROR, payload: e })
+    return dispatch({ type: GET_ASSIGNED_USERS_ERROR, payload: e })
   }
 }
 
@@ -80,8 +65,7 @@ const handleRemoveUserFromGroup = (userId, groupId) => async dispatch => {
 
 export {
   handleGetSingleGroup,
-  handleGetUsersInGroup,
-  handleGetUsersNotInGroup,
+  handleGetAssignedUsers,
   handleAddUserToGroup,
   handleRemoveUserFromGroup
 }
