@@ -36,37 +36,38 @@ class AddTest extends Component {
 
   state = {
     showErrors: false,
-    isLoading: false
+    isLoading: false,
+    data: {}
   }
 
   checkFormValidity = () => this.formRef.current.checkValidity();
 
   handleInputChange = (e, key) => {
     const value = e.target.value;
-    this.setState({ [key]: value });
+    this.setState({ data: {...this.state.data, [key]: value }});
   }
 
   handleSelectChange = (key, val) => {
     const value = val?.id;
-    this.setState({ [key]: value });
+    this.setState({ data: {...this.state.data, [key]: value }});
   }
 
   handleSelectMultipleChange = (key, vals) => {
     const values = vals ? vals.map(el => el.id) : [];
-    this.setState({ [key]: values });
+    this.setState({ data: {...this.state.data, [key]: values }});
   }
 
   isDataLoading = () => false
 
   render() {
-    const { showErrors, isLoading } = this.state;
+    const { showErrors, isLoading, data } = this.state;
     const { classes } = this.props;
 
     const formSubmit = e => {
       const { onHandleAddTest, showSnackbar, navigate } = this.props;
       this.setState({ showErrors: true }, () => {
         if (this.checkFormValidity()) {
-          const { showErrors, isLoading, ...data } = this.state;
+          const { data } = this.state;
           // tbd check for duplicates
           onHandleAddTest(data).then(res => {
             showSnackbar({
@@ -99,11 +100,11 @@ class AddTest extends Component {
             <TextField
               id="name"
               label="Test name"
-              value={this.state.name}
+              value={data.name}
               handleChange={this.handleInputChange}
               required
               isLoading={isLoading || this.isDataLoading()}
-              error={showErrors && !this.state.name}
+              error={showErrors && !data.name}
               helperText={lang.main.validation.empty}
             />
 
@@ -112,24 +113,24 @@ class AddTest extends Component {
                 id="startDate"
                 type="datetime-local"
                 label="Test start"
-                value={this.state.startDate}
+                value={data.startDate}
                 handleChange={this.handleInputChange}
                 required
                 isLoading={isLoading || this.isDataLoading()}
-                error={showErrors && (!this.state.endDate || (this.state.endDate <= this.state.startDate))}
-                helperText={(this.state.endDate <= this.state.startDate) ? lang.main.validation.invalidDates : lang.main.validation.empty}
+                error={showErrors && (!data.endDate || (data.endDate <= data.startDate))}
+                helperText={(data.endDate <= data.startDate) ? lang.main.validation.invalidDates : lang.main.validation.empty}
               />
               
               <TextField
                 id="endDate"
                 type="datetime-local"
                 label="Test end"
-                value={this.state.endDate}
+                value={data.endDate}
                 handleChange={this.handleInputChange}
                 required
                 isLoading={isLoading || this.isDataLoading()}
-                error={showErrors && (!this.state.endDate || (this.state.endDate <= this.state.startDate))}
-                helperText={(this.state.endDate <= this.state.startDate) ? lang.main.validation.invalidDates : lang.main.validation.empty}
+                error={showErrors && (!data.endDate || (data.endDate <= data.startDate))}
+                helperText={(data.endDate <= data.startDate) ? lang.main.validation.invalidDates : lang.main.validation.empty}
               />
             </Box>
             
@@ -138,7 +139,7 @@ class AddTest extends Component {
               id="duration"
               type="number"
               label="Duration"
-              value={this.state.duration}
+              value={data.duration}
               required
               handleChange={this.handleInputChange}
               isLoading={isLoading || this.isDataLoading()}
@@ -148,14 +149,14 @@ class AddTest extends Component {
               <Checkbox
                 id="isActive"
                 label="Test active"
-                value={this.state.isActive}
+                value={Boolean(data.isActive)}
                 defaultChecked
               />
 
               <Checkbox
                 id="showScores"
                 label="Show score after completion"
-                value={this.state.showScores}
+                value={data.showScores}
                 defaultChecked
               />
             </Box>
