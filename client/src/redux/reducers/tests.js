@@ -2,7 +2,7 @@ import {
 	GET_TESTS_PENDING,
 	GET_TESTS_SUCCESS,
 	GET_TESTS_ERROR
-} from '../types/tests'
+} from '../types/tests/tests'
 
 const initialState = {
 	error: null,

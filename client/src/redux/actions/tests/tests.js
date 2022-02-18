@@ -5,9 +5,9 @@ import {
   ADD_TEST_PENDING,
   ADD_TEST_SUCCESS,
   ADD_TEST_ERROR
-} from '../types/tests'
+} from '../../types/tests/tests'
 
-import { getTestList, addTest } from '../../api/tests'
+import { getTestList, addTest } from '../../../api/tests'
 
 const handleGetTestList = () => async dispatch => {
   dispatch({ type: GET_TESTS_PENDING })

@@ -4,6 +4,7 @@ import { withStyles } from '@mui/styles';
 import withParams from "../../hoc/withParams";
 import ListItem from '../ListItem'
 
+import PersonIcon from '@mui/icons-material/Person';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -32,13 +33,13 @@ import { Form, TextField, Select, Checkbox } from '../form'
 import lang from '../../lang'
 
 const styles = theme => ({
-  addUserContainer: {
+  addContainer: {
     display: 'flex',
     alignItems: 'flex-end',
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(2)
   },
-  addUserButton: {
+  addButton: {
     marginLeft: theme.spacing(1),
     marginBottom: `-${theme.spacing(1)}`,
   }
@@ -191,9 +192,9 @@ class EditGroup extends Component {
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6}>
 
-            <Box className={classes.addUserContainer}>
+            <Box className={classes.addContainer}>
               <Autocomplete
-                options={usersNotInGroup}
+                options={usersNotInGroup ?? []}
                 getOptionLabel={option => `${option.firstName} ${option.lastName}`}
                 onChange={(e, value) => this.handleChangeAddUser(value)}
                 value={addUser}
@@ -210,7 +211,7 @@ class EditGroup extends Component {
                 }
               />
               <IconButton
-                className={classes.addUserButton}
+                className={classes.addButton}
                 onClick={this.handleAddUserClick}
                 disabled={addUser === null}
               >
@@ -225,6 +226,7 @@ class EditGroup extends Component {
                 <ListItem 
                   key={user.id}
                   primary={`${user.firstName} ${user.lastName}`}
+                  icon={<PersonIcon />}
                   action={
                     <IconButton edge="end" size="small" onClick={this.handleRemoveUserClick(user.id)}>
                       <DeleteIcon fontSize="inherit" />

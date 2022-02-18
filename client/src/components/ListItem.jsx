@@ -1,17 +1,16 @@
-import PersonIcon from '@mui/icons-material/Person';
+import LabelIcon from '@mui/icons-material/Label';
 
 import {
   ListItem as MdlListItem,
   ListItemIcon,
-  IconButton,
   ListItemText
 } from '@mui/material';
 
-const ListItem = ({ primary, secondary, action }) => {
+const ListItem = ({ primary, secondary, icon, action }) => {
   return (
     <MdlListItem secondaryAction={action}>
       <ListItemIcon>
-        <PersonIcon />
+        {icon ?? <LabelIcon />}
       </ListItemIcon>
       <ListItemText
         primary={primary}

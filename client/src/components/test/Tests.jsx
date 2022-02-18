@@ -11,7 +11,7 @@ import {
   MaterialTable
 } from '../'
 
-import { handleGetTestList } from '../../redux/actions/tests';
+import { handleGetTestList } from '../../redux/actions/tests/tests';
 
 const styles = theme => ({
   // userIcon: {
@@ -41,7 +41,7 @@ const Tests = props => {
 
   const data = tests && tests.map(row => ({
     id: row.id,
-    name: row.name,
+    name: <a onClick={e => navigate('/tests/' + row.id)}>{row.name}</a>,
     groupName: row.groupName,
     startDate: row.startDate,
     endDate: row.endDate,

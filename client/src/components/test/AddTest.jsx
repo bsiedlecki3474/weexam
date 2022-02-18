@@ -11,7 +11,7 @@ import {
   Collapse
 } from "@mui/material"
 
-import { handleAddTest } from '../../redux/actions/tests';
+import { handleAddTest } from '../../redux/actions/tests/tests';
 import { showSnackbar } from '../../redux/actions/snackbar'
 
 import { Form, TextField, Select, Checkbox } from '../form'

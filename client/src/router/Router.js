@@ -19,7 +19,8 @@ import {
 
 import {
   Tests,
-  AddTest
+  AddTest,
+  EditTest
 } from '../components/test'
 
 import Progress from "../components/Progress";
@@ -40,6 +41,7 @@ const Router = props => {
         { path: 'groups/:id', element: <EditGroup /> },
         { path: 'tests', element: <Tests />, },
         { path: 'tests/add', element: <AddTest /> },
+        { path: 'tests/:id', element: <EditTest /> },
       ]
     },
     
