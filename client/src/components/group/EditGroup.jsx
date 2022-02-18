@@ -24,7 +24,7 @@ import {
   handleGetSingleGroup,
   handleGetAssignedUsers,
   handleRemoveUserFromGroup
-} from '../../redux/actions/groups/group';
+} from '../../redux/actions/groups';
 import { handleGetUserList } from '../../redux/actions/users';
 
 import { showSnackbar } from '../../redux/actions/snackbar'

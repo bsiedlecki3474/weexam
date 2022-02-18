@@ -8,7 +8,7 @@ import {
 	ADD_GROUP_PENDING,
 	ADD_GROUP_SUCCESS,
 	ADD_GROUP_ERROR
-} from '../types/groups/groups';
+} from '../types/groups';
 
 const initialState = {
 	error: null,

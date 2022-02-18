@@ -24,7 +24,7 @@ import {
   handleGetSingleTest,
   handleGetAssignedGroups
 } from '../../redux/actions/tests/test';
-import { handleGetGroupList } from '../../redux/actions/groups/groups';
+import { handleGetGroupList } from '../../redux/actions/groups';
 import { showSnackbar } from '../../redux/actions/snackbar'
 
 import { Form, TextField, Select, Checkbox } from '../form'
