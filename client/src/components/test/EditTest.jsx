@@ -23,7 +23,7 @@ import {
 import {
   handleGetSingleTest,
   handleGetAssignedGroups
-} from '../../redux/actions/tests/test';
+} from '../../redux/actions/tests';
 import { handleGetGroupList } from '../../redux/actions/groups';
 import { showSnackbar } from '../../redux/actions/snackbar'
 

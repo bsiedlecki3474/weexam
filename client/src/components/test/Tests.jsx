@@ -11,7 +11,7 @@ import {
   MaterialTable
 } from '../'
 
-import { handleGetTestList } from '../../redux/actions/tests/tests';
+import { handleGetTestList } from '../../redux/actions/tests';
 
 const styles = theme => ({
   // userIcon: {
