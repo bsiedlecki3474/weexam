@@ -30,37 +30,37 @@ class AddGroup extends Component {
 
   state = {
     showErrors: false,
-    isLoading: false
+    isLoading: false,
+    data: {}
   }
 
   checkFormValidity = () => this.formRef.current.checkValidity();
 
   handleInputChange = (e, key) => {
     const value = e.target.value;
-    this.setState({ [key]: value });
+    this.setState({ data: {...this.state.data, [key]: value }});
   }
 
   handleSelectChange = (key, val) => {
     const value = val?.id;
-    this.setState({ [key]: value });
+    this.setState({ data: {...this.state.data, [key]: value }});
   }
 
   handleSelectMultipleChange = (key, vals) => {
     const values = vals ? vals.map(el => el.id) : [];
-    this.setState({ [key]: values });
+    this.setState({ data: {...this.state.data, [key]: values }});
   }
 
   isDataLoading = () => false
 
   render() {
-    const { showErrors, isLoading } = this.state;
+    const { showErrors, isLoading, data } = this.state;
     const { classes } = this.props;
 
     const formSubmit = e => {
       const { onHandleAddGroup, showSnackbar, navigate } = this.props;
       this.setState({ showErrors: true }, () => {
         if (this.checkFormValidity()) {
-          const { showErrors, isLoading, ...data } = this.state;
           // tbd check for duplicates
           onHandleAddGroup(data).then(res => {
             showSnackbar({
@@ -93,18 +93,18 @@ class AddGroup extends Component {
             <TextField
               id="name"
               label="Group name"
-              value={this.state.name}
+              value={data.name}
               handleChange={this.handleInputChange}
               required
               isLoading={isLoading || this.isDataLoading()}
-              error={showErrors && !this.state.name}
+              error={showErrors && !data.name}
               helperText={lang.main.validation.empty}
             />
 
             <Checkbox
               id="isActive"
               label="Group active"
-              value={this.state.isActive}
+              value={data.isActive}
               defaultChecked
             />
 
