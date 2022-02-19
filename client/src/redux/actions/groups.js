@@ -15,13 +15,13 @@ import {
   GET_ASSIGNED_USERS_SUCCESS,
   GET_ASSIGNED_USERS_ERROR,
   
-  ADD_USER_PENDING,
-  ADD_USER_SUCCESS,
-  ADD_USER_ERROR,
+  ADD_USER_TO_GROUP_PENDING,
+  ADD_USER_TO_GROUP_SUCCESS,
+  ADD_USER_TO_GROUP_ERROR,
 
-  REMOVE_USER_PENDING,
-  REMOVE_USER_SUCCESS,
-  REMOVE_USER_ERROR
+  REMOVE_USER_FROM_GROUP_PENDING,
+  REMOVE_USER_FROM_GROUP_SUCCESS,
+  REMOVE_USER_FROM_GROUP_ERROR
 } from "../types/groups"
 
 import {
@@ -74,22 +74,22 @@ const handleGetAssignedUsers = (id) => async dispatch => {
 }
 
 const handleAddUserToGroup = (userId, groupId) => async dispatch => {
-  dispatch({ type: ADD_USER_PENDING })
+  dispatch({ type: ADD_USER_TO_GROUP_PENDING })
   try {
     const data = await addUserToGroup(userId, groupId)
-    return dispatch({ type: ADD_USER_SUCCESS, data })
+    return dispatch({ type: ADD_USER_TO_GROUP_SUCCESS, data })
   } catch (e) {
-    return dispatch({ type: ADD_USER_ERROR, payload: e })
+    return dispatch({ type: ADD_USER_TO_GROUP_ERROR, payload: e })
   }
 }
 
 const handleRemoveUserFromGroup = (userId, groupId) => async dispatch => {
-  dispatch({ type: REMOVE_USER_PENDING })
+  dispatch({ type: REMOVE_USER_FROM_GROUP_PENDING })
   try {
     const data = await removeUserFromGroup(userId, groupId)
-    return dispatch({ type: REMOVE_USER_SUCCESS, data })
+    return dispatch({ type: REMOVE_USER_FROM_GROUP_SUCCESS, data })
   } catch (e) {
-    return dispatch({ type: REMOVE_USER_ERROR, payload: e })
+    return dispatch({ type: REMOVE_USER_FROM_GROUP_ERROR, payload: e })
   }
 }
 
