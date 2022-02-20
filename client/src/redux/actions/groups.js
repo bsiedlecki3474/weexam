@@ -3,6 +3,10 @@ import {
   ADD_GROUP_SUCCESS,
   ADD_GROUP_ERROR,
 
+  SAVE_GROUP_PENDING,
+  SAVE_GROUP_SUCCESS,
+  SAVE_GROUP_ERROR,
+
   GET_GROUP_LIST_PENDING,
   GET_GROUP_LIST_SUCCESS,
   GET_GROUP_LIST_ERROR,
@@ -26,6 +30,7 @@ import {
 
 import {
   addGroup,
+  saveGroup,
   getGroupList,
   getSingleGroup,
   getAssignedUsers,
@@ -40,6 +45,16 @@ const handleAddGroup = (formData) => async dispatch => {
     return dispatch({ type: ADD_GROUP_SUCCESS, data })
   } catch (e) {
     return dispatch({ type: ADD_GROUP_ERROR, payload: e })
+  }
+}
+
+const handleSaveGroup = (id, formData) => async dispatch => {
+  dispatch({ type: SAVE_GROUP_PENDING })
+  try {
+    const data = await saveGroup(id, formData)
+    return dispatch({ type: SAVE_GROUP_SUCCESS, data })
+  } catch (e) {
+    return dispatch({ type: SAVE_GROUP_ERROR, payload: e })
   }
 }
 
@@ -96,6 +111,7 @@ const handleRemoveUserFromGroup = (userId, groupId) => async dispatch => {
 
 export {
   handleAddGroup,
+  handleSaveGroup,
   handleGetGroupList,
   handleGetSingleGroup,
   handleGetAssignedUsers,

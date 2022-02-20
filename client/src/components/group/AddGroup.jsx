@@ -104,7 +104,7 @@ class AddGroup extends Component {
             <Checkbox
               id="isActive"
               label="Group active"
-              value={data.isActive}
+              checked={data.isActive}
               defaultChecked
             />
 

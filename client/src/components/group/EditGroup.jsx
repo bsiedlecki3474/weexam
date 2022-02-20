@@ -21,8 +21,10 @@ import {
 } from "@mui/material"
 
 import {
+  handleSaveGroup,
   handleGetSingleGroup,
   handleGetAssignedUsers,
+  handleAddUserToGroup,
   handleRemoveUserFromGroup
 } from '../../redux/actions/groups';
 import { handleGetUserList } from '../../redux/actions/users';
@@ -55,6 +57,7 @@ class EditGroup extends Component {
   state = {
     showErrors: false,
     isLoading: false,
+    data: {},
     addUser: null
   }
 
@@ -68,7 +71,7 @@ class EditGroup extends Component {
     } = this.props;
     const { id } = params;
     onHandleGetUserList();
-    onHandleGetSingleGroup(id).then(res => this.setState(state => ({...state, ...res.data})))
+    onHandleGetSingleGroup(id).then(res => this.setState(state => ({...state, data: res.data})))
     onHandleGetAssignedUsers(id).then(res => this.setState(state => ({...state, assignedUsers: res.data})))
     // onHandleGetUsersInGroup(id).then(res => this.setState(state => ({...state, usersInGroup: res.data})))
     // onHandleGetUsersNotInGroup(id).then(res => this.setState(state => ({...state, usersNotInGroup: res.data})))
@@ -78,17 +81,17 @@ class EditGroup extends Component {
 
   handleInputChange = (e, key) => {
     const value = e.target.value;
-    this.setState({ [key]: value });
+    this.setState({ data: {...this.state.data, [key]: value }});
   }
 
   handleSelectChange = (key, val) => {
     const value = val?.id;
-    this.setState({ [key]: value });
+    this.setState({ data: {...this.state.data, [key]: value }});
   }
 
   handleSelectMultipleChange = (key, vals) => {
     const values = vals ? vals.map(el => el.id) : [];
-    this.setState({ [key]: values });
+    this.setState({ data: {...this.state.data, [key]: values }});
   }
 
   isDataLoading = () => false
@@ -96,62 +99,60 @@ class EditGroup extends Component {
   handleChangeAddUser = option => this.setState({ addUser: option });
 
   handleAddUserClick = e => {
-    // const { addUser } = this.state;
-    // const { params, showSnackbar, onHandleAddUserToGroup } = this.props;
-    // const { id } = params;
+    const { addUser } = this.state;
+    const { params, showSnackbar, onHandleAddUserToGroup } = this.props;
+    const { id } = params;
 
-    // onHandleAddUserToGroup(addUser?.id, id).then(res => {
-    //   this.setState({
-    //     usersInGroup: [...this.state.usersInGroup, addUser],
-    //     usersNotInGroup: this.state.usersNotInGroup.filter(el => el.id !== addUser.id),
-    //     addUser: null
-    //   })
+    onHandleAddUserToGroup(addUser?.id, id).then(res => {
+      this.setState({
+        assignedUsers: [...this.state.assignedUsers, addUser],
+        addUser: null
+      })
 
-    //   showSnackbar({
-    //     message: lang.groups.snackbar.userAdded,
-    //     severity: 'success'
-    //   })
-    // })
+      showSnackbar({
+        message: lang.groups.snackbar.userAdded,
+        severity: 'success'
+      })
+    })
   }
 
   handleRemoveUserClick = userId => e => {
-    // if (window.confirm(lang.groups.snackbar.confirmRemoveGroupUser)) {
-    //   const { params, showSnackbar, onHandleRemoveUserFromGroup } = this.props;
-    //   const { id } = params;
-    //   onHandleRemoveUserFromGroup(userId, id).then(res => {
-    //     const user = this.state.usersNotInGroup.find(el => el.id == userId)
+    if (window.confirm(lang.groups.snackbar.confirmRemoveGroupUser)) {
+      const { assignedUsers } = this.state;
+      const { users, params, showSnackbar, onHandleRemoveUserFromGroup } = this.props;
+      const { id } = params;
+      onHandleRemoveUserFromGroup(userId, id).then(res => {
+        // const user = users.find(el => el.id == userId)
 
-    //     this.setState({
-    //       usersInGroup: this.state.usersInGroup.filter(el => el.id !== userId),
-    //       usersNotInGroup: [...this.state.usersNotInGroup, user]
-    //     })
+        this.setState({
+          assignedUsers: assignedUsers.filter(el => el.id !== userId),
+        })
 
-    //     showSnackbar({
-    //       message: lang.groups.snackbar.userRemoved,
-    //       severity: 'success'
-    //     })
-    //   })
-    // }
+        showSnackbar({
+          message: lang.groups.snackbar.userRemoved,
+          severity: 'success'
+        })
+      })
+    }
   }
 
   render() {
-    const { showErrors, isLoading, addUser, assignedUsers } = this.state;
-    const { classes, users } = this.props;
+    const { showErrors, isLoading, data, addUser, assignedUsers } = this.state;
+    const { classes, params, users } = this.props;
+    const { id } = params;
     const assignedUsersIds = assignedUsers ? assignedUsers.map(el => el.id) : [];
 
     const formSubmit = e => {
-      const { onHandleAddGroup, showSnackbar, navigate } = this.props;
+      const { onHandleSaveGroup, showSnackbar } = this.props;
       this.setState({ showErrors: true }, () => {
         if (this.checkFormValidity()) {
-          const { showErrors, isLoading, ...data } = this.state;
           // tbd check for duplicates
-          onHandleAddGroup(data).then(res => {
+          onHandleSaveGroup(id, data).then(res => {
             showSnackbar({
-              message: lang.groups.snackbar.groupAdded,
+              message: lang.main.snackbar.changesSaved,
               severity: 'success'
             })
             // tbd block request spam
-            setTimeout(() => navigate('/groups/' + res.data.id), 1000);
           })
         } else {
           showSnackbar({
@@ -176,24 +177,23 @@ class EditGroup extends Component {
             <TextField
               id="name"
               label="Group name"
-              value={this.state.name}
+              value={data.name}
               handleChange={this.handleInputChange}
               required
-              value={this.state.name}
+              value={data.name}
               isLoading={isLoading || this.isDataLoading()}
-              error={showErrors && !this.state.name}
+              error={showErrors && !data.name}
               helperText={lang.main.validation.empty}
             />
 
             <Checkbox
               id="isActive"
               label="Group active"
-              checked={Boolean(this.state.isActive)}
+              checked={Boolean(data.isActive)}
             />
 
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6}>
-
             <Box className={classes.addContainer}>
               <Autocomplete
                 options={users?.filter(el => !assignedUsersIds.includes(el.id)) ?? []}
@@ -245,12 +245,18 @@ class EditGroup extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  users: state.users.data
+})
+
 const mapDispatchToProps = dispatch => ({
+  onHandleGetUserList: () => dispatch(handleGetUserList()),
+  onHandleSaveGroup: (id, data) => dispatch(handleSaveGroup(id, data)),
   onHandleGetSingleGroup: id => dispatch(handleGetSingleGroup(id)),
   onHandleGetAssignedUsers: id => dispatch(handleGetAssignedUsers(id)),
+  onHandleAddUserToGroup: (userId, groupId) => dispatch(handleAddUserToGroup(userId, groupId)),
   onHandleRemoveUserFromGroup: (userId, groupId) => dispatch(handleRemoveUserFromGroup(userId, groupId)),
-  onHandleGetUserList: () => dispatch(handleGetUserList()),
   showSnackbar: data => dispatch(showSnackbar(data))
 })
 
-export default connect(null, mapDispatchToProps)(withParams(withStyles(styles)(EditGroup)));
+export default connect(mapStateToProps, mapDispatchToProps)(withParams(withStyles(styles)(EditGroup)));
