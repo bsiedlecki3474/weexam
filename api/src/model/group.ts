@@ -16,6 +16,15 @@ class Group extends Model /*implements CRUD*/ {
 		}
 	}
 
+	save = async (id: number, body: any /* interface */) => {
+		const sql = `UPDATE wee_groups SET name = ?, is_active = ?, modified_by = ?, modified_on = NOW() WHERE id = ?`;
+		const data = await this.db.query(sql, [...body, id]);
+
+		if (data) {
+			return true;
+		}
+	}
+
 	addUserToGroup = async (body: any /* interface */) => {
 		const sql = `INSERT INTO wee_groups_users (user_id, group_id) VALUES (?, ?)`;
 		const data = await this.db.query(sql, body);

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import authMiddleware from '../middleware/authMiddleware'
 import {
   add,
+  save,
   addUserToGroup,
   removeUserFromGroup,
   list,
@@ -16,6 +17,7 @@ router.post('/addUserToGroup', authMiddleware, addUserToGroup);
 router.post('/removeUserFromGroup', authMiddleware, removeUserFromGroup);
 router.get('/list', authMiddleware, list);
 router.get('/:id', authMiddleware, single);
+router.post('/:id/save', authMiddleware, save);
 router.get('/:id/users', authMiddleware, users);
 
 // router.get('/', list);
