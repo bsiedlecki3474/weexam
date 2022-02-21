@@ -25,6 +25,23 @@ class Test extends Model /*implements CRUD*/ {
 		}
 	}
 
+	addGroupToTest = async (body: any /* interface */) => {
+		const sql = `INSERT INTO wee_tests_groups (group_id, test_id) VALUES (?, ?)`;
+		const data = await this.db.query(sql, body);
+
+		if (data) {
+			return true;
+		}
+	}
+
+	removeGroupFromTest = async (body: any /* interface */) => {
+		const sql = `DELETE FROM wee_tests_groups WHERE group_id = ? AND test_id = ?`;
+		const data = await this.db.query(sql, body);
+
+		if (data) {
+			return true;
+		}
+	}
 
 	list = async () => {
 		const sql = `SELECT

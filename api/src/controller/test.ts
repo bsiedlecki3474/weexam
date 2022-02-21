@@ -125,6 +125,54 @@ class Test {
     }
   }
 
+  addGroupToTest = async (req: Request, res: Response) => {
+    try {
+      const {
+        groupId,
+        testId
+      } = req.body;
+
+      if (!groupId || !testId)
+        return res.status(400).send();
+
+      const data = [
+        groupId,
+        testId
+      ];
+
+      const response = await test.addGroupToTest(data);
+
+      res.status(200).send(response);
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
+  removeGroupFromTest = async (req: Request, res: Response) => {
+    try {
+      const {
+        groupId,
+        testId
+      } = req.body;
+
+      if (!groupId || !testId)
+        return res.status(400).send();
+
+      const data = [
+        groupId,
+        testId
+      ];
+
+      const response = await test.removeGroupFromTest(data);
+
+      res.status(200).send(response);
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
 }
 
 export const {
@@ -132,5 +180,7 @@ export const {
   save,
   list,
   single,
-  groups
+  groups,
+  addGroupToTest,
+  removeGroupFromTest
 } = new Test();

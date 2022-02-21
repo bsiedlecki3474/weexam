@@ -1,10 +1,20 @@
 import { Router } from 'express';
-import { add, save, list, single, groups } from '../controller/test';
 import authMiddleware from '../middleware/authMiddleware'
+import {
+  add,
+  save,
+  list,
+  single,
+  addGroupToTest,
+  removeGroupFromTest,
+  groups
+} from '../controller/test';
 
 const router = Router();
 
 router.post('/add', authMiddleware, add);
+router.post('/addGroupToTest', authMiddleware, addGroupToTest);
+router.post('/removeGroupFromTest', authMiddleware, removeGroupFromTest);
 router.get('/list', authMiddleware, list);
 router.get('/:id', authMiddleware, single);
 router.post('/:id/save', authMiddleware, save);
