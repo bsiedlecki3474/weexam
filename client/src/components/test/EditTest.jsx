@@ -21,6 +21,7 @@ import {
 } from "@mui/material"
 
 import {
+  handleSaveTest,
   handleGetSingleTest,
   handleGetAssignedGroups
 } from '../../redux/actions/tests';
@@ -60,6 +61,7 @@ class EditTest extends Component {
   state = {
     showErrors: false,
     isLoading: false,
+    data: {},
     addGroup: null
   }
 
@@ -73,7 +75,7 @@ class EditTest extends Component {
     } = this.props;
     const { id } = params;
     onHandleGetGroupList()
-    onHandleGetSingleTest(id).then(res => this.setState(state => ({...state, ...res.data})))
+    onHandleGetSingleTest(id).then(res => this.setState(state => ({...state, data: res.data})))
     onHandleGetAssignedGroups(id).then(res => this.setState(state => ({...state, assignedGroups: res.data})))
   }
 
@@ -81,17 +83,17 @@ class EditTest extends Component {
 
   handleInputChange = (e, key) => {
     const value = e.target.value;
-    this.setState({ [key]: value });
+    this.setState({ data: {...this.state.data, [key]: value }});
   }
 
   handleSelectChange = (key, val) => {
     const value = val?.id;
-    this.setState({ [key]: value });
+    this.setState({ data: {...this.state.data, [key]: value }});
   }
 
   handleSelectMultipleChange = (key, vals) => {
     const values = vals ? vals.map(el => el.id) : [];
-    this.setState({ [key]: values });
+    this.setState({ data: {...this.state.data, [key]: values }});
   }
 
   isDataLoading = () => false
@@ -138,23 +140,22 @@ class EditTest extends Component {
   }
 
   render() {
-    const { showErrors, isLoading, addGroup, assignedGroups } = this.state;
-    const { classes, groups } = this.props;
+    const { showErrors, isLoading, data, addGroup, assignedGroups } = this.state;
+    const { classes, params, groups } = this.props;
+    const { id } = params;
     const assignedGroupIds = assignedGroups ? assignedGroups.map(el => el.id) : [];
 
     const formSubmit = e => {
-      const { onHandleAddTest, showSnackbar, navigate } = this.props;
+      const { onHandleSaveTest, showSnackbar } = this.props;
       this.setState({ showErrors: true }, () => {
         if (this.checkFormValidity()) {
-          const { showErrors, isLoading, ...data } = this.state;
           // tbd check for duplicates
-          onHandleAddTest(data).then(res => {
+          onHandleSaveTest(id, data).then(res => {
             showSnackbar({
-              message: lang.tests.snackbar.testAdded,
+              message: lang.main.snackbar.changesSaved,
               severity: 'success'
             })
             // tbd block request spam
-            setTimeout(() => navigate('/tests/' + res.data.id), 1000);
           })
         } else {
           showSnackbar({
@@ -179,11 +180,11 @@ class EditTest extends Component {
             <TextField
               id="name"
               label="Test name"
-              value={this.state.name}
+              value={data.name}
               handleChange={this.handleInputChange}
               required
               isLoading={isLoading || this.isDataLoading()}
-              error={showErrors && !this.state.name}
+              error={showErrors && !data.name}
               helperText={lang.main.validation.empty}
             />
 
@@ -192,24 +193,24 @@ class EditTest extends Component {
                 id="startDate"
                 type="datetime-local"
                 label="Test start"
-                value={this.state.startDate?.replace(/\s/, 'T')}
+                value={data.startDate?.replace(/\s/, 'T')}
                 handleChange={this.handleInputChange}
                 required
                 isLoading={isLoading || this.isDataLoading()}
-                error={showErrors && (!this.state.endDate || (this.state.endDate <= this.state.startDate))}
-                helperText={(this.state.endDate <= this.state.startDate) ? lang.main.validation.invalidDates : lang.main.validation.empty}
+                error={showErrors && (!data.endDate || (data.endDate <= data.startDate))}
+                helperText={(data.endDate <= data.startDate) ? lang.main.validation.invalidDates : lang.main.validation.empty}
               />
               
               <TextField
                 id="endDate"
                 type="datetime-local"
                 label="Test end"
-                value={this.state.endDate?.replace(/\s/, 'T')}
+                value={data.endDate?.replace(/\s/, 'T')}
                 handleChange={this.handleInputChange}
                 required
                 isLoading={isLoading || this.isDataLoading()}
-                error={showErrors && (!this.state.endDate || (this.state.endDate <= this.state.startDate))}
-                helperText={(this.state.endDate <= this.state.startDate) ? lang.main.validation.invalidDates : lang.main.validation.empty}
+                error={showErrors && (!data.endDate || (data.endDate <= data.startDate))}
+                helperText={(data.endDate <= data.startDate) ? lang.main.validation.invalidDates : lang.main.validation.empty}
               />
             </Box>
             
@@ -218,7 +219,7 @@ class EditTest extends Component {
               id="duration"
               type="number"
               label="Duration"
-              value={this.state.duration}
+              value={data.duration}
               required
               handleChange={this.handleInputChange}
               isLoading={isLoading || this.isDataLoading()}
@@ -228,13 +229,13 @@ class EditTest extends Component {
               <Checkbox
                 id="isActive"
                 label="Test active"
-                checked={Boolean(this.state.isActive)}
+                checked={Boolean(data.isActive)}
               />
 
               <Checkbox
                 id="showScores"
                 label="Show score after completion"
-                checked={Boolean(this.state.showScores)}
+                checked={Boolean(data.showScores)}
               />
             </Box>
 
@@ -299,6 +300,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  onHandleSaveTest: (id, data) => dispatch(handleSaveTest(id, data)),
   onHandleGetSingleTest: id => dispatch(handleGetSingleTest(id)),
   onHandleGetAssignedGroups: id => dispatch(handleGetAssignedGroups(id)),
   onHandleGetGroupList: () => dispatch(handleGetGroupList()),

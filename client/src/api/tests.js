@@ -1,12 +1,18 @@
 import axios from "../axios/axios";
 
-const getTestList = async () => {
-  const res = await axios.get('/test/list');
+const addTest = async (data) => {
+  const res = await axios.post('/test/add', data);
   return res.data;
 }
 
-const addTest = async (data) => {
-  const res = await axios.post('/test/add', data);
+const saveTest = async (id, data) => {
+  console.log(id, data)
+  const res = await axios.post(`/test/${id}/save`, data);
+  return res.data
+}
+
+const getTestList = async () => {
+  const res = await axios.get('/test/list');
   return res.data;
 }
 
@@ -21,8 +27,9 @@ const getAssignedGroups = async (id) => {
 }
 
 export {
-  getTestList,
   addTest,
+  saveTest,
+  getTestList,
   getSingleTest,
   getAssignedGroups
 }

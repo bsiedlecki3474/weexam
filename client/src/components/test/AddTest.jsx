@@ -67,7 +67,6 @@ class AddTest extends Component {
       const { onHandleAddTest, showSnackbar, navigate } = this.props;
       this.setState({ showErrors: true }, () => {
         if (this.checkFormValidity()) {
-          const { data } = this.state;
           // tbd check for duplicates
           onHandleAddTest(data).then(res => {
             showSnackbar({

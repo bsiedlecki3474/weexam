@@ -3,6 +3,10 @@ import {
   ADD_TEST_SUCCESS,
   ADD_TEST_ERROR,
 
+  SAVE_TEST_PENDING,
+  SAVE_TEST_SUCCESS,
+  SAVE_TEST_ERROR,
+
   GET_TESTS_PENDING,
   GET_TESTS_SUCCESS,
   GET_TESTS_ERROR,
@@ -18,6 +22,7 @@ import {
 
 import {
   addTest,
+  saveTest,
   getTestList,
   getSingleTest,
   getAssignedGroups
@@ -30,6 +35,16 @@ const handleAddTest = (formData) => async dispatch => {
     return dispatch({ type: ADD_TEST_SUCCESS, data })
   } catch (e) {
     return dispatch({ type: ADD_TEST_ERROR, payload: e })
+  }
+}
+
+const handleSaveTest = (id, formData) => async dispatch => {
+  dispatch({ type: SAVE_TEST_PENDING })
+  try {
+    const data = await saveTest(id, formData)
+    return dispatch({ type: SAVE_TEST_SUCCESS, data })
+  } catch (e) {
+    return dispatch({ type: SAVE_TEST_ERROR, payload: e })
   }
 }
 
@@ -65,6 +80,7 @@ const handleGetAssignedGroups = (id) => async dispatch => {
 
 export {
   handleAddTest,
+  handleSaveTest,
   handleGetTestList,
   handleGetSingleTest,
   handleGetAssignedGroups
