@@ -43,6 +43,46 @@ class Test {
     }
   }
 
+  save = async (req: Request, res: Response) => {
+    try {
+      const {
+        name,
+        startDate,
+        endDate,
+        duration,
+        isActive,
+        showScores
+      } = req.body;
+
+      if (!name || !startDate || !endDate || !duration)
+        return res.status(400).send();
+
+      const token = req.cookies.jwt;
+      const { userId } = jwt.verify(token, JWT_SECRET) as JwtPayload;
+
+      const data = [
+        name,
+        startDate,
+        endDate,
+        duration,
+        isActive,
+        showScores,
+        userId // modifiedBy
+      ];
+
+      const response = await test.save(Number(req.params.id), data);
+
+      res.status(200).send(response);
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
+  _delete = async (req: Request, res: Response) => {
+    return true;
+  }
+
   list = async (req: Request, res: Response) => {
     try {
       const data = await test.list();
@@ -89,6 +129,7 @@ class Test {
 
 export const {
   add,
+  save,
   list,
   single,
   groups

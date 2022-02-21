@@ -16,6 +16,16 @@ class Test extends Model /*implements CRUD*/ {
 		}
 	}
 
+	save = async (id: number, body: any /* interface */) => {
+		const sql = `UPDATE wee_tests SET name = ?, start_date = ?, end_date = ?, duration = ?, is_active = ?, show_scores = ?, modified_by = ?, modified_on = NOW() WHERE id = ?`;
+		const data = await this.db.query(sql, [...body, id]);
+
+		if (data) {
+			return true;
+		}
+	}
+
+
 	list = async () => {
 		const sql = `SELECT
 			t.id,
