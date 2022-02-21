@@ -26,10 +26,22 @@ const getAssignedGroups = async (id) => {
   return res.data
 }
 
+const addGroupToTest = async (groupId, testId) => {
+  const res = await axios.post('/test/addGroupToTest', { groupId, testId });
+  return res.data;
+}
+
+const removeGroupFromTest = async (groupId, testId) => {
+  const res = await axios.post('/test/removeGroupFromTest', { groupId, testId });
+  return res.data;
+}
+
 export {
   addTest,
   saveTest,
   getTestList,
   getSingleTest,
-  getAssignedGroups
+  getAssignedGroups,
+  addGroupToTest,
+  removeGroupFromTest
 }

@@ -17,7 +17,15 @@ import {
 
   GET_ASSIGNED_GROUPS_PENDING,
   GET_ASSIGNED_GROUPS_SUCCESS,
-  GET_ASSIGNED_GROUPS_ERROR
+  GET_ASSIGNED_GROUPS_ERROR,
+
+  ADD_GROUP_TO_TEST_PENDING,
+  ADD_GROUP_TO_TEST_SUCCESS,
+  ADD_GROUP_TO_TEST_ERROR,
+
+  REMOVE_GROUP_FROM_TEST_PENDING,
+  REMOVE_GROUP_FROM_TEST_SUCCESS,
+  REMOVE_GROUP_FROM_TEST_ERROR,
 } from '../types/tests'
 
 import {
@@ -25,7 +33,9 @@ import {
   saveTest,
   getTestList,
   getSingleTest,
-  getAssignedGroups
+  getAssignedGroups,
+  addGroupToTest,
+  removeGroupFromTest
 } from '../../api/tests'
 
 const handleAddTest = (formData) => async dispatch => {
@@ -78,10 +88,32 @@ const handleGetAssignedGroups = (id) => async dispatch => {
   }
 }
 
+const handleAddGroupToTest = (groupId, testId) => async dispatch => {
+  dispatch({ type: ADD_GROUP_TO_TEST_PENDING })
+  try {
+    const data = await addGroupToTest(groupId, testId)
+    return dispatch({ type: ADD_GROUP_TO_TEST_SUCCESS, data })
+  } catch (e) {
+    return dispatch({ type: ADD_GROUP_TO_TEST_ERROR, payload: e })
+  }
+}
+
+const handleRemoveGroupFromTest = (groupId, testId) => async dispatch => {
+  dispatch({ type: REMOVE_GROUP_FROM_TEST_PENDING })
+  try {
+    const data = await removeGroupFromTest(groupId, testId)
+    return dispatch({ type: REMOVE_GROUP_FROM_TEST_SUCCESS, data })
+  } catch (e) {
+    return dispatch({ type: REMOVE_GROUP_FROM_TEST_ERROR, payload: e })
+  }
+}
+
 export {
   handleAddTest,
   handleSaveTest,
   handleGetTestList,
   handleGetSingleTest,
-  handleGetAssignedGroups
+  handleGetAssignedGroups,
+  handleAddGroupToTest,
+  handleRemoveGroupFromTest
 }

@@ -5,7 +5,7 @@ import withParams from "../../hoc/withParams";
 import ListItem from '../ListItem'
 
 import GroupsIcon from '@mui/icons-material/Groups';
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import {
@@ -23,7 +23,9 @@ import {
 import {
   handleSaveTest,
   handleGetSingleTest,
-  handleGetAssignedGroups
+  handleGetAssignedGroups,
+  handleAddGroupToTest,
+  handleRemoveGroupFromTest
 } from '../../redux/actions/tests';
 import { handleGetGroupList } from '../../redux/actions/groups';
 import { showSnackbar } from '../../redux/actions/snackbar'
@@ -86,6 +88,11 @@ class EditTest extends Component {
     this.setState({ data: {...this.state.data, [key]: value }});
   }
 
+  handleCheckboxChange = key => (e, value) => {
+    console.log(key, value)
+    this.setState({ data: {...this.state.data, [key]: value }});
+  }
+
   handleSelectChange = (key, val) => {
     const value = val?.id;
     this.setState({ data: {...this.state.data, [key]: value }});
@@ -98,45 +105,47 @@ class EditTest extends Component {
 
   isDataLoading = () => false
 
-  handleChangeAddUser = option => this.setState({ addUser: option });
-
-  handleAddUserClick = e => {
-    // const { addUser } = this.state;
-    // const { params, showSnackbar, onHandleAddUserToGroup } = this.props;
-    // const { id } = params;
-
-    // onHandleAddUserToGroup(addUser?.id, id).then(res => {
-    //   this.setState({
-    //     usersInGroup: [...this.state.usersInGroup, addUser],
-    //     usersNotInGroup: this.state.usersNotInGroup.filter(el => el.id !== addUser.id),
-    //     addUser: null
-    //   })
-
-    //   showSnackbar({
-    //     message: lang.groups.snackbar.userAdded,
-    //     severity: 'success'
-    //   })
-    // })
+  handleChangeAddGroup = option => {
+    console.log(option)
+    this.setState({ addGroup: option });
   }
 
-  handleRemoveUserClick = userId => e => {
-    // if (window.confirm(lang.groups.snackbar.confirmRemoveGroupUser)) {
-    //   const { params, showSnackbar, onHandleRemoveUserFromGroup } = this.props;
-    //   const { id } = params;
-    //   onHandleRemoveUserFromGroup(userId, id).then(res => {
-    //     const user = this.state.usersNotInGroup.find(el => el.id == userId)
+  handleAddGroupClick = e => {
+    const { addGroup } = this.state;
+    const { params, showSnackbar, onHandleAddGroupToTest } = this.props;
+    const { id } = params;
 
-    //     this.setState({
-    //       usersInGroup: this.state.usersInGroup.filter(el => el.id !== userId),
-    //       usersNotInGroup: [...this.state.usersNotInGroup, user]
-    //     })
+    onHandleAddGroupToTest(addGroup?.id, id).then(res => {
+      this.setState({
+        assignedGroups: [...this.state.assignedGroups, addGroup],
+        addGroup: null
+      })
 
-    //     showSnackbar({
-    //       message: lang.groups.snackbar.userRemoved,
-    //       severity: 'success'
-    //     })
-    //   })
-    // }
+      showSnackbar({
+        message: lang.tests.snackbar.groupAdded,
+        severity: 'success'
+      })
+    })
+  }
+
+  handleRemoveGroupClick = groupId => e => {
+    if (window.confirm(lang.tests.snackbar.confirmRemoveTestGroup)) {
+      const { assignedGroups } = this.state;
+      const { params, showSnackbar, onHandleRemoveGroupFromTest } = this.props;
+      const { id } = params;
+      onHandleRemoveGroupFromTest(groupId, id).then(res => {
+        // const group = this.state.usersNotInGroup.find(el => el.id == groupId)
+
+        this.setState({
+          assignedGroups: assignedGroups.filter(el => el.id !== groupId),
+        })
+
+        showSnackbar({
+          message: lang.tests.snackbar.groupRemoved,
+          severity: 'success'
+        })
+      })
+    }
   }
 
   render() {
@@ -230,12 +239,14 @@ class EditTest extends Component {
                 id="isActive"
                 label="Test active"
                 checked={Boolean(data.isActive)}
+                onChange={this.handleCheckboxChange('isActive')}
               />
 
               <Checkbox
                 id="showScores"
                 label="Show score after completion"
                 checked={Boolean(data.showScores)}
+                onChange={this.handleCheckboxChange('showScores')}
               />
             </Box>
 
@@ -247,7 +258,7 @@ class EditTest extends Component {
               <Autocomplete
                 options={groups?.filter(el => !assignedGroupIds.includes(el.id)) ?? []}
                 getOptionLabel={option => option.name}
-                onChange={(e, value) => this.handleChangeAddUser(value)}
+                onChange={(e, value) => this.handleChangeAddGroup(value)}
                 value={addGroup}
                 fullWidth
                 renderInput={(params) => 
@@ -263,10 +274,10 @@ class EditTest extends Component {
               />
               <IconButton
                 className={classes.addButton}
-                onClick={this.handleAddUserClick}
+                onClick={this.handleAddGroupClick}
                 disabled={addGroup === null}
               >
-                <PersonAddAlt1Icon />
+                <GroupAddIcon />
               </IconButton>
               {/* <Button variant="outlined" size="small" onClick={this.handleAddUserClick}>add</Button> */}
             </Box>
@@ -279,7 +290,7 @@ class EditTest extends Component {
                   primary={group.name}
                   icon={<GroupsIcon />}
                   action={
-                    <IconButton edge="end" size="small" onClick={this.handleRemoveUserClick(group.id)}>
+                    <IconButton edge="end" size="small" onClick={this.handleRemoveGroupClick(group.id)}>
                       <DeleteIcon fontSize="inherit" />
                     </IconButton>
                   }
@@ -304,6 +315,8 @@ const mapDispatchToProps = dispatch => ({
   onHandleGetSingleTest: id => dispatch(handleGetSingleTest(id)),
   onHandleGetAssignedGroups: id => dispatch(handleGetAssignedGroups(id)),
   onHandleGetGroupList: () => dispatch(handleGetGroupList()),
+  onHandleAddGroupToTest: (groupId, testId) => dispatch(handleAddGroupToTest(groupId, testId)),
+  onHandleRemoveGroupFromTest: (groupId, testId) => dispatch(handleRemoveGroupFromTest(groupId, testId)),
   showSnackbar: data => dispatch(showSnackbar(data))
 })
 
