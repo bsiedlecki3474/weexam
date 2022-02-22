@@ -1,23 +1,27 @@
 import {
-  GET_USERS_PENDING,
-  GET_USERS_SUCCESS,
-  GET_USERS_ERROR,
   ADD_USER_PENDING,
   ADD_USER_SUCCESS,
-  ADD_USER_ERROR
+  ADD_USER_ERROR,
+
+  SAVE_USER_PENDING,
+  SAVE_USER_SUCCESS,
+  SAVE_USER_ERROR,
+
+  GET_USER_PENDING,
+  GET_USER_SUCCESS,
+  GET_USER_ERROR,
+
+  GET_USERS_PENDING,
+  GET_USERS_SUCCESS,
+  GET_USERS_ERROR,  
 } from '../types/users'
 
-import { getUserList, addUser } from '../../api/users'
-
-const handleGetUserList = () => async dispatch => {
-  dispatch({ type: GET_USERS_PENDING })
-  try {
-    const data = await getUserList()
-    return dispatch({ type: GET_USERS_SUCCESS, payload: data })
-  } catch (e) {
-    return dispatch({ type: GET_USERS_ERROR, payload: e })
-  }
-}
+import {
+  addUser,
+  saveUser,
+  getSingleUser,
+  getUserList,
+} from '../../api/users'
 
 const handleAddUser = (formData) => async dispatch => {
   dispatch({ type: ADD_USER_PENDING })
@@ -29,7 +33,40 @@ const handleAddUser = (formData) => async dispatch => {
   }
 }
 
+const handleSaveUser = (id, formData) => async dispatch => {
+  dispatch({ type: SAVE_USER_PENDING })
+  try {
+    const data = await saveUser(id, formData)
+    return dispatch({ type: SAVE_USER_SUCCESS, data })
+  } catch (e) {
+    return dispatch({ type: SAVE_USER_ERROR, payload: e })
+  }
+}
+
+const handleGetSingleUser = (id) => async dispatch => {
+  dispatch({ type: GET_USER_PENDING })
+  try {
+    const data = await getSingleUser(id)
+    return dispatch({ type: GET_USER_SUCCESS, data })
+  } catch (e) {
+    return dispatch({ type: GET_USER_ERROR, payload: e })
+  }
+}
+
+const handleGetUserList = () => async dispatch => {
+  dispatch({ type: GET_USERS_PENDING })
+  try {
+    const data = await getUserList()
+    return dispatch({ type: GET_USERS_SUCCESS, payload: data })
+  } catch (e) {
+    return dispatch({ type: GET_USERS_ERROR, payload: e })
+  }
+}
+
+
 export {
-  handleGetUserList,
-  handleAddUser
+  handleAddUser,
+  handleSaveUser,
+  handleGetSingleUser,
+  handleGetUserList
 }

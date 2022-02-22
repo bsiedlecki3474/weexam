@@ -8,7 +8,8 @@ import {
 
 import {
   Users,
-  AddUser
+  AddUser,
+  EditUser
 } from '../components/user'
 
 import {
@@ -36,6 +37,7 @@ const Router = props => {
         { path: 'profile', element: <Profile /> },
         { path: 'users', element: <Users />, },
         { path: 'users/add', element: <AddUser /> },
+        { path: 'users/:id', element: <EditUser /> },
         { path: 'groups', element: <Groups />, },
         { path: 'groups/add', element: <AddGroup /> },
         { path: 'groups/:id', element: <EditGroup /> },

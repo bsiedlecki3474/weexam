@@ -40,7 +40,7 @@ const Users = props => {
 
   const data = users && users.map(row => ({
     id: row.id,
-    username: row.username,
+    username: <a onClick={e => navigate('/users/' + row.id)}>{row.username}</a>,
     firstName: row.firstName,
     lastName: row.lastName,
     role: row.role,
