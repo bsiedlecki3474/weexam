@@ -25,7 +25,9 @@ const store = createStore(
 )
 
 store.subscribe(() => {
-  saveState(store.getState());
+  // do not store snackbar state on refresh
+  const { snackbar, ...state } = store.getState();
+  saveState(state);
 });
 
 export default store;
