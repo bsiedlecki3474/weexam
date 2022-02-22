@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { green, indigo } from '@mui/material/colors';
+import { red, green, indigo } from '@mui/material/colors';
 import { Snackbar } from './components'
 
 import Router from './router/Router.js'
@@ -18,7 +18,17 @@ const ThemeWrapper = props => {
       secondary: {
         main: userTheme === 'light' ? indigo[800] : indigo[300],
       },
-    }
+    },
+    components: {
+      MuiFormLabel: {
+        styleOverrides: {
+          asterisk: {
+            color: red[500],
+            fontWeight: 600
+          },
+        },
+      },
+    },
   })
 
   return (
