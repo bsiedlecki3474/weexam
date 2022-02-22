@@ -45,9 +45,56 @@ class User {
     }
   }
 
+  save = async (req: Request, res: Response) => {
+    try {
+      const {
+        username,
+        firstName,
+        lastName,
+        role,
+        isActive
+      } = req.body;
+
+      if (!username || !firstName || !lastName || !role)
+        return res.status(400).send();
+
+      const token = req.cookies.jwt;
+      const { userId } = jwt.verify(token, JWT_SECRET) as JwtPayload;
+
+      const data = [
+        firstName,
+        lastName,
+        role,
+        isActive,
+        userId // modifiedBy
+      ];
+
+      const response = await user.save(Number(req.params.id), data);
+
+      res.status(200).send(response);
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
   list = async (req: Request, res: Response) => {
     try {
       const data = await user.list();
+      if (data) {
+        res.status(200).send(data);
+      } else {
+        res.status(400).send('no data');
+      }
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
+  single = async (req: Request, res: Response) => {
+    try {
+      const data = await user.single(Number(req.params.id));
       if (data) {
         res.status(200).send(data);
       } else {
@@ -62,5 +109,7 @@ class User {
 
 export const {
   add,
-  list
+  save,
+  list,
+  single
 } = new User();
