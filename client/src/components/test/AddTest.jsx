@@ -107,43 +107,6 @@ class AddTest extends Component {
               helperText={lang.main.validation.empty}
             />
 
-            <Box display="flex" gap={2}>
-              <TextField
-                id="startDate"
-                type="datetime-local"
-                label="Test start"
-                value={data.startDate}
-                handleChange={this.handleInputChange}
-                required
-                isLoading={isLoading || this.isDataLoading()}
-                error={showErrors && (!data.endDate || (data.endDate <= data.startDate))}
-                helperText={(data.endDate <= data.startDate) ? lang.main.validation.invalidDates : lang.main.validation.empty}
-              />
-              
-              <TextField
-                id="endDate"
-                type="datetime-local"
-                label="Test end"
-                value={data.endDate}
-                handleChange={this.handleInputChange}
-                required
-                isLoading={isLoading || this.isDataLoading()}
-                error={showErrors && (!data.endDate || (data.endDate <= data.startDate))}
-                helperText={(data.endDate <= data.startDate) ? lang.main.validation.invalidDates : lang.main.validation.empty}
-              />
-            </Box>
-            
-
-            <TextField
-              id="duration"
-              type="number"
-              label="Duration"
-              value={data.duration}
-              required
-              handleChange={this.handleInputChange}
-              isLoading={isLoading || this.isDataLoading()}
-            />
-
             <Box className={classes.checkboxContainer}>
               <Checkbox
                 id="isActive"
