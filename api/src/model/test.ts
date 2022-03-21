@@ -7,7 +7,7 @@ import { format } from 'date-fns'
 
 class Test extends Model /*implements CRUD*/ {
 	add = async (body: any /* interface */) => {
-		const sql = `INSERT INTO wee_tests (id, name, is_active, show_scores, created_by, created_on) VALUES (?, ?, ?, ?, NOW())`;
+		const sql = `INSERT INTO wee_tests (id, name, is_active, show_scores, created_by, created_on) VALUES (?, ?, ?, ?, ?, NOW())`;
 		const data = await this.db.query(sql, body);
 
 		if (data) {
