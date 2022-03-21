@@ -2,10 +2,16 @@ export interface Test {
   id: number,
   name: string,
   group_name: string,
+  show_scores: number,
+  is_active: number,
+  created_on: string
+}
+
+export interface Event {
+  id: number,
+  test_id: number,
   start_date: string,
   end_date: string,
   duration: string,
-  show_scores: number,
-  is_active: number,
-  created_on: string,
+  is_active: number
 }

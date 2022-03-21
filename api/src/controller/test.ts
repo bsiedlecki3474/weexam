@@ -9,14 +9,11 @@ class Test {
     try {
       const {
         name,
-        startDate,
-        endDate,
-        duration,
         isActive,
         showScores
       } = req.body;
 
-      if (!name || !startDate || !endDate || !duration)
+      if (!name)
         return res.status(400).send();
 
       const token = req.cookies.jwt;
@@ -26,9 +23,6 @@ class Test {
       const data = [
         id,
         name,
-        startDate,
-        endDate,
-        duration,
         isActive ?? 0,
         showScores ?? 0,
         userId // createdBy
@@ -47,14 +41,11 @@ class Test {
     try {
       const {
         name,
-        startDate,
-        endDate,
-        duration,
         isActive,
         showScores
       } = req.body;
 
-      if (!name || !startDate || !endDate || !duration)
+      if (!name)
         return res.status(400).send();
 
       const token = req.cookies.jwt;
@@ -62,9 +53,6 @@ class Test {
 
       const data = [
         name,
-        startDate,
-        endDate,
-        duration,
         isActive,
         showScores,
         userId // modifiedBy
@@ -173,6 +161,27 @@ class Test {
     }
   }
 
+  events = async (req: Request, res: Response) => {
+    try {
+      const data = await test.events(Number(req.params.id));
+      if (data) {
+        res.status(200).send(data);
+      } else {
+        res.status(400).send('no data');
+      }
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
+  addEvent = () => {
+    return true;
+  }
+
+  deleteEvent = () => {
+    return true;
+  }
 }
 
 export const {
@@ -182,5 +191,8 @@ export const {
   single,
   groups,
   addGroupToTest,
-  removeGroupFromTest
+  removeGroupFromTest,
+  events,
+  addEvent,
+  deleteEvent
 } = new Test();

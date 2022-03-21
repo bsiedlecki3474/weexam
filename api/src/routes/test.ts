@@ -7,7 +7,10 @@ import {
   single,
   addGroupToTest,
   removeGroupFromTest,
-  groups
+  groups,
+  events,
+  addEvent,
+  deleteEvent
 } from '../controller/test';
 
 const router = Router();
@@ -19,6 +22,7 @@ router.get('/list', authMiddleware, list);
 router.get('/:id', authMiddleware, single);
 router.post('/:id/save', authMiddleware, save);
 router.get('/:id/groups', authMiddleware, groups);
+router.get('/:id/events', authMiddleware, events);
 
 // router.get('/', list);
 // router.post('/', create);

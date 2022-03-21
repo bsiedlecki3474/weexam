@@ -2,11 +2,12 @@ import Model from './model'
 import { CRUD } from 'interface/crud';
 import { Test as TestInterface } from '../interface/test'
 import { SimpleGroup as GroupInterface } from '../interface/group'
+import { Event as EventInterface } from '../interface/test'
 import { format } from 'date-fns'
 
 class Test extends Model /*implements CRUD*/ {
 	add = async (body: any /* interface */) => {
-		const sql = `INSERT INTO wee_tests (id, name, start_date, end_date, duration, is_active, show_scores, created_by, created_on) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())`;
+		const sql = `INSERT INTO wee_tests (id, name, is_active, show_scores, created_by, created_on) VALUES (?, ?, ?, ?, NOW())`;
 		const data = await this.db.query(sql, body);
 
 		if (data) {
@@ -17,7 +18,7 @@ class Test extends Model /*implements CRUD*/ {
 	}
 
 	save = async (id: number, body: any /* interface */) => {
-		const sql = `UPDATE wee_tests SET name = ?, start_date = ?, end_date = ?, duration = ?, is_active = ?, show_scores = ?, modified_by = ?, modified_on = NOW() WHERE id = ?`;
+		const sql = `UPDATE wee_tests SET name = ?, is_active = ?, show_scores = ?, modified_by = ?, modified_on = NOW() WHERE id = ?`;
 		const data = await this.db.query(sql, [...body, id]);
 
 		if (data) {
@@ -48,9 +49,6 @@ class Test extends Model /*implements CRUD*/ {
 			t.id,
 			t.name,
 			GROUP_CONCAT(DISTINCT g.name SEPARATOR ", ") AS 'group_name',
-			t.start_date,
-			t.end_date,
-			t.duration,
 			t.show_scores,
 			t.is_active,
 			COUNT(gu.user_id) AS participants,
@@ -68,9 +66,9 @@ class Test extends Model /*implements CRUD*/ {
 				id: row.id,
 				name: row.name,
 				groupName: row.group_name,
-				startDate: format(new Date(row.start_date), 'yyyy-MM-dd HH:mm'),
-				endDate: format(new Date(row.end_date), 'yyyy-MM-dd HH:mm'),
-				duration: row.duration,
+				// startDate: format(new Date(row.start_date), 'yyyy-MM-dd HH:mm'),
+				// endDate: format(new Date(row.end_date), 'yyyy-MM-dd HH:mm'),
+				// duration: row.duration,
 				showScores: row.show_scores,
 				isActive: row.is_active,
 				createdOn: format(new Date(row.created_on), 'yyyy-MM-dd HH:mm')
@@ -82,9 +80,6 @@ class Test extends Model /*implements CRUD*/ {
 		const sql = `SELECT
 			t.id,
 			t.name,
-			t.start_date,
-			t.end_date,
-			t.duration,
 			t.is_active,
 			t.show_scores,
 			t.created_on,
@@ -105,9 +100,7 @@ class Test extends Model /*implements CRUD*/ {
 			return {
 				id: row.id,
 				name: row.name,
-				startDate: format(new Date(row.start_date), 'yyyy-MM-dd HH:mm'),
-				endDate: format(new Date(row.end_date), 'yyyy-MM-dd HH:mm'),
-				duration: row.duration,
+
 				isActive: row.is_active,
 				showScores: row.show_scores,
 				recordAdministrator: this.prepareUserDateTime(
@@ -141,6 +134,40 @@ class Test extends Model /*implements CRUD*/ {
 				name: row.name
 			}));
 		}
+	}
+
+	events = async (id: number) => {
+		const sql = `SELECT
+			e.id,
+			e.test_id,
+			e.start_date,
+			e.end_date,
+			e.duration,
+			e.is_active
+		FROM wee_tests_events e
+		WHERE e.test_id = ?
+		ORDER BY e.start_date, e.end_date`;
+
+		const data = await this.db.query(sql, [id]);
+
+		if (data) {
+			return data.map((row: EventInterface) => ({
+				id: row.id,
+				testId: row.test_id,
+				startDate: format(new Date(row.start_date), 'yyyy-MM-dd HH:mm'),
+				endDate: format(new Date(row.end_date), 'yyyy-MM-dd HH:mm'),
+				duration: row.duration,
+				isActive: row.is_active
+			}));
+		}
+	}
+
+	addEvent = async () => {
+		return setTimeout(() => true, 100);
+	}
+
+	deleteEvent = async () => {
+		return setTimeout(() => true, 100);
 	}
 }
 
