@@ -36,6 +36,11 @@ const removeGroupFromTest = async (groupId, testId) => {
   return res.data;
 }
 
+const getEvents = async (id) => {
+  const res = await axios.get(`/test/${id}/events`);
+  return res.data
+}
+
 export {
   addTest,
   saveTest,
@@ -43,5 +48,6 @@ export {
   getSingleTest,
   getAssignedGroups,
   addGroupToTest,
-  removeGroupFromTest
+  removeGroupFromTest,
+  getEvents
 }

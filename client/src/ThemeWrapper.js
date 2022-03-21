@@ -28,6 +28,13 @@ const ThemeWrapper = props => {
           },
         },
       },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            minWidth: 'unset'
+          }
+        }
+      }
     },
   })
 

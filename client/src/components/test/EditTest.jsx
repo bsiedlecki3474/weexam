@@ -1,12 +1,16 @@
 import { Component, createRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { connect } from "react-redux"
 import { withStyles } from '@mui/styles';
 import withParams from "../../hoc/withParams";
 import ListItem from '../ListItem'
+import { EventDialog } from './'
 
 import GroupsIcon from '@mui/icons-material/Groups';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import {
   Box,
@@ -25,10 +29,16 @@ import {
   handleGetSingleTest,
   handleGetAssignedGroups,
   handleAddGroupToTest,
-  handleRemoveGroupFromTest
+  handleRemoveGroupFromTest,
+  handleGetEvents
 } from '../../redux/actions/tests';
-import { handleGetGroupList } from '../../redux/actions/groups';
+
+// import { handleGetGroupList } from '../../redux/actions/groups';
 import { showSnackbar } from '../../redux/actions/snackbar'
+
+import {  } from "../../api/tests";
+import { getEvents, getSingleTest, getAssignedGroups } from "../../api/tests";
+import { getGroupList } from "../../api/groups";
 
 import { Form, TextField, Select, Checkbox } from '../form'
 import lang from '../../lang'
@@ -53,73 +63,61 @@ const styles = theme => ({
   }
 })
 
-class EditTest extends Component {
-  constructor(props) {
-    super(props)
+const EditTest = props => {
+  const formRef = useRef();
+  const [groups, setGroups] = useState(null);
+  const [events, setEvents] = useState(null);
+  const [assignedGroups, setAssignedGroups] = useState(null);
+  const [showErrors, setShowErrors] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState({});
+  const [addGroup, setAddGroup] = useState(null);
+  const [addGroupVisible, setAddGroupVisible] = useState(false);
+  const [eventDialogOpen, setEventDialogOpen] = useState(false);
+  const [eventDialogData, setEventDialogData] = useState(null);
 
-    this.formRef = createRef();
-  }
+  useEffect(() => {
+    getGroupList(id).then(res => setGroups(res));
+    getEvents(id).then(res => setEvents(res));
+    getSingleTest(id).then(res => setData(res));
+    getAssignedGroups(id).then(res => setAssignedGroups(res));
+  }, [])
 
-  state = {
-    showErrors: false,
-    isLoading: false,
-    data: {},
-    addGroup: null
-  }
+  const checkFormValidity = () => formRef.current.checkValidity();
 
-  componentDidMount() {
-    console.log(this.props)
-    const {
-      params,
-      onHandleGetGroupList,
-      onHandleGetSingleTest,
-      onHandleGetAssignedGroups
-    } = this.props;
-    const { id } = params;
-    onHandleGetGroupList()
-    onHandleGetSingleTest(id).then(res => this.setState(state => ({...state, data: res.data})))
-    onHandleGetAssignedGroups(id).then(res => this.setState(state => ({...state, assignedGroups: res.data})))
-  }
-
-  checkFormValidity = () => this.formRef.current.checkValidity();
-
-  handleInputChange = (e, key) => {
+  const handleInputChange = (e, key) => {
     const value = e.target.value;
-    this.setState({ data: {...this.state.data, [key]: value }});
+    setData({...data, [key]: value });
   }
 
-  handleCheckboxChange = key => (e, value) => {
-    console.log(key, value)
-    this.setState({ data: {...this.state.data, [key]: value }});
+  const handleCheckboxChange = key => (e, value) => {
+    setData({...data, [key]: value });
   }
 
-  handleSelectChange = (key, val) => {
+  const handleSelectChange = (key, val) => {
     const value = val?.id;
-    this.setState({ data: {...this.state.data, [key]: value }});
+    setData({...data, [key]: value });
   }
 
-  handleSelectMultipleChange = (key, vals) => {
+  const handleSelectMultipleChange = (key, vals) => {
     const values = vals ? vals.map(el => el.id) : [];
-    this.setState({ data: {...this.state.data, [key]: values }});
+    setData({...data, [key]: values });
   }
 
-  isDataLoading = () => false
+  const isDataLoading = () => false
 
-  handleChangeAddGroup = option => {
-    console.log(option)
-    this.setState({ addGroup: option });
+  const handleChangeAddGroup = option => {
+    setAddGroup(option)
   }
 
-  handleAddGroupClick = e => {
-    const { addGroup } = this.state;
-    const { params, showSnackbar, onHandleAddGroupToTest } = this.props;
+  const handleAddGroupClick = e => {
+    const { params, showSnackbar, onHandleAddGroupToTest } = props;
     const { id } = params;
 
     onHandleAddGroupToTest(addGroup?.id, id).then(res => {
-      this.setState({
-        assignedGroups: [...this.state.assignedGroups, addGroup],
-        addGroup: null
-      })
+      setAddGroup(null);
+      setAddGroupVisible(false);
+      updateGroups(addGroup)
 
       showSnackbar({
         message: lang.tests.snackbar.groupAdded,
@@ -128,18 +126,12 @@ class EditTest extends Component {
     })
   }
 
-  handleRemoveGroupClick = groupId => e => {
+  const handleRemoveGroupClick = groupId => e => {
     if (window.confirm(lang.tests.snackbar.confirmRemoveTestGroup)) {
-      const { assignedGroups } = this.state;
-      const { params, showSnackbar, onHandleRemoveGroupFromTest } = this.props;
+      const { params, showSnackbar, onHandleRemoveGroupFromTest } = props;
       const { id } = params;
       onHandleRemoveGroupFromTest(groupId, id).then(res => {
-        // const group = this.state.usersNotInGroup.find(el => el.id == groupId)
-
-        this.setState({
-          assignedGroups: assignedGroups.filter(el => el.id !== groupId),
-        })
-
+        setAssignedGroups(assignedGroups.filter(el => el.id !== groupId))
         showSnackbar({
           message: lang.tests.snackbar.groupRemoved,
           severity: 'success'
@@ -148,37 +140,53 @@ class EditTest extends Component {
     }
   }
 
-  render() {
-    const { showErrors, isLoading, data, addGroup, assignedGroups } = this.state;
-    const { classes, params, groups } = this.props;
-    const { id } = params;
-    const assignedGroupIds = assignedGroups ? assignedGroups.map(el => el.id) : [];
+  const toggleGroupVisible = () => setAddGroupVisible(!addGroupVisible);
+  const handleEventDialogOpen = (data = null) => { setEventDialogOpen(true); setEventDialogData(data) }
+  const handleEventDialogClose = (data = null) => { setEventDialogOpen(false); setEventDialogData(null) }
 
-    const formSubmit = e => {
-      const { onHandleSaveTest, showSnackbar } = this.props;
-      this.setState({ showErrors: true }, () => {
-        if (this.checkFormValidity()) {
-          // tbd check for duplicates
-          onHandleSaveTest(id, data).then(res => {
-            showSnackbar({
-              message: lang.main.snackbar.changesSaved,
-              severity: 'success'
-            })
-            // tbd block request spam
-          })
-        } else {
-          showSnackbar({
-            message: lang.main.validation.fillAllRequired,
-            severity: 'error'
-          })
-        }
+  const { classes, params, onHandleSaveTest, showSnackbar } = props;
+  const { id } = params;
+  const assignedGroupIds = assignedGroups ? assignedGroups.map(el => el.id) : [];
+
+  const formSubmit = e => {
+    setShowErrors(true);
+    if (checkFormValidity()) {
+      onHandleSaveTest(id, data).then(res => {
+        console.log('b')
+        showSnackbar({
+          message: lang.main.snackbar.changesSaved,
+          severity: 'success'
+        })
+        // tbd block request spam
       })
+    } else {
+      showSnackbar({
+        message: lang.main.validation.fillAllRequired,
+        severity: 'error'
+      })
+    }
+  }
+
+    const testDateComparator = (a, b) => {
+      return a.startDate === b.startDate
+        ? (b.endDate - a.endDate)
+        : (b.startDate - a.startDate);
+    }
+
+    const groupComparator = (a, b) => b.name < a.name;
+
+    const updateGroups = (group) => {
+      setAssignedGroups([...assignedGroups.filter(el => el.id !== group?.id), group].sort(groupComparator))
+    }
+
+    const updateEvents = (event, id = null) => {
+      setEvents([...events.filter(el => el.id !== id), event].sort(testDateComparator))
     }
 
     return (
       <Box sx={{ height: 'calc(100vh - 112px)' }}>
         <Form
-          formRef={this.formRef}
+          formRef={formRef}
           title="Edit test"
           fullHeight
           submitButton={
@@ -190,48 +198,11 @@ class EditTest extends Component {
               id="name"
               label="Test name"
               value={data.name}
-              handleChange={this.handleInputChange}
+              handleChange={handleInputChange}
               required
-              isLoading={isLoading || this.isDataLoading()}
+              isLoading={isLoading || isDataLoading()}
               error={showErrors && !data.name}
               helperText={lang.main.validation.empty}
-            />
-
-            <Box display="flex" gap={2}>
-              <TextField
-                id="startDate"
-                type="datetime-local"
-                label="Test start"
-                value={data.startDate?.replace(/\s/, 'T')}
-                handleChange={this.handleInputChange}
-                required
-                isLoading={isLoading || this.isDataLoading()}
-                error={showErrors && (!data.endDate || (data.endDate <= data.startDate))}
-                helperText={(data.endDate <= data.startDate) ? lang.main.validation.invalidDates : lang.main.validation.empty}
-              />
-              
-              <TextField
-                id="endDate"
-                type="datetime-local"
-                label="Test end"
-                value={data.endDate?.replace(/\s/, 'T')}
-                handleChange={this.handleInputChange}
-                required
-                isLoading={isLoading || this.isDataLoading()}
-                error={showErrors && (!data.endDate || (data.endDate <= data.startDate))}
-                helperText={(data.endDate <= data.startDate) ? lang.main.validation.invalidDates : lang.main.validation.empty}
-              />
-            </Box>
-            
-
-            <TextField
-              id="duration"
-              type="number"
-              label="Duration"
-              value={data.duration}
-              required
-              handleChange={this.handleInputChange}
-              isLoading={isLoading || this.isDataLoading()}
             />
 
             <Box className={classes.checkboxContainer}>
@@ -239,85 +210,115 @@ class EditTest extends Component {
                 id="isActive"
                 label="Test active"
                 checked={Boolean(data.isActive)}
-                onChange={this.handleCheckboxChange('isActive')}
+                onChange={handleCheckboxChange('isActive')}
               />
 
               <Checkbox
                 id="showScores"
                 label="Show score after completion"
                 checked={Boolean(data.showScores)}
-                onChange={this.handleCheckboxChange('showScores')}
+                onChange={handleCheckboxChange('showScores')}
               />
             </Box>
 
           </Grid>
 
           <Grid item xs={12} sm={6} md={6} lg={6}>
+            <Box mb={2}>
 
-            <Box className={classes.addContainer}>
-              <Autocomplete
-                options={groups?.filter(el => !assignedGroupIds.includes(el.id)) ?? []}
-                getOptionLabel={option => option.name}
-                onChange={(e, value) => this.handleChangeAddGroup(value)}
-                value={addGroup}
-                fullWidth
-                renderInput={(params) => 
-                  <MdlTextField 
-                    {...params}
-                    fullWidth
-                    variant="standard"
-                    label="Add group"
-                    // value={addUser?.id}
-                    
-                  />
-                }
-              />
-              <IconButton
-                className={classes.addButton}
-                onClick={this.handleAddGroupClick}
-                disabled={addGroup === null}
-              >
-                <GroupAddIcon />
-              </IconButton>
-              {/* <Button variant="outlined" size="small" onClick={this.handleAddUserClick}>add</Button> */}
-            </Box>
-           
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Typography variant="subtitle1">Groups</Typography>
+                <Button variant="outlined" size="small" onClick={toggleGroupVisible}>add</Button>
+              </Box>
 
-            <List dense>
-              {assignedGroups && assignedGroups.map(group => 
-                <ListItem 
-                  key={group.id}
-                  primary={group.name}
-                  icon={<GroupsIcon />}
-                  action={
-                    <IconButton edge="end" size="small" onClick={this.handleRemoveGroupClick(group.id)}>
-                      <DeleteIcon fontSize="inherit" />
-                    </IconButton>
+              {addGroupVisible && <Box className={classes.addContainer}>
+                <Autocomplete
+                  options={groups?.filter(el => !assignedGroupIds.includes(el.id)) ?? []}
+                  getOptionLabel={option => option.name}
+                  onChange={(e, value) => handleChangeAddGroup(value)}
+                  value={addGroup}
+                  fullWidth
+                  renderInput={(params) => 
+                    <MdlTextField 
+                      {...params}
+                      fullWidth
+                      variant="standard"
+                      label="Add group"
+                      // value={addUser?.id}
+                      
+                    />
                   }
-                />  
-              )}
-              
-            </List>
+                />
+                <IconButton
+                  className={classes.addButton}
+                  onClick={handleAddGroupClick}
+                  disabled={addGroup === null}
+                >
+                  <GroupAddIcon />
+                </IconButton>
+                {/* <Button variant="outlined" size="small" onClick={this.handleAddUserClick}>add</Button> */}
+              </Box>}
+
+              <List dense>
+                {assignedGroups && assignedGroups.map(group => 
+                  <ListItem 
+                    key={group.id}
+                    primary={group.name}
+                    icon={<GroupsIcon />}
+                    action={
+                      <IconButton edge="end" size="small" onClick={handleRemoveGroupClick(group.id)}>
+                        <DeleteIcon fontSize="inherit" />
+                      </IconButton>
+                    }
+                  />  
+                )}
+              </List>
+            </Box>
+
+            <Box mb={2}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Typography variant="subtitle1">Events</Typography>
+                <Button variant="outlined" size="small" onClick={e => handleEventDialogOpen({ testId: props?.params?.id })}>add</Button>
+              </Box>
+
+              <List dense>
+                {events && events.map(event => 
+                  <ListItem 
+                    key={event.id}
+                    primary={`${event.startDate} - ${event.endDate} (${event.duration} mins)`}
+                    icon={<CalendarTodayIcon />}
+                    action={
+                      <IconButton edge="end" size="small" onClick={e => handleEventDialogOpen(event)}>
+                        <SettingsIcon fontSize="inherit" />
+                      </IconButton>
+                    }
+                  />  
+                )}
+              </List>
+
+              <EventDialog
+                open={eventDialogOpen}
+                data={eventDialogData}
+                title='Event'
+                handleClose={handleEventDialogClose}
+                updateEvents={updateEvents}
+              />
+            </Box>
+
+
           </Grid>
         </Form>
       </Box>
     )
-  }
+  // }
 }
-
-const mapStateToProps = state => ({
-  // id: state.addEntry?.data?.id,
-  groups: state.groups.data
-})
 
 const mapDispatchToProps = dispatch => ({
   onHandleSaveTest: (id, data) => dispatch(handleSaveTest(id, data)),
   onHandleGetSingleTest: id => dispatch(handleGetSingleTest(id)),
-  onHandleGetAssignedGroups: id => dispatch(handleGetAssignedGroups(id)),
-  onHandleGetGroupList: () => dispatch(handleGetGroupList()),
   onHandleAddGroupToTest: (groupId, testId) => dispatch(handleAddGroupToTest(groupId, testId)),
   onHandleRemoveGroupFromTest: (groupId, testId) => dispatch(handleRemoveGroupFromTest(groupId, testId)),
   showSnackbar: data => dispatch(showSnackbar(data))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withParams(withStyles(styles)(EditTest)));
+export default connect(null, mapDispatchToProps)(withParams(withStyles(styles)(EditTest)));

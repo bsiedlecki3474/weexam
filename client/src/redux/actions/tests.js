@@ -26,6 +26,10 @@ import {
   REMOVE_GROUP_FROM_TEST_PENDING,
   REMOVE_GROUP_FROM_TEST_SUCCESS,
   REMOVE_GROUP_FROM_TEST_ERROR,
+
+  GET_EVENTS_PENDING,
+  GET_EVENTS_SUCCESS,
+  GET_EVENTS_ERROR
 } from '../types/tests'
 
 import {
@@ -35,7 +39,8 @@ import {
   getSingleTest,
   getAssignedGroups,
   addGroupToTest,
-  removeGroupFromTest
+  removeGroupFromTest,
+  getEvents
 } from '../../api/tests'
 
 const handleAddTest = (formData) => async dispatch => {
@@ -108,6 +113,16 @@ const handleRemoveGroupFromTest = (groupId, testId) => async dispatch => {
   }
 }
 
+const handleGetEvents = (id) => async dispatch => {
+  dispatch({ type: GET_EVENTS_PENDING })
+  try {
+    const data = await getEvents(id)
+    return dispatch({ type: GET_EVENTS_SUCCESS, data })
+  } catch (e) {
+    return dispatch({ type: GET_EVENTS_ERROR, payload: e })
+  }
+}
+
 export {
   handleAddTest,
   handleSaveTest,
@@ -115,5 +130,6 @@ export {
   handleGetSingleTest,
   handleGetAssignedGroups,
   handleAddGroupToTest,
-  handleRemoveGroupFromTest
+  handleRemoveGroupFromTest,
+  handleGetEvents
 }
