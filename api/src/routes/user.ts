@@ -3,7 +3,8 @@ import {
   add,
   save,
   list,
-  single
+  single,
+  testEvents
 } from '../controller/user';
 import authMiddleware from '../middleware/authMiddleware'
 
@@ -11,6 +12,7 @@ const router = Router();
 
 router.post('/add', authMiddleware, add);
 router.get('/list', authMiddleware, list);
+router.get('/testEvents', authMiddleware, testEvents);
 router.get('/:id', authMiddleware, single);
 router.post('/:id/save', authMiddleware, save);
 

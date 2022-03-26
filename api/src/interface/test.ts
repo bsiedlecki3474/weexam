@@ -15,3 +15,14 @@ export interface Event {
   duration: string,
   is_active: number
 }
+
+export interface TestEvent {
+  id: number,
+  name: string,
+  start_date: string,
+  end_date: string,
+  duration: string,
+  first_name: string,
+  last_name: string,
+  is_active: number
+}

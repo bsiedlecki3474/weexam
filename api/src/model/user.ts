@@ -1,6 +1,7 @@
 import Model from './model'
 import { CRUD } from 'interface/crud';
 import { User as UserInterface } from '../interface/user'
+import { TestEvent as TestEventInterface } from '../interface/test'
 import { format } from 'date-fns'
 
 class User extends Model /*implements CRUD*/ {
@@ -138,6 +139,39 @@ class User extends Model /*implements CRUD*/ {
 					row.created_on
 				),
 			}
+		}
+	}
+
+	testEvents = async (id: number) => {
+		const sql = `SELECT
+			t.id,
+			t.name,
+			e.start_date,
+			e.end_date,
+			e.duration,
+			e.is_active,
+			a.first_name,
+			a.last_name
+		FROM wee_tests_events e
+		LEFT JOIN wee_tests t ON t.id = e.test_id
+		LEFT JOIN wee_tests_groups tg ON tg.test_id = t.id
+		LEFT JOIN wee_groups_users gu ON gu.group_id = tg.group_id
+		LEFT JOIN wee_users a ON a.id = t.created_by
+		WHERE gu.user_id = ?`;
+
+		const data = await this.db.query(sql, [id]);
+		console.log(data)
+
+		if (data) {
+			return data.map((row: TestEventInterface) => ({
+				id: row.id,
+				name: row.name,
+				startDate: format(new Date(row.start_date), 'yyyy-MM-dd HH:mm'),
+				endDate: format(new Date(row.end_date), 'yyyy-MM-dd HH:mm'),
+				duration: row.duration,
+				administrator: row.first_name + ' ' + row.last_name,
+				isActive: row.is_active
+			}));
 		}
 	}
 }
