@@ -21,9 +21,15 @@ const getUserList = async () => {
   return res.data;
 }
 
+const getUserTestEvents = async () => {
+  const res = await axios.get(`/user/testEvents`);
+  return res.data;
+}
+
 export {
   addUser,
   saveUser,
   getSingleUser,
-  getUserList
+  getUserList,
+  getUserTestEvents
 }

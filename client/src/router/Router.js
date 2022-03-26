@@ -3,7 +3,8 @@ import { Routes, Route, useRoutes } from "react-router-dom";
 import { connect } from "react-redux";
 import { LoginLayout, DashboardLayout } from '../layouts'
 import {
-  Profile
+  Profile,
+  Dashboard
 } from '../components'
 
 import {
@@ -34,6 +35,7 @@ const Router = props => {
       path: '/',
       element: loggedIn ? <DashboardLayout /> : <LoginLayout />,
       children: [
+        { path: '', element: <Dashboard /> },
         { path: 'profile', element: <Profile /> },
         { path: 'users', element: <Users />, },
         { path: 'users/add', element: <AddUser /> },
