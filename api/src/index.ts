@@ -2,7 +2,7 @@ import express, { json, urlencoded, Request, Response } from "express";
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser'
-import { auth, user, group, test, event } from './routes';
+import { auth, user, group, test, event, question } from './routes';
 import errorMiddleware from './middleware/errorMiddleware';
 import { APP_URL } from './config';
 // import { db } from './Db';
@@ -36,6 +36,7 @@ app.use('/user/', user);
 app.use('/group/', group);
 app.use('/test/', test);
 app.use('/event/', event);
+app.use('/question/', question);
 
 app.use(errorMiddleware);
 
