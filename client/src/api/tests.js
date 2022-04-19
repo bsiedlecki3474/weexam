@@ -41,6 +41,12 @@ const getEvents = async (id) => {
   return res.data
 }
 
+const getQuestions = async (id) => {
+  const res = await axios.get(`/test/${id}/questions`);
+  return res.data
+}
+
+
 export {
   addTest,
   saveTest,
@@ -49,5 +55,6 @@ export {
   getAssignedGroups,
   addGroupToTest,
   removeGroupFromTest,
-  getEvents
+  getEvents,
+  getQuestions
 }

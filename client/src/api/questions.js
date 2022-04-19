@@ -5,6 +5,12 @@ const getAnswerTypes = async (data) => {
   return res.data;
 }
 
+const saveQuestions = async (id, questions) => {
+  const res = await axios.post(`/question/${id}/saveQuestions`, { questions });
+  return res.data
+}
+
 export {
-  getAnswerTypes
+  getAnswerTypes,
+  saveQuestions
 }

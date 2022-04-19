@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
-import PropTypes from 'prop-types';
+import { withStyles } from '@mui/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -25,13 +25,21 @@ import Typography from '@mui/material/Typography';
 import { handleSignOut } from '../redux/actions/auth';
 import { handleToggleTheme } from '../redux/actions/theme';
 
-
 import { connect } from "react-redux"
+
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+    marginTop: theme.spacing(8),
+    height: `calc(100% - ${theme.spacing(8)})`
+  }
+})
 
 const drawerWidth = 240;
 
 const MenuDrawer = props => {
-  const { window, children, theme, onHandleSignOut, onHandleToggleTheme } = props;
+  const { window, classes, children, theme, onHandleSignOut, onHandleToggleTheme } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -114,7 +122,6 @@ const MenuDrawer = props => {
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        aria-label="mailbox folders"
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Drawer
@@ -138,6 +145,9 @@ const MenuDrawer = props => {
             display: { xs: 'none', sm: 'block' },
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
+          PaperProps={{
+            elevation: 1
+          }}
           open
         >
           {drawer}
@@ -145,22 +155,16 @@ const MenuDrawer = props => {
       </Box>
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+        className={classes.root}
+        sx={{
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+        }}
       >
-        <Toolbar />
-          {children}
+        {children}
       </Box>
     </Box>
   );
 }
-
-MenuDrawer.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
-  window: PropTypes.func,
-};
 
 const mapStateToProps = state => {
   return {
@@ -175,4 +179,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MenuDrawer);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(MenuDrawer));

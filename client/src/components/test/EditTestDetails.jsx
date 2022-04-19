@@ -44,6 +44,9 @@ import { Form, TextField, Select, Checkbox } from '../form'
 import lang from '../../lang'
 
 const styles = theme => ({
+  root: {
+    height: '100%'
+  },
   addContainer: {
     display: 'flex',
     alignItems: 'flex-end',
@@ -184,7 +187,7 @@ const EditTestDetails = props => {
     }
 
     return (
-      <Box sx={{ height: 'calc(100vh - 112px)' }}>
+      <Box className={classes.root}>
         <Form
           formRef={formRef}
           title="Edit test details"

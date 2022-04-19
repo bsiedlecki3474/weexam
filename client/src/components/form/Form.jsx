@@ -15,7 +15,7 @@ const styles = theme => ({
   form: {
     height: '100%',
     '& > div': {
-      height: '100%'
+      height: `calc(100% - ${theme.spacing(4)})`
     }
   },
   cardHeader: {
@@ -47,17 +47,17 @@ const Form = props => {
       className={fullHeight && classes.form}
       autoComplete="off"
     >
-      <Paper>
-        <CardContent className={classes.cardContent}>
+      {/* <Paper> */}
+        {/* <CardContent className={classes.cardContent}> */}
           <Typography variant="h6">{title}</Typography>
-          <Grid container className={classes.gridContainer} spacing={4}>
+          <Grid container spacing={4}>
             {children}
           </Grid>
-        </CardContent>
-        <CardActions className={classes.cardActions}>
+        {/* </CardContent> */}
+        {/* <CardActions className={classes.cardActions}> */}
           {submitButton}
-        </CardActions>
-      </Paper>
+        {/* </CardActions> */}
+      {/* </Paper> */}
       
     </form>
   )

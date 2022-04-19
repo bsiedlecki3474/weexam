@@ -56,54 +56,21 @@ const Question = props => {
     index,
     open,
     handleChange,
-    // handleQuestionUpdate,
-    // handleAnswerUpdate,
-    // handleAddAnswer,
-    // handleDeleteAnswer,
     handleDeleteQuestion,
     answerTypes
   } = props;
 
-  const [timer, setTimer] = useState(null);
-
-  // const getAnswerTemplate = key => ({ id: key, value: null, checked: false, edit: true })
-  // const getQuestionTemplate = key => ({ id: key, content: null, answers: [getAnswerTemplate(1)], answerTypeId: 1 })
-
-  // const [questions, setQuestions] = useState([getQuestionTemplate(1)]);
-
-
-
-
-
   const changeQuestionContent = (index) => e => {
-    // let newQuestions = [...questions];
-    // newQuestions[index].content = e.target.value;
-    // setQuestions(newQuestions);
     const { handleQuestionUpdate } = props;
     handleQuestionUpdate(index, 'content', e.target.value);
-
-    
-    // const { onUpdateContent } = props;
-    // onUpdateContent(index, e.target.value);
   }
 
   const changeQuestionAnswerType = (index) => e => {
-    // let newQuestions = [...questions];
-    // newQuestions[index].answerTypeId = e.target.value;
-    // setQuestions(newQuestions);
     const { handleQuestionUpdate } = props;
     handleQuestionUpdate(index, 'answerTypeId', e.target.value)
-    // console.log(e.target.value)
-    
-    // const { onUpdateAnswerType } = props;
-    // onUpdateAnswerType(index, e.target.value);
-    
   }
   
   const addQuestionAnswer = (index) => e => {
-    // let newQuestions = [...questions];
-    // newQuestions[index].answers = [...newQuestions[index].answers, getAnswerTemplate(newQuestions[index].answers.length + 1)];
-    // setQuestions(newQuestions);
     const { handleAddAnswer } = props;
     handleAddAnswer(index);
   }
@@ -111,50 +78,22 @@ const Question = props => {
   // ======================
 
 
-  const toggleAnswerEdit = (index, ai) => e => {
-    // let newQuestions = [...questions];
-    // newQuestions[index].answers[ai].edit = !newQuestions[index].answers[ai].edit;
-    // setQuestions(newQuestions);
+  const toggleAnswerEdit = (index, ai, value) => e => {
     const { handleAnswerUpdate } = props;
-    handleAnswerUpdate(index, ai, 'edit', e.target.value);
+    handleAnswerUpdate(index, ai, 'edit', value);
   }
 
   const deleteQuestionAnswer = (index, ai) => e => {
-    // const question = questions[index];
-    // const answers = [...question.answers.filter((el, i) => i !== ai)];
-    // question.answers = answers;
-    // setQuestions([...questions.filter((el, i) => i !== index), question]);
-      const { handleDeleteAnswer } = props;
+    const { handleDeleteAnswer } = props;
     handleDeleteAnswer(index, ai);
   }
 
   const toggleQuestionAnswer = (index, ai, typeId) => e => {
-    // let newQuestions = [...questions];
-    // const answerTypeId = newQuestions[index].answerTypeId;
-    // if (answerTypeId === 1) {
-    //   for (let newai in newQuestions[index].answers) {
-    //     newQuestions[index].answers[newai].checked = false;
-    //   }
-    //   newQuestions[index].answers[ai].checked = true;
-    // } else if (answerTypeId === 2) {
-    //   newQuestions[index].answers[ai].checked = !newQuestions[index].answers[ai].checked;
-    // }
-    
-    // setQuestions(newQuestions);
-
-
-    // const { handleAnswerUpdate } = props;
-    // handleAnswerUpdate(index, ai, 'checked', e.target.value);
-
     const { handleToggleAnswer } = props;
     handleToggleAnswer(index, ai, typeId)
   }
 
   const handleUpdateQuestionAnswer = (index, ai) => e => {
-    // let newQuestions = [...questions];
-    // newQuestions[index].answers[ai].value = e.target.value;
-    
-    // setQuestions(newQuestions);
     const { handleAnswerUpdate } = props;
     handleAnswerUpdate(index, ai, 'value', e.target.value);
   }
@@ -174,6 +113,7 @@ const Question = props => {
         <Typography sx={{ color: 'text.secondary' }}>
           {data?.content}
         </Typography>
+        
       </AccordionSummary>
       <AccordionDetails>
         <Grid container spacing={4}>
@@ -233,7 +173,7 @@ const Question = props => {
                         }
                       />
                       <div style={{ marginLeft: 'auto' }}>
-                        <IconButton size="small" onClick={toggleAnswerEdit(index, ai)}>
+                        <IconButton size="small" onClick={toggleAnswerEdit(index, ai, !a?.edit)}>
                           {a?.edit
                             ? <CheckIcon fontSize="inherit" />
                             : <EditIcon fontSize="inherit" />
@@ -263,14 +203,7 @@ const Question = props => {
                 variant="outlined"
                 color="error"
                 onClick={e => handleDeleteQuestion(index)}
-              >delete</Button>
-              <Button
-                sx={{ alignSelf: 'flex-end' }}
-                size="small"
-                variant="outlined"
-                // onClick={addQuestion}
-              >save</Button>
-              
+              >delete</Button>              
             </Box>
           </Grid>
         </Grid>

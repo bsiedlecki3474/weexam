@@ -35,7 +35,7 @@ const AddNewQuestion = props => {
       </span>
       
       <Typography variant="body1">
-        {text ?? 'Add new...'}
+        {text ?? 'Add new answer...'}
       </Typography>
     </Box>
   )

@@ -1,127 +1,60 @@
 import { useState, useEffect, useRef } from 'react'
 import { connect } from "react-redux"
 import { withStyles } from '@mui/styles';
+import withParams from "../../hoc/withParams";
 
 import {
   Box,
   Grid,
   Button,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-  Checkbox,
-  Radio,
-  RadioGroup,
-  FormControl,
-  FormControlLabel,
-  IconButton
+  Fab
 } from "@mui/material"
 
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CheckIcon from '@mui/icons-material/Check';
+import AddIcon from '@mui/icons-material/Add';
 
 import { Form, TextField, Select } from '../form';
-// import AddNewQuestion from '../question/AddNewQuestion';
+import { ViewLayout } from '../../layouts';
+
 import Question from '../question/Question.jsx';
 
-import { addQuestion } from '../../redux/actions/questions';
+import { handleSaveQuestions } from '../../redux/actions/questions';
+import { showSnackbar } from '../../redux/actions/snackbar'
 
 import { getAnswerTypes } from "../../api/questions";
+import { getQuestions } from "../../api/tests";
+
+import lang from '../../lang'
 
 const styles = theme => ({
+  root: {
+    height: '100%'
+  },
   answerContainer: {
     width: '100%',
     marginBottom: theme.spacing(2)
+  },
+  floatingButton: {
+    position: 'fixed !important',
+    bottom: theme.spacing(3),
+    right: theme.spacing(3)
   }
 })
 
 const getAnswerTemplate = key => ({ id: key, value: null, checked: false, edit: true })
 const getQuestionTemplate = key => ({ id: key, content: null, answers: [getAnswerTemplate(1)], answerTypeId: 1 })
 
-
 const EditTestQuestions = props => {
-  const { classes, /*questions,*/ onAddQuestion } = props;
+  const { classes, params, onSaveQuestions } = props;
+  const { id } = params;
 
-  const formRef = useRef();
   const [questions, setQuestions] = useState([getQuestionTemplate(1)]);
   const [answerTypes, setAnswerTypes] = useState([]);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     getAnswerTypes().then(res => setAnswerTypes(res))
-  })
-
-  // const addQuestion = () => setQuestions([...questions, getQuestionTemplate(questions.length + 1)])
-
-  // const changeQuestionContent = (qi) => e => {
-  //   let newQuestions = [...questions];
-  //   newQuestions[qi].content = e.target.value;
-  //   setQuestions(newQuestions);
-  // }
-
-  // const changeQuestionAnswerType = (qi) => e => {
-  //   let newQuestions = [...questions];
-  //   newQuestions[qi].answerTypeId = e.target.value;
-  //   setQuestions(newQuestions);
-  // }
-  
-  // const addQuestionAnswer = (qi) => e => {
-  //   let newQuestions = [...questions];
-  //   newQuestions[qi].answers = [...newQuestions[qi].answers, getAnswerTemplate(newQuestions[qi].answers.length + 1)];
-  //   setQuestions(newQuestions);
-  // }
-
-  // // ======================
-
-
-  // const toggleAnswerEdit = (qi, ai) => e => {
-  //   let newQuestions = [...questions];
-  //   newQuestions[qi].answers[ai].edit = !newQuestions[qi].answers[ai].edit;
-  //   setQuestions(newQuestions);
-  // }
-
-  // const deleteQuestionAnswer = (qi, ai) => e => {
-  //   const question = questions[qi];
-  //   const answers = [...question.answers.filter((el, i) => i !== ai)];
-  //   question.answers = answers;
-  //   setQuestions([...questions.filter((el, i) => i !== qi), question]);
-  // }
-
-  // const toggleQuestionAnswer = (qi, ai) => e => {
-  //   let newQuestions = [...questions];
-  //   const answerTypeId = newQuestions[qi].answerTypeId;
-  //   if (answerTypeId === 1) {
-  //     for (let newai in newQuestions[qi].answers) {
-  //       newQuestions[qi].answers[newai].checked = false;
-  //     }
-  //     newQuestions[qi].answers[ai].checked = true;
-  //   } else if (answerTypeId === 2) {
-  //     newQuestions[qi].answers[ai].checked = !newQuestions[qi].answers[ai].checked;
-  //   }
-    
-  //   setQuestions(newQuestions);
-  // }
-
-  // const handleQuestionAnswerchange = (qi, ai) => e => {
-  //   let newQuestions = [...questions];
-  //   newQuestions[qi].answers[ai].value = e.target.value;
-    
-  //   setQuestions(newQuestions);
-  // }
-
-  // const answerTypeControls = {
-  //   1: <Radio />,
-  //   2: <Checkbox />
-  // }
-
-  // const handleQuestionUpdate = (qi, field, value) => {
-  //   let newQuestions = [...questions];
-  //   newQuestions[qi][field] = value;
-  //   // setQuestions(newQuestions);
-  // }
+    getQuestions(id).then(res => res?.length && setQuestions(res));
+  }, [])
 
   const handleQuestionUpdate = (qi, property, value) => {
     setQuestions(
@@ -161,7 +94,7 @@ const EditTestQuestions = props => {
         return typeId == 2 ? el : {
           ...el,
           ...{
-            ...questions[qi].answers[ai],
+            ...questions[qi].answers[i],
             checked: false
           }
         }
@@ -169,7 +102,7 @@ const EditTestQuestions = props => {
       return {
         ...el,
         ...{
-          ...questions[qi].answers[ai],
+          ...questions[qi].answers[i],
           checked: !questions[qi].answers[ai].checked
         }
       };
@@ -192,6 +125,7 @@ const EditTestQuestions = props => {
   }
 
   const handleDeleteQuestion = (qi) => {
+    setOpen(false);
     setQuestions(questions.filter((el, i) => i !== qi));
   }
 
@@ -201,34 +135,31 @@ const EditTestQuestions = props => {
     setQuestions([...questions, getQuestionTemplate(questions.length + 1)]);
   }
 
-  const handleOpen = id => (e, isExpanded) => setOpen(isExpanded ? id : false);
+  const handleOpen = index => (e, isExpanded) => setOpen(isExpanded ? index : false);
+
+  const handleClickSaveQuestionsButton = e => {
+    const { onSaveQuestions, showSnackbar } = props;
+    onSaveQuestions(id, questions).then(
+      showSnackbar({
+        message: lang.main.snackbar.changesSaved,
+        severity: 'success'
+      })
+    )
+  }
 
   return (
-    <Box sx={{ height: 'calc(100vh - 112px)' }}>
-      {/* <Form
-        formRef={formRef}
-        title={
-          <div>
-            Edit questions
-            <Button
-              sx={{ float: 'right' }}
-              size="small"
-              variant="outlined"
-              onClick={handleAddQuestion}
-            >add question</Button>  
-          </div>
-        }
-        fullHeight
-        submitButton={
-          <Button variant="outlined" size="small">save</Button>
-        }
-      > */}
-      <Button
-        // sx={{ float: 'right' }}
-        size="small"
-        variant="outlined"
-        onClick={handleAddQuestion}
-      >add question</Button>  
+    <Box className={classes.root}>
+      <ViewLayout
+        title="Edit questions"
+        actions={[
+          <Button
+            // sx={{ float: 'right' }}
+            size="small"
+            variant="outlined"
+            onClick={handleClickSaveQuestionsButton}
+          >save</Button>  
+        ]}
+      >
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           {questions?.map((q, qi) => {
             return (
@@ -249,21 +180,25 @@ const EditTestQuestions = props => {
             )
           })}
         </Grid>
-      {/* </Form> */}
+        <Fab
+          color="primary"
+          size="small"
+          className={classes.floatingButton}
+          onClick={handleAddQuestion}
+        >
+          <AddIcon />
+        </Fab>
+      </ViewLayout>
     </Box>
   )
 }
 
-// const mapStateToProps = ({ questions }) => ({
-//   questions
-// })
+const mapDispatchToProps = dispatch => ({
+  onSaveQuestions: (testId, questions) => dispatch(handleSaveQuestions(testId, questions)),
+  showSnackbar: data => dispatch(showSnackbar(data))
+})
 
 
-// const mapDispatchToProps = dispatch => ({
-//   onAddQuestion: () => dispatch(addQuestion())
-// })
+export default connect(null, mapDispatchToProps)(withParams(withStyles(styles)(EditTestQuestions)));
 
-
-// export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(EditTestQuestions));
-
-export default withStyles(styles)(EditTestQuestions);
+// export default withStyles(styles)(EditTestQuestions);

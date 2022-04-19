@@ -2,6 +2,17 @@ import React from 'react';
 import { TextField, MenuItem, useMediaQuery } from '@mui/material';
 import { useTheme, makeStyles} from '@mui/styles';
 
+const useStyles = makeStyles(theme => ({
+  skeleton: {
+    margin: `${theme.spacing(2)}px 0 ${theme.spacing(1)}px 0`,
+    width: '100%'
+  },
+  helperText: {
+    position: 'absolute',
+    bottom: '-' + theme.spacing(3)
+  }
+}));
+
 const Select = props => {
   const { id, label, labelField, handleChange, value, variant, required, margin, noAsterisk, error, helper } = props;
   let { options } = props;
@@ -9,17 +20,6 @@ const Select = props => {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'), { noSsr: true });
-
-  const useStyles = makeStyles(theme => ({
-    skeleton: {
-      margin: `${theme.spacing(2)}px 0 ${theme.spacing(1)}px 0`,
-      width: '100%'
-    },
-    helperText: {
-      position: 'absolute',
-      bottom: '-' + theme.spacing(3)
-    }
-  }));
 
   const classes = useStyles();
 
