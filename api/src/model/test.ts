@@ -3,7 +3,10 @@ import { CRUD } from 'interface/crud';
 import { Test as TestInterface } from '../interface/test'
 import { SimpleGroup as GroupInterface } from '../interface/group'
 import { Event as EventInterface } from '../interface/test'
+import { Question as QuestionInterface } from '../interface/question'
 import { format } from 'date-fns'
+
+import question from './question'
 
 class Test extends Model /*implements CRUD*/ {
 	add = async (body: any /* interface */) => {
@@ -169,6 +172,31 @@ class Test extends Model /*implements CRUD*/ {
 	deleteEvent = async () => {
 		return setTimeout(() => true, 100);
 	}
+
+	questions = async (id: number) => {
+		const sql = `SELECT
+			tq.id,
+			tq.test_id,
+			tq.answer_type_id,
+			tq.content
+		FROM wee_tests_questions tq
+		WHERE tq.test_id = ?
+		ORDER BY tq.id`;
+
+		const data = await this.db.query(sql, [id]);
+
+		if (data) {
+			return Promise.all(data.map(async (row: QuestionInterface) => ({
+				id: row.id,
+				testId: row.test_id,
+				answerTypeId: row.answer_type_id,
+				content: row.content,
+				answers: await question.answers(row.id) ?? []
+			})));
+		}
+	}
+
+
 }
 
 export default new Test();

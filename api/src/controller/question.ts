@@ -18,8 +18,27 @@ class Question {
       res.status(500).send(e);
     }
   }
+
+  saveQuestions = async (req: Request, res: Response) => {
+    try {
+      const {
+        questions
+      } = req.body;
+
+      if (!Number(req.params.id))
+        return res.status(400).send();
+
+      const response = await question.saveQuestions(Number(req.params.id), questions);
+
+      res.status(200).send(response);
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
 }
 
 export const {
-  answerTypes
+  answerTypes,
+  saveQuestions
 } = new Question();

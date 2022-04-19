@@ -9,6 +9,7 @@ import {
   removeGroupFromTest,
   groups,
   events,
+  questions,
   addEvent,
   deleteEvent
 } from '../controller/test';
@@ -23,6 +24,7 @@ router.get('/:id', authMiddleware, single);
 router.post('/:id/save', authMiddleware, save);
 router.get('/:id/groups', authMiddleware, groups);
 router.get('/:id/events', authMiddleware, events);
+router.get('/:id/questions', authMiddleware, questions);
 
 // router.get('/', list);
 // router.post('/', create);

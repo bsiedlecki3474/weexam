@@ -15,6 +15,8 @@ abstract class Model {
 		return Number(data[0].id) + 1;;
 	}
 
+	prepareParams = (arr: any[]) => arr ? `(${new Array(arr.length).fill('?').join()})` : null;
+
 	prepareUserDateTime = async (
 		firstName: string,
 		lastName: string,
