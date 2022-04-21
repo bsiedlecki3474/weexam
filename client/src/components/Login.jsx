@@ -1,8 +1,5 @@
-import { useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import { withStyles } from '@mui/styles';
-
-import { handleSignIn } from '../redux/actions/auth';
-
 import { connect } from "react-redux"
 
 import {
@@ -10,51 +7,73 @@ import {
   Typography,
   Paper,
   Button,
-  TextField,
+  // TextField,
   IconButton,
   InputAdornment
 } from "@mui/material";
+
+import { TextField } from './form'
 
 import {
   Visibility,
   VisibilityOff
 } from '@mui/icons-material';
 
+import lang from '../lang'
+import { useLocalStorage } from '../hooks';
+
+import { handleSignIn } from '../redux/actions/auth';
+import { showSnackbar } from '../redux/actions/snackbar'
 
 const styles = theme => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    gap: theme.spacing(4)
+    // gap: theme.spacing(4)
+  },
+  loginButton: {
+    marginTop: `${theme.spacing(4)} !important`
   }
 })
 
 const Login = props => {
   const { classes, onHandleSignIn } = props;
-  const [username, setUsername] = useState(null);
+  const [username, setUsername] = useLocalStorage(null);
   const [password, setPassword] = useState(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [showErrors, setShowErrors] = useState(false);
+  const formRef = useRef()
 
   const changeUsername = e => setUsername(e.target.value);
   const changePassword = e => setPassword(e.target.value);
 
+  const checkFormValidity = () => formRef.current.checkValidity();
+
   const signIn = async e => {
     e.preventDefault();
-    try {
-      onHandleSignIn(username, password);
-    } catch (e) {
-      console.log(e, e?.response?.message)
+    const { showSnackbar } = props;
+    setShowErrors(true);
+    if (checkFormValidity()) {
+      await onHandleSignIn(username, password)
+    } else {
+      showSnackbar({
+        message: lang.main.validation.fillAllRequired,
+        severity: 'error'
+      })
     }
   }
 
   return (
-    <form onSubmit={signIn}>
+    <form ref={formRef} onSubmit={signIn}>
       <Box className={classes.root}>
         <TextField
           label="Username"
           variant="outlined"
-          onChange={changeUsername}
+          value={username}
+          handleChange={changeUsername}
           required
+          error={showErrors && !username}
+          helperText={lang.main.validation.empty}
           InputProps={{
             'autoComplete': 'username'
           }}
@@ -63,8 +82,11 @@ const Login = props => {
           label="Password"
           type={passwordVisible ? 'text' : 'password'}
           variant="outlined"
-          onChange={changePassword}
+          value={password}
+          handleChange={changePassword}
           required
+          error={showErrors && !password}
+          helperText={lang.main.validation.empty}
           InputProps={{
             endAdornment: <InputAdornment position="end">
               <IconButton
@@ -81,6 +103,8 @@ const Login = props => {
         />
         <Button
           type="submit"
+          className={classes.loginButton}
+          onClick={signIn}
           fullWidth
           variant="contained"
         >
@@ -91,16 +115,11 @@ const Login = props => {
   )
 }
 
-const mapStateToProps = state => {
-  return {
-    ...state
-  };
-}
-
 const mapDispatchToProps = dispatch => {
   return {
-    onHandleSignIn: (username, password) => dispatch(handleSignIn(username, password))
+    onHandleSignIn: (username, password) => dispatch(handleSignIn(username, password)),
+    showSnackbar: data => dispatch(showSnackbar(data))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Login));
+export default connect(null, mapDispatchToProps)(withStyles(styles)(Login));

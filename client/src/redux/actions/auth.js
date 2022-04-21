@@ -10,7 +10,10 @@ import {
   // VERIFY_USER_ERROR
 } from "../types/auth"
 
+import lang from "../../lang"
+
 import { signIn, signOut, verifyUser } from '../../api/auth'
+import { showSnackbar } from "./snackbar"
 
 const handleSignIn = (username, password) => async dispatch => {
   dispatch({ type: SIGN_IN_PENDING })
@@ -18,6 +21,14 @@ const handleSignIn = (username, password) => async dispatch => {
     const data = await signIn(username, password)
     return dispatch({ type: SIGN_IN_SUCCESS, payload: data })
   } catch (e) {
+    let message = '';
+    if (e?.response?.status === 401) {
+      message = lang.auth.snackbar.wrongUsernameOrPassword
+    } else message = lang.main.snackbar.genericError
+    dispatch(showSnackbar({
+      message,
+      severity: 'error'
+    }))
     return dispatch({ type: SIGN_IN_ERROR, payload: e })
   }
 }

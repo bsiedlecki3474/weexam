@@ -20,17 +20,17 @@ const auth = (state = initialState, action) => {
 		case SIGN_IN_PENDING:
 		case SIGN_OUT_PENDING:
 		case VERIFY_USER_PENDING:
-			return {...state, pending: true }
+			return {...state, pending: true, error: null }
 
 		case SIGN_IN_SUCCESS:
 		case SIGN_OUT_SUCCESS:
 		case VERIFY_USER_SUCCESS:
-			return {...state, pending: false, data: action.payload }
+			return {...state, pending: false, data: action.payload, error: null }
 			
 		case SIGN_IN_ERROR:
 		case SIGN_OUT_ERROR:
 		case VERIFY_USER_ERROR:
-			return {...state, pending: false, data: null, error: action.payload }
+			return {...state, pending: false, error: action.payload }
 
 		default:
 			return state

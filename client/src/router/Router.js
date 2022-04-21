@@ -53,12 +53,14 @@ const Router = props => {
 
   const routing = useRoutes(routes);
 
-  return pending ? <Progress /> : routing;
+  // return pending ? <Progress /> : routing;
+
+  return routing;
 }
 
 const mapStateToProps = state => {
   return {
-    pending: state.auth.pending,
+    // pending: state.auth.pending,
     loggedIn: !!state.auth.data
   }
 }

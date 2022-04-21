@@ -34,7 +34,7 @@ const styles = theme => ({
     position: 'relative',
   },
   paper: {
-    padding: theme.spacing(4, 2)
+    padding: theme.spacing(2)
   }
 })
 

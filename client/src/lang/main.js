@@ -5,6 +5,7 @@ export default {
 		empty: 'Please input a value.'
 	},
 	snackbar: {
-		changesSaved: 'Changes have been saved.'
+		changesSaved: 'Changes have been saved.',
+		genericError: 'An error occured.'
 	}
 }
