@@ -54,28 +54,28 @@ class Question extends Model /*implements CRUD*/ {
 				const params = [];
 				const answerRows = [];
 				const answerParams = [];
-				for (let q=0; q<questions.length; q++) {
+				const nextQuestionId = await this.nextTableId('wee_tests_questions');
+				let nextAnswerId = await this.nextTableId('wee_questions_answers');
+				for (let q = 0; q < questions.length; q++) {
 					const question = questions[q];
-					const questionId = await this.nextTableId('wee_tests_questions') + q;
-					if (question?.content.trim().length && question?.answerTypeId && question?.answers.length) {
-						rows.push('(?, ?, ?, ?)');
-						params.push(
-							questionId,
-							testId,
-							question.content.trim(),
-							question.answerTypeId
-						);
-					}
 
-					if (question.answers?.length) {
-						for (let a=0; a<question.answers.length; a++) {
-							const answer = question.answers[a];
-							const answerId = await this.nextTableId('wee_questions_answers') + a;
+					if (question?.answers.length) {
+						if (question?.content.trim().length && question?.answerTypeId) {
+							rows.push('(?, ?, ?, ?)');
+							params.push(
+								nextQuestionId + q,
+								testId,
+								question.content.trim(),
+								question.answerTypeId
+							);
+						}
+
+						for (const answer of question.answers) {
 							if (answer?.value.trim().length) {
 								answerRows.push('(?, ?, ?, ?)');
 								answerParams.push(
-									answerId,
-									questionId,
+									++nextAnswerId,
+									nextQuestionId + q,
 									answer.value.trim(),
 									answer.checked
 								);
@@ -92,7 +92,7 @@ class Question extends Model /*implements CRUD*/ {
 					if (data && answerRows.length) {
 						sql = `INSERT INTO wee_questions_answers (id, question_id, value, checked) VALUES ${answerRows.join()}`;
 						data = await this.db.query(sql, answerParams);
-						console.log(data)
+						// console.log(data)
 					}
 				}
 
