@@ -155,7 +155,6 @@ const EditTestDetails = props => {
     setShowErrors(true);
     if (checkFormValidity()) {
       onHandleSaveTest(id, data).then(res => {
-        console.log('b')
         showSnackbar({
           message: lang.main.snackbar.changesSaved,
           severity: 'success'

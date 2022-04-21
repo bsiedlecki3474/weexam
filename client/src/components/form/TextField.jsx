@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   TextField as MdlTextField,
   Skeleton
@@ -27,7 +27,6 @@ const TextField = props => {
     label,
     type,
     handleChange,
-    handleDelayedChange,
     delay,
     value,
     color,
@@ -43,24 +42,7 @@ const TextField = props => {
     isLoading
   } = props;
 
-  // const [timer, setTimer] = useState(null);
-
-  // const delayWrapper = callback => {
-  //   clearTimeout(timer);
-  //   setTimer(setTimeout(() => callback, delay ?? 1350));
-  //   return callback;
-  // }
-
-  // const delayWrapper = callback => {
-  //   clearTimeout(timer);
-  //   setTimer(setTimeout(callback(), delay ?? 1350));
-  // }
-
   const classes = useStyles();
-
-  useEffect(() => {
-
-  }, )
 
   return (
     isLoading
@@ -73,9 +55,6 @@ const TextField = props => {
           type={type ?? "text"}
           InputProps={{ endAdornment, startAdornment }}
           InputLabelProps={{ shrink: ['date', 'datetime-local'].includes(type) || !!value }}
-          // onChange={e => handleDelayedChange
-          //   ? delayWrapper(() => handleDelayedChange(e, id))
-            // : handleChange(e, id)}
           onChange={e => handleChange(e, id)}
           color={"secondary" ?? color}
           variant={variant ?? 'standard'}
