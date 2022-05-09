@@ -4,7 +4,7 @@ import { Test as TestInterface } from '../interface/test'
 import { SimpleGroup as GroupInterface } from '../interface/group'
 import { Event as EventInterface } from '../interface/test'
 import { Question as QuestionInterface } from '../interface/question'
-import { format } from 'date-fns'
+import { format, formatISO } from 'date-fns'
 
 import question from './question'
 
@@ -74,7 +74,7 @@ class Test extends Model /*implements CRUD*/ {
 				// duration: row.duration,
 				showScores: row.show_scores,
 				isActive: row.is_active,
-				createdOn: format(new Date(row.created_on), 'yyyy-MM-dd HH:mm')
+				createdOn: formatISO(new Date(row.created_on))
 			}));
 		}
 	}
@@ -157,8 +157,8 @@ class Test extends Model /*implements CRUD*/ {
 			return data.map((row: EventInterface) => ({
 				id: row.id,
 				testId: row.test_id,
-				startDate: format(new Date(row.start_date), 'yyyy-MM-dd HH:mm'),
-				endDate: format(new Date(row.end_date), 'yyyy-MM-dd HH:mm'),
+				startDate: formatISO(new Date(row.start_date)),
+				endDate: formatISO(new Date(row.end_date)),
 				duration: row.duration,
 				isActive: row.is_active
 			}));

@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import { event } from '../model';
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import { format } from 'date-fns';
 
-import { JWT_SECRET } from '../config'
+// import { JWT_SECRET } from '../config'
 
 class Event {
   add = async (req: Request, res: Response) => {
@@ -18,15 +19,15 @@ class Event {
       if (!testId || !startDate || !endDate || !duration)
         return res.status(400).send();
 
-      const token = req.cookies.jwt;
+      // const token = req.cookies.jwt;
       const id = await event.nextTableId('wee_tests_events');
       // const { userId } = jwt.verify(token, JWT_SECRET) as JwtPayload;
 
       const data = [
         id,
         testId,
-        startDate,
-        endDate,
+        format(new Date(startDate), 'yyyy-MM-dd HH:mm'),
+        format(new Date(endDate), 'yyyy-MM-dd HH:mm'),
         duration,
         isActive ?? 0,
         // userId // createdBy
@@ -57,8 +58,8 @@ class Event {
       // const { userId } = jwt.verify(token, JWT_SECRET) as JwtPayload;
 
       const data = [
-        startDate,
-        endDate,
+        format(new Date(startDate), 'yyyy-MM-dd HH:mm'),
+        format(new Date(endDate), 'yyyy-MM-dd HH:mm'),
         duration,
         isActive,
         // userId // modifiedBy
@@ -82,10 +83,28 @@ class Event {
       res.status(500).send(e);
     }
   }
+
+  // single = async (req: Request, res: Response) => {
+  //   try {
+  //     const token = req.cookies.jwt;
+  //     const { userId } = jwt.verify(token, JWT_SECRET) as JwtPayload;
+  //     const eventId = Number(req.params.id);
+  //     const data = await event.single(eventId, userId);
+  //     if (data) {
+  //       res.status(200).send(data);
+  //     } else {
+  //       res.status(400).send('no data');
+  //     }
+  //   } catch (e) {
+  //     console.error(e)
+  //     res.status(500).send(e);
+  //   }
+  // }
 }
 
 export const {
   add,
   save,
-  _delete
+  _delete,
+  // single
 } = new Event();

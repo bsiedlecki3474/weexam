@@ -1,18 +1,14 @@
 import { Router } from 'express';
 import authMiddleware from '../middleware/authMiddleware'
 import {
-  add,
-  save,
-  _delete,
-  // single
-} from '../controller/event';
+  single,
+  start
+} from '../controller/assessment';
 
 const router = Router();
 
-router.post('/add', authMiddleware, add);
-router.post('/:id/save', authMiddleware, save);
-router.post('/:id/delete', authMiddleware, _delete);
-// router.get('/:id/single', authMiddleware, single);
+router.get('/:id', authMiddleware, single);
+router.post('/:id/start', authMiddleware, start);
 
 // router.get('/', list);
 // router.post('/', create);

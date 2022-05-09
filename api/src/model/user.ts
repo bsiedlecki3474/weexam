@@ -144,7 +144,7 @@ class User extends Model /*implements CRUD*/ {
 
 	testEvents = async (id: number) => {
 		const sql = `SELECT
-			t.id,
+			e.id,
 			t.name,
 			e.start_date,
 			e.end_date,
@@ -157,7 +157,8 @@ class User extends Model /*implements CRUD*/ {
 		LEFT JOIN wee_tests_groups tg ON tg.test_id = t.id
 		LEFT JOIN wee_groups_users gu ON gu.group_id = tg.group_id
 		LEFT JOIN wee_users a ON a.id = t.created_by
-		WHERE gu.user_id = ?`;
+		WHERE gu.user_id = ?
+		ORDER BY e.is_active DESC, e.start_date DESC`;
 
 		const data = await this.db.query(sql, [id]);
 		console.log(data)
