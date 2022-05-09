@@ -12,6 +12,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import SettingsIcon from '@mui/icons-material/Settings';
 
+import { format } from 'date-fns'
+
 import {
   Box,
   Button,
@@ -185,6 +187,12 @@ const EditTestDetails = props => {
       setEvents([...events.filter(el => el.id !== id), event].sort(testDateComparator))
     }
 
+    const formatEvent = (startDate, endDate, duration) => {
+      const formattedStartDate = format(new Date(startDate), 'yyyy-MM-dd HH:mm');
+      const formattedEndDate = format(new Date(endDate), 'yyyy-MM-dd HH:mm');
+      return `${formattedStartDate} - ${formattedEndDate} (${duration} mins)`;
+    }
+
     return (
       <Box className={classes.root}>
         <Form
@@ -287,7 +295,7 @@ const EditTestDetails = props => {
                 {events && events.map(event => 
                   <ListItem 
                     key={event.id}
-                    primary={`${event.startDate} - ${event.endDate} (${event.duration} mins)`}
+                    primary={formatEvent(event.startDate, event.endDate, event.duration)}
                     icon={<CalendarTodayIcon />}
                     action={
                       <IconButton edge="end" size="small" onClick={e => handleEventDialogOpen(event)}>

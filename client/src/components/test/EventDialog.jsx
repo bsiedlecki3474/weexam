@@ -12,6 +12,8 @@ import { withStyles } from '@mui/styles';
 import { useRef, useState, useEffect } from 'react';
 import { Form, TextField, Select, Checkbox } from '../form'
 
+import { format } from 'date-fns'
+
 import lang from '../../lang'
 
 import {
@@ -64,18 +66,19 @@ const EventDialog = props => {
     const { onHandleAddEvent, onHandleSaveEvent, updateEvents } = props;
     const event = {
       testId,
-      startDate,
-      endDate,
+      startDate: new Date(startDate).toISOString(),
+      endDate: new Date(endDate).toISOString(),
       duration,
       isActive
     }
-
 
     return (id
       ? onHandleSaveEvent(id, event)
       : onHandleAddEvent(event)
     ).then(updateEvents(event, id));
   }
+
+  
 
   return (
     <Dialog open={open} onClose={handleClose} className={classes.root}>
@@ -85,7 +88,7 @@ const EventDialog = props => {
           id="startDate"
           type="datetime-local"
           label="Test start"
-          value={startDate?.replace(/\s/, 'T')}
+          value={startDate ? format(new Date(startDate), 'yyyy-MM-dd\'T\'HH:mm') : null}
           handleChange={handleStartDateChange}
           required
           isLoading={isLoading}
@@ -97,7 +100,7 @@ const EventDialog = props => {
           id="endDate"
           type="datetime-local"
           label="Test end"
-          value={endDate?.replace(/\s/, 'T')}
+          value={endDate ? format(new Date(endDate), 'yyyy-MM-dd\'T\'HH:mm') : null}
           handleChange={handleEndDateChange}
           required
           isLoading={isLoading}

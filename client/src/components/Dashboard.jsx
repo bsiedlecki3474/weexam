@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom'
 
 import {
   Typography,
@@ -14,6 +15,7 @@ import { getUserTestEvents } from "../api/users";
 
 const Dashboard = props => {
   const [events, setEvents] = useState([])
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log(props)
@@ -24,7 +26,7 @@ const Dashboard = props => {
     <Typography variant="h5" mb={2}>My tests</Typography>
 
     <Grid container spacing={3}  >
-      {[...events, ...events, ...events, ...events, ...events].map(event => 
+      {events.map(event => 
         <Grid item xs={12} sm={6} md={4} lg={3} spacing={3}>
           <Card elevation={3}>
             <CardContent>
@@ -45,8 +47,13 @@ const Dashboard = props => {
               </Typography>
             </CardContent>
             <CardActions>
-              <Button size="small" color="primary">
-                Start
+              <Button
+                size="small"
+                color="primary"
+                disabled={new Date(event.endDate).getTime() < new Date().getTime()}
+                onClick={e => navigate('/assessments/' + event.id)}
+              >
+                View
               </Button>
             </CardActions>
           </Card>
