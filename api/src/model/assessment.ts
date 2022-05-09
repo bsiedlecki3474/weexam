@@ -16,7 +16,8 @@ class Assessment extends Model /*implements CRUD*/ {
 			adm.last_name,
 			a.is_active,
 			a.start_date,
-			a.end_date
+			a.end_date,
+			a.id IS NOT NULL AS is_completed
 		FROM wee_tests_events e
 		LEFT JOIN wee_tests t ON t.id = e.test_id
 		LEFT JOIN wee_tests_groups tg ON tg.test_id = t.id
@@ -46,7 +47,6 @@ class Assessment extends Model /*implements CRUD*/ {
 			);
 
 			const isActive = Number(
-				// row.is_active &&
 				row.start_date &&
 				(startDate.getTime() <= nowTimestamp) &&
 				(nowTimestamp <= expectedEndDate.getTime())
@@ -64,7 +64,8 @@ class Assessment extends Model /*implements CRUD*/ {
 				questions: row.questions,
 				administrator: row.first_name + ' ' + row.last_name,
 				isEventActive,
-				isActive
+				isActive,
+				isCompleted: Number(row.is_completed)
 			}
 		}
 	}
