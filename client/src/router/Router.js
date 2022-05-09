@@ -25,7 +25,7 @@ import {
   EditTest
 } from '../components/test'
 
-import { StartAssessment } from "../components/assessment";
+import { AssessmentManager } from "../components/assessment";
 
 import Progress from "../components/Progress";
 
@@ -49,7 +49,7 @@ const Router = props => {
         { path: 'tests', element: <Tests />, },
         { path: 'tests/add', element: <AddTest /> },
         { path: 'tests/:id', element: <EditTest /> },
-        { path: 'assessments/:id', element: <StartAssessment /> },
+        { path: 'assessments/:id', element: <AssessmentManager /> },
       ]
     },
     

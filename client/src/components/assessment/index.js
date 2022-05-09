@@ -1,5 +1,9 @@
-import StartAssessment from "./StartAssessment"
+import AssessmentManager from './AssessmentManager'
+import Assessment from './Assessment'
+import Summary from './Summary'
 
 export {
-  StartAssessment
+  AssessmentManager,
+  Assessment,
+  Summary
 }
