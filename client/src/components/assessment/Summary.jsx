@@ -24,13 +24,13 @@ const Summary = ({ assessment, handleStartAssessment }) => {
     administrator,
     isEventActive,
     isActive,
-    isCompleted
+    userFinished
   } = assessment;
 
   return (
     <ViewLayout
       title={name}
-      actions={isCompleted || !isEventActive ? [] : [
+      actions={userFinished || !isEventActive ? [] : [
         <Button
           // sx={{ float: 'right' }}
           size="small"
@@ -80,8 +80,8 @@ const Summary = ({ assessment, handleStartAssessment }) => {
                 <TableCell align="center">{isActive}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align="left">Assessment completed</TableCell>
-                <TableCell align="center">{isCompleted}</TableCell>
+                <TableCell align="left">User has finished</TableCell>
+                <TableCell align="center">{userFinished}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

@@ -11,7 +11,7 @@ import { ViewLayout } from '../../layouts';
 
 const Assessment = () => {
   return (
-    <div></div>
+    <div>assessment</div>
   );
 }
 

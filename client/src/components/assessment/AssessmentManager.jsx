@@ -49,13 +49,14 @@ const AssessmentManager = props => {
   const {
     isEventActive,
     isActive,
-    isCompleted
+    userFinished,
   } = assessment;
 
   return (
     <Box className={classes.root}>
       {assessment && (
-        !isCompleted && !(isEventActive && isActive)
+        // isCompleted && !(isEventActive && isActive)
+        isEventActive && isActive && !userFinished
           ? <Assessment />
           : <Summary
               assessment={assessment}
