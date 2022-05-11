@@ -14,10 +14,9 @@ class Assessment extends Model /*implements CRUD*/ {
 			COUNT(q.id) AS questions,
 			adm.first_name,
 			adm.last_name,
-			a.is_active,
+			a.user_finished,
 			a.start_date,
-			a.end_date,
-			a.id IS NOT NULL AS is_completed
+			a.end_date
 		FROM wee_tests_events e
 		LEFT JOIN wee_tests t ON t.id = e.test_id
 		LEFT JOIN wee_events_groups eg ON eg.event_id = e.id
@@ -35,7 +34,7 @@ class Assessment extends Model /*implements CRUD*/ {
 			const eventEndDate = new Date(row.event_end_date);
 			const startDate = new Date(row.start_date);
 			const endDate = new Date(row.end_date);
-			const expectedEndDate = addMinutes(new Date(row.start_date), row.duration);
+			const expectedEndDate = addMinutes(startDate, row.duration);
 			const nowTimestamp = new Date().getTime();
 
 			const isEventActive = Number(
@@ -65,13 +64,13 @@ class Assessment extends Model /*implements CRUD*/ {
 				administrator: row.first_name + ' ' + row.last_name,
 				isEventActive,
 				isActive,
-				isCompleted: Number(row.is_completed)
+				userFinished: Number(row.user_finished)
 			}
 		}
 	}
 
 	start = async (body: any /* interface */) => {
-		const sql = `INSERT INTO wee_tests_assessments (id, event_id, user_id, start_date, end_date, is_active, created_on, created_by) VALUES (?, ?, ?, NOW(), NULL, 1, NOW(), ?)`;
+		const sql = `INSERT INTO wee_tests_assessments (id, event_id, user_id, start_date, end_date, user_finished, created_on, created_by) VALUES (?, ?, ?, NOW(), NULL, 0, NOW(), ?)`;
 		const data = await this.db.query(sql, body);
 
 		if (data) {
