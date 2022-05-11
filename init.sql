@@ -169,7 +169,7 @@ CREATE TABLE `wee_tests_assessments` (
   `user_id` int UNSIGNED NOT NULL,
   `start_date` DATETIME,
   `end_date` DATETIME,
-  `is_active` TINYINT(1) UNSIGNED NOT NULL,
+  `user_finished` TINYINT(1) UNSIGNED NOT NULL,
   `created_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_by` INT UNSIGNED NOT NULL,
   CONSTRAINT `fk_wee_tests_assessments_event_id` FOREIGN KEY (`event_id`) REFERENCES `wee_tests_events` (`id`) ON DELETE CASCADE,
