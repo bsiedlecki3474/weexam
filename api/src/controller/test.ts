@@ -99,68 +99,6 @@ class Test {
     }
   }
 
-  groups = async (req: Request, res: Response) => {
-    try {
-      const data = await test.groups(Number(req.params.id));
-      if (data) {
-        res.status(200).send(data);
-      } else {
-        res.status(400).send('no data');
-      }
-    } catch (e) {
-      console.error(e)
-      res.status(500).send(e);
-    }
-  }
-
-  addGroupToTest = async (req: Request, res: Response) => {
-    try {
-      const {
-        groupId,
-        testId
-      } = req.body;
-
-      if (!groupId || !testId)
-        return res.status(400).send();
-
-      const data = [
-        groupId,
-        testId
-      ];
-
-      const response = await test.addGroupToTest(data);
-
-      res.status(200).send(response);
-    } catch (e) {
-      console.error(e)
-      res.status(500).send(e);
-    }
-  }
-
-  removeGroupFromTest = async (req: Request, res: Response) => {
-    try {
-      const {
-        groupId,
-        testId
-      } = req.body;
-
-      if (!groupId || !testId)
-        return res.status(400).send();
-
-      const data = [
-        groupId,
-        testId
-      ];
-
-      const response = await test.removeGroupFromTest(data);
-
-      res.status(200).send(response);
-    } catch (e) {
-      console.error(e)
-      res.status(500).send(e);
-    }
-  }
-
   events = async (req: Request, res: Response) => {
     try {
       const data = await test.events(Number(req.params.id));
@@ -203,9 +141,6 @@ export const {
   save,
   list,
   single,
-  groups,
-  addGroupToTest,
-  removeGroupFromTest,
   events,
   addEvent,
   deleteEvent,

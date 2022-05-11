@@ -20,8 +20,8 @@ class Assessment extends Model /*implements CRUD*/ {
 			a.id IS NOT NULL AS is_completed
 		FROM wee_tests_events e
 		LEFT JOIN wee_tests t ON t.id = e.test_id
-		LEFT JOIN wee_tests_groups tg ON tg.test_id = t.id
-		LEFT JOIN wee_groups_users gu ON gu.group_id = tg.group_id
+		LEFT JOIN wee_events_groups eg ON eg.event_id = e.id
+		LEFT JOIN wee_groups_users gu ON gu.group_id = eg.group_id
 		LEFT JOIN wee_tests_assessments a ON a.event_id = e.id AND a.user_id = gu.user_id
 		LEFT JOIN wee_users adm ON a.id = t.created_by
 		LEFT JOIN wee_tests_questions q ON q.test_id = t.id

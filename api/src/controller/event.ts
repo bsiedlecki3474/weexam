@@ -84,6 +84,64 @@ class Event {
     }
   }
 
+  addGroup = async (req: Request, res: Response) => {
+    try {
+      const { groupId } = req.body;
+      const eventId = Number(req.params.id);
+
+      if (!groupId || !eventId)
+        return res.status(400).send();
+
+      const data = [
+        groupId,
+        eventId
+      ];
+
+      const response = await event.addGroup(data);
+
+      res.status(200).send(response);
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
+  removeGroup = async (req: Request, res: Response) => {
+    try {
+      const { groupId } = req.body;
+      const eventId = Number(req.params.id);
+
+      if (!groupId || !eventId)
+        return res.status(400).send();
+
+      const data = [
+        groupId,
+        eventId
+      ];
+
+      const response = await event.removeGroup(data);
+
+      res.status(200).send(response);
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
+  groups = async (req: Request, res: Response) => {
+    try {
+      const data = await event.groups(Number(req.params.id));
+      if (data) {
+        res.status(200).send(data);
+      } else {
+        res.status(400).send('no data');
+      }
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
   // single = async (req: Request, res: Response) => {
   //   try {
   //     const token = req.cookies.jwt;
@@ -106,5 +164,8 @@ export const {
   add,
   save,
   _delete,
+  groups,
+  addGroup,
+  removeGroup
   // single
 } = new Event();

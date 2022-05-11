@@ -5,24 +5,16 @@ import {
   save,
   list,
   single,
-  addGroupToTest,
-  removeGroupFromTest,
-  groups,
   events,
-  questions,
-  addEvent,
-  deleteEvent
+  questions
 } from '../controller/test';
 
 const router = Router();
 
 router.post('/add', authMiddleware, add);
-router.post('/addGroupToTest', authMiddleware, addGroupToTest);
-router.post('/removeGroupFromTest', authMiddleware, removeGroupFromTest);
 router.get('/list', authMiddleware, list);
 router.get('/:id', authMiddleware, single);
 router.post('/:id/save', authMiddleware, save);
-router.get('/:id/groups', authMiddleware, groups);
 router.get('/:id/events', authMiddleware, events);
 router.get('/:id/questions', authMiddleware, questions);
 

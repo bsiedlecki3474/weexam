@@ -1,7 +1,6 @@
 import Model from './model'
 import { CRUD } from 'interface/crud';
 import { Test as TestInterface } from '../interface/test'
-import { SimpleGroup as GroupInterface } from '../interface/group'
 import { Event as EventInterface } from '../interface/test'
 import { Question as QuestionInterface } from '../interface/question'
 import { format, formatISO } from 'date-fns'
@@ -29,24 +28,6 @@ class Test extends Model /*implements CRUD*/ {
 		}
 	}
 
-	addGroupToTest = async (body: any /* interface */) => {
-		const sql = `INSERT INTO wee_tests_groups (group_id, test_id) VALUES (?, ?)`;
-		const data = await this.db.query(sql, body);
-
-		if (data) {
-			return true;
-		}
-	}
-
-	removeGroupFromTest = async (body: any /* interface */) => {
-		const sql = `DELETE FROM wee_tests_groups WHERE group_id = ? AND test_id = ?`;
-		const data = await this.db.query(sql, body);
-
-		if (data) {
-			return true;
-		}
-	}
-
 	list = async () => {
 		const sql = `SELECT
 			t.id,
@@ -57,8 +38,9 @@ class Test extends Model /*implements CRUD*/ {
 			COUNT(gu.user_id) AS participants,
 			t.created_on
 		FROM wee_tests t
-		LEFT JOIN wee_tests_groups tg ON tg.test_id = t.id
-		LEFT JOIN wee_groups g ON g.id = tg.group_id
+		LEFT JOIN wee_tests_events e ON e.test_id = t.id
+		LEFT JOIN wee_events_groups eg ON eg.event_id = e.id
+		LEFT JOIN wee_groups g ON g.id = eg.group_id
 		LEFT JOIN wee_groups_users gu ON gu.group_id = g.id
 		GROUP BY t.id`;
 
@@ -117,25 +99,6 @@ class Test extends Model /*implements CRUD*/ {
 					row.created_on
 				),
 			}
-		}
-	}
-
-	groups = async (id: number) => {
-		const sql = `SELECT
-			g.id,
-			g.name
-		FROM wee_groups g
-		LEFT JOIN wee_tests_groups tg ON tg.group_id = g.id
-		WHERE g.is_active = 1 AND tg.test_id = ?
-		ORDER BY g.name`;
-
-		const data = await this.db.query(sql, [id]);
-
-		if (data) {
-			return data.map((row: GroupInterface) => ({
-				id: row.id,
-				name: row.name
-			}));
 		}
 	}
 

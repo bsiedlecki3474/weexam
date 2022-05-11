@@ -1,6 +1,7 @@
 import Model from './model'
 import { CRUD } from 'interface/crud';
 import { Event as EventInterface } from '../interface/test'
+import { SimpleGroup as GroupInterface } from '../interface/group'
 import { format } from 'date-fns'
 
 class Event extends Model /*implements CRUD*/ {
@@ -27,6 +28,43 @@ class Event extends Model /*implements CRUD*/ {
 	delete = async (id: number) => {
 		const sql = `DELETE FROM wee_tests_events WHERE id = ?`;
 		const data = await this.db.query(sql, [id]);
+
+		if (data) {
+			return true;
+		}
+	}
+
+	groups = async (id: number) => {
+		const sql = `SELECT
+			g.id,
+			g.name
+		FROM wee_groups g
+		LEFT JOIN wee_events_groups eg ON eg.group_id = g.id
+		WHERE g.is_active = 1 AND eg.event_id = ?
+		ORDER BY g.name`;
+
+		const data = await this.db.query(sql, [id]);
+
+		if (data) {
+			return data.map((row: GroupInterface) => ({
+				id: row.id,
+				name: row.name
+			}));
+		}
+	}
+
+	addGroup = async (body: any /* interface */) => {
+		const sql = `INSERT INTO wee_events_groups (group_id, event_id) VALUES (?, ?)`;
+		const data = await this.db.query(sql, body);
+
+		if (data) {
+			return true;
+		}
+	}
+
+	removeGroup = async (body: any /* interface */) => {
+		const sql = `DELETE FROM wee_events_groups WHERE group_id = ? AND event_id = ?`;
+		const data = await this.db.query(sql, body);
 
 		if (data) {
 			return true;
