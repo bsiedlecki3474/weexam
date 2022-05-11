@@ -29,9 +29,6 @@ import {
 import {
   handleSaveTest,
   handleGetSingleTest,
-  handleGetAssignedGroups,
-  handleAddGroupToTest,
-  handleRemoveGroupFromTest,
   handleGetEvents
 } from '../../redux/actions/tests';
 
@@ -85,7 +82,7 @@ const EditTestDetails = props => {
     getGroupList(id).then(res => setGroups(res));
     getEvents(id).then(res => setEvents(res));
     getSingleTest(id).then(res => setData(res));
-    getAssignedGroups(id).then(res => setAssignedGroups(res));
+    // getAssignedGroups(id).then(res => setAssignedGroups(res));
   }, [])
 
   const checkFormValidity = () => formRef.current.checkValidity();
@@ -234,7 +231,7 @@ const EditTestDetails = props => {
           </Grid>
 
           <Grid item xs={12} sm={6} md={6} lg={6}>
-            <Box mb={2}>
+            {/* <Box mb={2}>
 
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant="subtitle1">Groups</Typography>
@@ -266,7 +263,6 @@ const EditTestDetails = props => {
                 >
                   <GroupAddIcon />
                 </IconButton>
-                {/* <Button variant="outlined" size="small" onClick={this.handleAddUserClick}>add</Button> */}
               </Box>}
 
               <List dense>
@@ -283,7 +279,7 @@ const EditTestDetails = props => {
                   />  
                 )}
               </List>
-            </Box>
+            </Box> */}
 
             <Box mb={2}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -309,6 +305,7 @@ const EditTestDetails = props => {
               <EventDialog
                 open={eventDialogOpen}
                 data={eventDialogData}
+                groups={groups}
                 title='Event'
                 handleClose={handleEventDialogClose}
                 updateEvents={updateEvents}
@@ -324,8 +321,6 @@ const EditTestDetails = props => {
 const mapDispatchToProps = dispatch => ({
   onHandleSaveTest: (id, data) => dispatch(handleSaveTest(id, data)),
   onHandleGetSingleTest: id => dispatch(handleGetSingleTest(id)),
-  onHandleAddGroupToTest: (groupId, testId) => dispatch(handleAddGroupToTest(groupId, testId)),
-  onHandleRemoveGroupFromTest: (groupId, testId) => dispatch(handleRemoveGroupFromTest(groupId, testId)),
   showSnackbar: data => dispatch(showSnackbar(data))
 })
 

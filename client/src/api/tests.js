@@ -21,21 +21,6 @@ const getSingleTest = async (id) => {
   return res.data
 }
 
-const getAssignedGroups = async (id) => {
-  const res = await axios.get(`/test/${id}/groups`);
-  return res.data
-}
-
-const addGroupToTest = async (groupId, testId) => {
-  const res = await axios.post('/test/addGroupToTest', { groupId, testId });
-  return res.data;
-}
-
-const removeGroupFromTest = async (groupId, testId) => {
-  const res = await axios.post('/test/removeGroupFromTest', { groupId, testId });
-  return res.data;
-}
-
 const getEvents = async (id) => {
   const res = await axios.get(`/test/${id}/events`);
   return res.data
@@ -52,9 +37,6 @@ export {
   saveTest,
   getTestList,
   getSingleTest,
-  getAssignedGroups,
-  addGroupToTest,
-  removeGroupFromTest,
   getEvents,
   getQuestions
 }

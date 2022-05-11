@@ -15,8 +15,26 @@ const deleteEvent = async (id) => {
   return res.data
 }
 
+const getAssignedGroups = async (id) => {
+  const res = await axios.get(`/event/${id}/groups`);
+  return res.data
+}
+
+const addGroup = async (id, groupId) => {
+  const res = await axios.post(`/event/${id}/addGroup`, { groupId });
+  return res.data;
+}
+
+const removeGroup = async (id, groupId) => {
+  const res = await axios.post(`/event/${id}/removeGroup`, { groupId });
+  return res.data;
+}
+
 export {
   addEvent,
   saveEvent,
-  deleteEvent
+  deleteEvent,
+  getAssignedGroups,
+  addGroup,
+  removeGroup
 }
