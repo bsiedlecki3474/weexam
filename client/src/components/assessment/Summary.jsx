@@ -24,13 +24,14 @@ const Summary = ({ assessment, handleStartAssessment }) => {
     administrator,
     isEventActive,
     isActive,
-    userFinished
+    userFinished,
+    assessmentStarted
   } = assessment;
 
   return (
     <ViewLayout
       title={name}
-      actions={userFinished || !isEventActive ? [] : [
+      actions={userFinished || !isEventActive || assessmentStarted ? [] : [
         <Button
           // sx={{ float: 'right' }}
           size="small"

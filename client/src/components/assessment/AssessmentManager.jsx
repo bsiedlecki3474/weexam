@@ -57,7 +57,7 @@ const AssessmentManager = props => {
       {assessment && (
         // isCompleted && !(isEventActive && isActive)
         isEventActive && isActive && !userFinished
-          ? <Assessment />
+          ? <Assessment id={id} />
           : <Summary
               assessment={assessment}
               handleStartAssessment={handleStartAssessment}

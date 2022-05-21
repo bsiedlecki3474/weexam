@@ -10,7 +10,13 @@ const startAssessment = async (id) => {
   return res.data
 }
 
+const getQuestions = async (id) => {
+  const res = await axios.get(`/assessment/${id}/questions`);
+  return res.data
+}
+
 export {
   getAssessment,
-  startAssessment
+  startAssessment,
+  getQuestions
 }

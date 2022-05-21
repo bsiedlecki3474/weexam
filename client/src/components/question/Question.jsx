@@ -10,13 +10,12 @@ import {
   AccordionSummary,
   AccordionDetails,
   Typography,
-  Checkbox,
-  Radio,
   RadioGroup,
   FormControl,
-  FormControlLabel,
   IconButton
 } from "@mui/material"
+
+import QuestionControl from './QuestionControl';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditIcon from '@mui/icons-material/Edit';
@@ -43,11 +42,6 @@ const styles = theme => ({
     gap: theme.spacing(2)
   }
 })
-
-const answerTypeControls = {
-  1: <Radio />,
-  2: <Checkbox />
-}
 
 const Question = props => {
   const {
@@ -150,7 +144,24 @@ const Question = props => {
                 {data?.answers?.map((a, ai) => 
                   <div key={ai}>
                     <Box display="flex">
-                      <FormControlLabel
+                      <QuestionControl
+                        checked={a?.checked}
+                        value={a?.value}
+                        edit={a?.edit}
+                        editTextfield={
+                          <TextField
+                            id={`question-${index}-answer-${ai}`}
+                            size="small"
+                            placeholder={`Answer #` + (ai + 1)}
+                            handleChange={handleUpdateQuestionAnswer(index, ai)}
+                            margin="dense"
+                            value={a?.value}
+                          />
+                        }
+                        answerTypeId={data?.answerTypeId}
+                        handleChange={toggleQuestionAnswer(index, ai, data?.answerTypeId)}
+                      />
+                      {/* <FormControlLabel
                         // sx={{ width: '100%' }}
                         checked={a?.checked}
                         onChange={toggleQuestionAnswer(index, ai, data?.answerTypeId)}
@@ -171,7 +182,7 @@ const Question = props => {
                           />
                           : a?.value ?? 'Edit answer...'
                         }
-                      />
+                      /> */}
                       <div style={{ marginLeft: 'auto' }}>
                         <IconButton size="small" onClick={toggleAnswerEdit(index, ai, !a?.edit)}>
                           {a?.edit
