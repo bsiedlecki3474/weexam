@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { assessment } from '../model';
+import { assessment, event, test } from '../model';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 import { JWT_SECRET } from '../config'
@@ -48,9 +48,26 @@ class Assessment {
       res.status(500).send(e);
     }
   }
+
+  questions = async (req: Request, res: Response) => {
+    try {
+      const testId = await event.getTestId(Number(req.params.id));
+      const data = await test.questions(testId);
+
+      if (data) {
+        res.status(200).send(data);
+      } else {
+        res.status(400).send('no data');
+      }
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
 }
 
 export const {
   single,
-  start
+  start,
+  questions
 } = new Assessment();

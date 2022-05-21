@@ -15,6 +15,7 @@ class Assessment extends Model /*implements CRUD*/ {
 			adm.first_name,
 			adm.last_name,
 			a.user_finished,
+			a.id IS NOT NULL AS assessment_started,
 			a.start_date,
 			a.end_date
 		FROM wee_tests_events e
@@ -64,7 +65,8 @@ class Assessment extends Model /*implements CRUD*/ {
 				administrator: row.first_name + ' ' + row.last_name,
 				isEventActive,
 				isActive,
-				userFinished: Number(row.user_finished)
+				userFinished: Number(row.user_finished),
+				assessmentStarted: Number(row.assessment_started)
 			}
 		}
 	}
