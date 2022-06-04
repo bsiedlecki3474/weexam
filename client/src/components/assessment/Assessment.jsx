@@ -16,24 +16,21 @@ import {
   handleClearChangedQuestions
 } from '../../redux/actions/assessment';
 
+import { Box } from "@mui/material"
+
 import {
-  Typography,
-  Box,
-  Pagination
-} from "@mui/material"
-
-import Stepper from '../Stepper'
-
-import AssessmentQuestion from '../question/AssessmentQuestion'
-import AssessmentPagination from './AssessmentPagination.jsx'
+  AssessmentQuestion,
+  AssessmentPagination,
+  AssessmentCountdown
+} from './'
 
 const styles = theme => ({
   root: {
     height: 'calc(100vh - 112px)',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between'
-    // width: '190%'
+    justifyContent: 'space-between',
+    position: 'relative'
   },
   answerContainer: {
     width: '100%',
@@ -48,36 +45,21 @@ const styles = theme => ({
 
 const Assessment = props => {
   const [questions, setQuestions] = useState([]);
-  // const [questionIndex, setQuestionIndex] = useState(0);
-  // const [flagged, setFlagged] = useLocalStorage('flagged', []);
 
-  const { id, classes, flagged, questionIndex, changeQuestion, onHandleFlagQuestion } = props;
+  const { id, endDate, classes, answered, flagged, questionIndex, changeQuestion, onHandleFlagQuestion } = props;
 
   useEffect(() => {
     getQuestions(id).then(res => res?.length && setQuestions(res));
   }, [id])
 
-  // const handleChangeFlagged = index => e => setFlagged(
-  //   (flagged ?? []).includes(index)
-  //     ? flagged.filter(el => el != index)
-  //     : [...(flagged ?? []), index]
-  // );
-
   const handleChangeFlagged = index => e => onHandleFlagQuestion(index)
-
-  const answered = [];
-  // const flagged = [];
-
-  // answered.push(1,2,4,15)
-  // flagged.push(4,9)
-
-  console.log(questions, questions.length)
 
   const question = questions[questionIndex];
 
   return (
     <Box className={classes.root}>
     {/* <ViewLayout style={{ height: 'calc(100vh - 112px)' }}> */}
+      <AssessmentCountdown endDate={endDate}></AssessmentCountdown>
       <AssessmentQuestion
         index={questionIndex}
         question={question}
@@ -109,6 +91,7 @@ const Assessment = props => {
 
 const mapStateToProps = state => ({
   flagged: state.assessment.flagged,
+  answered: Object.keys(state.assessment.questions ?? []),
   questionIndex: state.assessment.questionIndex
 })
 

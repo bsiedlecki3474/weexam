@@ -10,7 +10,7 @@ import {
 } from "@mui/material"
 
 import { withStyles } from '@mui/styles';
-import QuestionControl from "./QuestionControl";
+import QuestionControl from "../question/QuestionControl";
 
 import { connect } from "react-redux"
 

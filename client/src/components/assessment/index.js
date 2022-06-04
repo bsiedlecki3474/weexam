@@ -1,9 +1,15 @@
-import AssessmentManager from './AssessmentManager'
 import Assessment from './Assessment'
-import Summary from './Summary'
+import AssessmentManager from './AssessmentManager'
+import AssessmentQuestion from './AssessmentQuestion'
+import AssessmentSummary from './AssessmentSummary'
+import AssessmentCountdown from './AssessmentCountdown'
+import AssessmentPagination from './AssessmentPagination'
 
 export {
-  AssessmentManager,
   Assessment,
-  Summary
+  AssessmentManager,
+  AssessmentQuestion,
+  AssessmentSummary,
+  AssessmentCountdown,
+  AssessmentPagination
 }

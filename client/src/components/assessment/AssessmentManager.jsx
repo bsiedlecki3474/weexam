@@ -13,7 +13,7 @@ import {
   TableCell
 } from "@mui/material"
 
-import { Assessment, Summary } from './'
+import { Assessment, AssessmentSummary } from './'
 
 import { getAssessment } from "../../api/assessments";
 import { handleStartAssessment } from '../../redux/actions/assessment';
@@ -58,8 +58,8 @@ const AssessmentManager = props => {
       {assessment && (
         // isCompleted && !(isEventActive && isActive)
         isEventActive && isActive && !userFinished
-          ? <Assessment id={id} />
-          : <Summary
+          ? <Assessment id={id} endDate={assessment?.expectedEndDate} />
+          : <AssessmentSummary
               assessment={assessment}
               handleStartAssessment={e => onHandleStartAssessment(id)}
             />

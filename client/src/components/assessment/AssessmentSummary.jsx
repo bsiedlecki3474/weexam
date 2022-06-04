@@ -11,7 +11,7 @@ import { ViewLayout } from '../../layouts';
 
 import { format } from "date-fns";
 
-const Summary = ({ assessment, handleStartAssessment }) => {
+const AssessmentSummary = ({ assessment, handleStartAssessment }) => {
   const {
     name,
     eventStartDate,
@@ -116,4 +116,4 @@ const Summary = ({ assessment, handleStartAssessment }) => {
   )
 }
 
-export default Summary;
+export default AssessmentSummary;
