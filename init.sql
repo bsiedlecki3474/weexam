@@ -164,7 +164,7 @@ INSERT INTO `wee_questions_answers` (`id`, `question_id`, `value`, `checked`) VA
 DROP TABLE IF EXISTS `wee_tests_assessments`;
 
 CREATE TABLE `wee_tests_assessments` (  
-  `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `id` int UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `event_id` int UNSIGNED NOT NULL,
   `user_id` int UNSIGNED NOT NULL,
   `start_date` DATETIME,
@@ -177,3 +177,17 @@ CREATE TABLE `wee_tests_assessments` (
   CONSTRAINT `fk_wee_tests_assessments_created_by` FOREIGN KEY (`created_by`) REFERENCES `wee_users` (`id`) ON DELETE CASCADE
 ) DEFAULT CHARSET UTF8;
 
+DROP TABLE IF EXISTS `wee_tests_assessments_answers`;
+
+CREATE TABLE `wee_tests_assessments_answers` (
+  `assessment_id` INT UNSIGNED NOT NULL,
+  `question_id` INT UNSIGNED NOT NULL,
+  `answer_id` INT UNSIGNED NOT NULL,
+  `created_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`assessment_id`,`question_id`, `answer_id`),
+  CONSTRAINT `fk_wee_tests_assessments_answers_assessment_id` FOREIGN KEY (`assessment_id`) REFERENCES `wee_tests_assessments` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_wee_tests_assessments_answers_question_id` FOREIGN KEY (`question_id`) REFERENCES `wee_tests_questions` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_wee_tests_assessments_answers_answer_id` FOREIGN KEY (`answer_id`) REFERENCES `wee_questions_answers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_wee_tests_assessments_answers_created_by` FOREIGN KEY (`created_by`) REFERENCES `wee_users` (`id`) ON DELETE CASCADE
+) DEFAULT CHARSET UTF8;
