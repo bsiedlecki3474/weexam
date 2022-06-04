@@ -19,7 +19,7 @@ const styles = theme => ({
 })
 
 const EditTest = ({ classes }) => {
-  const [tab, setTab] = useLocalStorage(0);
+  const [tab, setTab] = useLocalStorage('activeTestTab', 0);
 
   const handleChange = (e, newValue) => {
     setTab(newValue);

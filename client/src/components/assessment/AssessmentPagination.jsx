@@ -31,8 +31,8 @@ const getItemClasses = type => ({
 const AssessmentPagination = props => {
   const { classes, count, page, handleChange, answered, flagged, fullWidth } = props
 
-  const isAnswered = page => answered?.includes(page) ? getItemClasses('success') : false;
-  const isFlagged = page => flagged?.includes(page) ? getItemClasses('warning') : false;
+  const isAnswered = page => answered?.includes(page - 1) ? getItemClasses('success') : false;
+  const isFlagged = page => flagged?.includes(page - 1) ? getItemClasses('warning') : false;
   const isNotCompleted = getItemClasses('error')
 
   return (

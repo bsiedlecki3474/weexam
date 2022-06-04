@@ -5,6 +5,7 @@ import users from './users'
 import groups from './groups'
 import tests from './tests'
 import addEntry from './addEntry'
+import assessment from './assessment'
 
 export {
   auth,
@@ -13,5 +14,6 @@ export {
   users,
   groups,
   tests,
-  addEntry
+  addEntry,
+  assessment
 }

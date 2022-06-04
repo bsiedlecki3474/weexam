@@ -15,7 +15,8 @@ import {
 
 import { Assessment, Summary } from './'
 
-import { getAssessment, startAssessment } from "../../api/assessments";
+import { getAssessment } from "../../api/assessments";
+import { handleStartAssessment } from '../../redux/actions/assessment';
 
 import lang from '../../lang'
 
@@ -35,16 +36,16 @@ const styles = theme => ({
 })
 
 const AssessmentManager = props => {
-  const { classes, params } = props;
+  const { classes, params, onHandleStartAssessment } = props;
   const { id } = params;
 
   const [assessment, setAssessment] = useState({});
 
   useEffect(() => {
     getAssessment(id).then(res => setAssessment(res))
-  }, [])
+  }, [assessment])
 
-  const handleStartAssessment = e => startAssessment(id)
+  // const onHandleStartAssessment = e => handleStartAssessment(id)
 
   const {
     isEventActive,
@@ -60,11 +61,16 @@ const AssessmentManager = props => {
           ? <Assessment id={id} />
           : <Summary
               assessment={assessment}
-              handleStartAssessment={handleStartAssessment}
+              handleStartAssessment={e => onHandleStartAssessment(id)}
             />
       )}      
     </Box>
   )
 }
 
-export default withParams(withStyles(styles)(AssessmentManager));
+const mapDispatchToProps = dispatch => ({
+  onHandleStartAssessment: (id) => dispatch(handleStartAssessment(id)),
+})
+
+
+export default connect(null, mapDispatchToProps)(withParams(withStyles(styles)(AssessmentManager)));
