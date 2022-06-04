@@ -11,7 +11,7 @@ class Assessment extends Model /*implements CRUD*/ {
 			e.start_date AS event_start_date,
 			e.end_date AS event_end_date,
 			e.is_active AS is_event_active,
-			COUNT(q.id) AS questions,
+			COUNT(DISTINCT q.id) AS questions,
 			adm.first_name,
 			adm.last_name,
 			a.user_finished,
@@ -23,7 +23,7 @@ class Assessment extends Model /*implements CRUD*/ {
 		LEFT JOIN wee_events_groups eg ON eg.event_id = e.id
 		LEFT JOIN wee_groups_users gu ON gu.group_id = eg.group_id
 		LEFT JOIN wee_tests_assessments a ON a.event_id = e.id AND a.user_id = gu.user_id
-		LEFT JOIN wee_users adm ON a.id = t.created_by
+		LEFT JOIN wee_users adm ON adm.id = t.created_by
 		LEFT JOIN wee_tests_questions q ON q.test_id = t.id
 		WHERE gu.user_id = ? AND e.id = ? GROUP BY e.id`;
 
@@ -81,6 +81,53 @@ class Assessment extends Model /*implements CRUD*/ {
 			}
 		}
 	}
+
+	saveAnswers = async (assessmentId: number, userId: number, answers: any[]) => {
+		let sql = `DELETE FROM wee_tests_assessments_answers WHERE assessment_id = ? AND created_by = ?`;
+		let data = await this.db.query(sql, [assessmentId, userId]);
+
+		if (data) {
+			if (answers) {
+				const rows = [];
+				const params = [];
+
+				for (const questionId in answers) {
+					if (answers.hasOwnProperty(questionId)) {
+						const answerIds = answers[questionId];
+						if (answerIds?.length) {
+							for (const answerId of answerIds) {
+								rows.push('(?, ?, ?, ?, NOW())');
+								params.push(
+									assessmentId,
+									Number(questionId),
+									answerId,
+									userId
+								);
+							}
+						}
+					}
+				}
+
+				if (rows.length) {
+					sql = `INSERT INTO wee_tests_assessments_answers (assessment_id, question_id, answer_id, created_by, created_on) VALUES ${rows.join()}`;
+					console.log(sql, params);
+					data = await this.db.query(sql, params);
+				}
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	getUserQuestionAnswers = async (assessmentId: number, userId: number) => {
+		const sql = `SELECT answer_id FROM wee_tests_assessments_answers WHERE assessment_id = ? AND user_id = ?`;
+		const data = await this.db.query(sql, [assessmentId, userId]);
+		return data ?	data.map((row: { answer_id: number }) => Number(row.answer_id)) : []
+	}
+
+
 }
 
 export default new Assessment();

@@ -95,13 +95,12 @@ class Question extends Model /*implements CRUD*/ {
 						// console.log(data)
 					}
 				}
-
 			}
-		}
 
-		if (data) {
 			return true;
 		}
+
+		return false;
 	}
 }
 

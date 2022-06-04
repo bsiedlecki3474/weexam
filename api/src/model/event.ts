@@ -79,6 +79,14 @@ class Event extends Model /*implements CRUD*/ {
 			return Number(data[0].test_id);
 	}
 
+	getAssessmentId = async (id: number, userId: number) => {
+		const sql = `SELECT DISTINCT id FROM wee_tests_assessments WHERE event_id = ? AND user_id = ? ORDER BY start_date DESC LIMIT 1`;
+		const data = await this.db.query(sql, [id, userId]);
+
+		if (data)
+			return Number(data[0].id);
+	}
+
 	// single = async (eventId: number, userId: number) => {
 	// 	const sql = `SELECT
 	// 		e.id,
