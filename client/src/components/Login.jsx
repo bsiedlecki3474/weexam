@@ -38,7 +38,7 @@ const styles = theme => ({
 
 const Login = props => {
   const { classes, onHandleSignIn } = props;
-  const [username, setUsername] = useLocalStorage(null);
+  const [username, setUsername] = useLocalStorage('username');
   const [password, setPassword] = useState(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [showErrors, setShowErrors] = useState(false);
