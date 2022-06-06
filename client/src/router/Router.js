@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { Routes, Route, useRoutes } from "react-router-dom";
+import { useRoutes, Navigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { LoginLayout, DashboardLayout } from '../layouts'
 import {
@@ -29,28 +28,35 @@ import { AssessmentManager } from "../components/assessment";
 
 import Progress from "../components/Progress";
 
-
 const Router = props => {
-  const { loggedIn, pending } = props;
+  const { loggedIn, isAdmin, pending } = props;
+
+  const children = isAdmin
+    ? [
+      { path: '', element: <Dashboard /> },
+      { path: 'profile', element: <Profile /> },
+      { path: 'users', element: <Users />, },
+      { path: 'users/add', element: <AddUser /> },
+      { path: 'users/:id', element: <EditUser /> },
+      { path: 'groups', element: <Groups />, },
+      { path: 'groups/add', element: <AddGroup /> },
+      { path: 'groups/:id', element: <EditGroup /> },
+      { path: 'tests', element: <Tests />, },
+      { path: 'tests/add', element: <AddTest /> },
+      { path: 'tests/:id', element: <EditTest /> },
+      { path: 'assessments/:id', element: <AssessmentManager /> },
+      { path: '*', element: <Navigate to="/" /> },
+    ] : [
+      { path: '', element: <Dashboard /> },
+      { path: 'profile', element: <Profile /> },
+      { path: '*', element: <Navigate to="/" /> },
+    ]
 
   const routes = [
     {
       path: '/',
       element: loggedIn ? <DashboardLayout /> : <LoginLayout />,
-      children: [
-        { path: '', element: <Dashboard /> },
-        { path: 'profile', element: <Profile /> },
-        { path: 'users', element: <Users />, },
-        { path: 'users/add', element: <AddUser /> },
-        { path: 'users/:id', element: <EditUser /> },
-        { path: 'groups', element: <Groups />, },
-        { path: 'groups/add', element: <AddGroup /> },
-        { path: 'groups/:id', element: <EditGroup /> },
-        { path: 'tests', element: <Tests />, },
-        { path: 'tests/add', element: <AddTest /> },
-        { path: 'tests/:id', element: <EditTest /> },
-        { path: 'assessments/:id', element: <AssessmentManager /> },
-      ]
+      children
     },
     
   ]
@@ -65,7 +71,8 @@ const Router = props => {
 const mapStateToProps = state => {
   return {
     // pending: state.auth.pending,
-    loggedIn: !!state.auth.data
+    loggedIn: !!state.auth.data,
+    isAdmin: ['root', 'admin'].includes(state?.auth?.data?.role)
   }
 }
 

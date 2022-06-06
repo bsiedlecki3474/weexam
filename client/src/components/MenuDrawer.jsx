@@ -39,7 +39,7 @@ const styles = theme => ({
 const drawerWidth = 240;
 
 const MenuDrawer = props => {
-  const { window, classes, children, theme, onHandleSignOut, onHandleToggleTheme } = props;
+  const { window, classes, children, theme, onHandleSignOut, onHandleToggleTheme, isAdmin } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -52,24 +52,33 @@ const MenuDrawer = props => {
       <Toolbar />
       <Divider />
       <List>
-        <ListItem button onClick={() => navigate('/tests')}>
-          <ListItemIcon>
-            <ArticleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Tests" />
-        </ListItem>
-        <ListItem button onClick={() => navigate('/users')}>
-          <ListItemIcon>
-            <AccountBoxIcon />
-          </ListItemIcon>
-          <ListItemText primary="Users" />
-        </ListItem>
-        <ListItem button onClick={() => navigate('/groups')}>
-          <ListItemIcon>
-            <GroupsIcon />
-          </ListItemIcon>
-          <ListItemText primary="Groups" />
-        </ListItem>
+        <ListItem button onClick={() => navigate('/profile')}>
+            <ListItemIcon>
+              <AccountCircleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Profile" />
+          </ListItem>
+        {isAdmin && <>
+          <Divider />
+          <ListItem button onClick={() => navigate('/tests')}>
+            <ListItemIcon>
+              <ArticleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Tests" />
+          </ListItem>
+          <ListItem button onClick={() => navigate('/users')}>
+            <ListItemIcon>
+              <AccountBoxIcon />
+            </ListItemIcon>
+            <ListItemText primary="Users" />
+          </ListItem>
+          <ListItem button onClick={() => navigate('/groups')}>
+            <ListItemIcon>
+              <GroupsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Groups" />
+          </ListItem>
+        </>}
       </List>
     </div>
   );
@@ -168,7 +177,8 @@ const MenuDrawer = props => {
 
 const mapStateToProps = state => {
   return {
-    theme: state.theme
+    theme: state.theme,
+    isAdmin: ['root', 'admin'].includes(state?.auth?.data?.role)
   }
 }
 
