@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import authMiddleware from '../middleware/authMiddleware'
 import {
   single,
   start,
   saveAnswers,
   questions
 } from '../controller/assessment';
+import { authMiddleware } from '../middleware'
 
 const router = Router();
 

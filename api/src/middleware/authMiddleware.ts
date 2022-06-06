@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 import { JWT_SECRET } from '../config'
 
-const authorization = (req: Request, res: Response, next: NextFunction) => {
+const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.cookies.jwt;
     jwt.verify(token, JWT_SECRET);
@@ -13,4 +13,4 @@ const authorization = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default authorization;
+export default authMiddleware;

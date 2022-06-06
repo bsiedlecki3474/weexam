@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import authMiddleware from '../middleware/authMiddleware'
 import {
   add,
   save,
@@ -7,22 +6,16 @@ import {
   groups,
   addGroup,
   removeGroup
-  // single
 } from '../controller/event';
+import { adminAuthMiddleware } from '../middleware'
 
 const router = Router();
 
-router.post('/add', authMiddleware, add);
-router.post('/:id/save', authMiddleware, save);
-router.post('/:id/delete', authMiddleware, _delete);
-router.get('/:id/groups', authMiddleware, groups);
-router.post('/:id/addGroup', authMiddleware, addGroup);
-router.post('/:id/removeGroup', authMiddleware, removeGroup);
-
-// router.get('/', list);
-// router.post('/', create);
-// router.get('/:id', detail);
-// router.post('/:id', update);
-// router.delete('/:id', del);
+router.post('/add', adminAuthMiddleware, add);
+router.post('/:id/save', adminAuthMiddleware, save);
+router.post('/:id/delete', adminAuthMiddleware, _delete);
+router.get('/:id/groups', adminAuthMiddleware, groups);
+router.post('/:id/addGroup', adminAuthMiddleware, addGroup);
+router.post('/:id/removeGroup', adminAuthMiddleware, removeGroup);
 
 export default router;

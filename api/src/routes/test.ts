@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import authMiddleware from '../middleware/authMiddleware'
 import {
   add,
   save,
@@ -8,20 +7,15 @@ import {
   events,
   questions
 } from '../controller/test';
+import { adminAuthMiddleware } from '../middleware'
 
 const router = Router();
 
-router.post('/add', authMiddleware, add);
-router.get('/list', authMiddleware, list);
-router.get('/:id', authMiddleware, single);
-router.post('/:id/save', authMiddleware, save);
-router.get('/:id/events', authMiddleware, events);
-router.get('/:id/questions', authMiddleware, questions);
-
-// router.get('/', list);
-// router.post('/', create);
-// router.get('/:id', detail);
-// router.post('/:id', update);
-// router.delete('/:id', del);
+router.post('/add', adminAuthMiddleware, add);
+router.get('/list', adminAuthMiddleware, list);
+router.get('/:id', adminAuthMiddleware, single);
+router.post('/:id/save', adminAuthMiddleware, save);
+router.get('/:id/events', adminAuthMiddleware, events);
+router.get('/:id/questions', adminAuthMiddleware, questions);
 
 export default router;

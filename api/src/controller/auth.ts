@@ -21,12 +21,14 @@ class Auth {
         if (valid) {
 
           const token = jwt.sign({
-            userId: userData.id
+            userId: userData.id,
+            role: userData.role
           }, JWT_SECRET);
 
           const response = {
             firstName: userData.firstName,
-            lastName: userData.lastName
+            lastName: userData.lastName,
+            role: userData.role
           }
 
           return res
