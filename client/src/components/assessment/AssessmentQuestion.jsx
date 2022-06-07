@@ -53,9 +53,9 @@ const AssessmentQuestion = props => {
   //   }
   // }
   
-  const toggleQuestionAnswer = (questionId, answerId) => e => {
+  const toggleQuestionAnswer = (questionId, answerId, questionIndex) => e => {
     const { handleToggleAnswer } = props;
-    handleToggleAnswer(questionId, answerId, question.answerTypeId);
+    handleToggleAnswer(questionId, answerId, question.answerTypeId, questionIndex);
   }
 
   // console.log(question?.answers)
@@ -76,7 +76,7 @@ const AssessmentQuestion = props => {
               checked={checkedAnswers[question.id]?.includes(a.id)}
               value={a.value}
               answerTypeId={question?.answerTypeId}
-              handleChange={toggleQuestionAnswer(question?.id, a.id)}
+              handleChange={toggleQuestionAnswer(question?.id, a.id, index)}
             />)}
           </RadioGroup>
         </FormControl>

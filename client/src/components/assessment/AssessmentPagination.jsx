@@ -52,7 +52,7 @@ const AssessmentPagination = props => {
             {...item}
             sx={
               item.type === 'page' && item.page !== page
-                ? (isAnswered(item.page) || isFlagged(item.page) || isNotCompleted)
+                ? (isFlagged(item.page) || isAnswered(item.page) || isNotCompleted)
                 : {}
             }
           />

@@ -6,6 +6,7 @@ import {
   TOGGLE_ANSWER,
   FLAG_QUESTION,
   SET_QUESTION,
+  SET_ANSWERED,
   CLEAR_CHANGED_QUESTIONS
 } from '../types/assessment'
 
@@ -50,11 +51,16 @@ const handleSetQuestion = (questionIndex) => dispatch => {
   return dispatch({ type: SET_QUESTION, payload: questionIndex });
 }
 
+const handleSetQuestionAnswered = (questionIndex) => dispatch => {
+  return dispatch({ type: SET_ANSWERED, payload: questionIndex });
+}
+
 
 export {
   handleToggleAnswer,
   handleFlagQuestion,
   handleSetQuestion,
+  handleSetQuestionAnswered,
   handleStartAssessment,
   handleSaveAnswers,
   handleClearChangedQuestions

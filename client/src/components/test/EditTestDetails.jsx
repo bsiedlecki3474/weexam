@@ -231,56 +231,6 @@ const EditTestDetails = props => {
           </Grid>
 
           <Grid item xs={12} sm={6} md={6} lg={6}>
-            {/* <Box mb={2}>
-
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Typography variant="subtitle1">Groups</Typography>
-                <Button variant="outlined" size="small" onClick={toggleGroupVisible}>add</Button>
-              </Box>
-
-              {addGroupVisible && <Box className={classes.addContainer}>
-                <Autocomplete
-                  options={groups?.filter(el => !assignedGroupIds.includes(el.id)) ?? []}
-                  getOptionLabel={option => option.name}
-                  onChange={(e, value) => handleChangeAddGroup(value)}
-                  value={addGroup}
-                  fullWidth
-                  renderInput={(params) => 
-                    <MdlTextField 
-                      {...params}
-                      fullWidth
-                      variant="standard"
-                      label="Add group"
-                      // value={addUser?.id}
-                      
-                    />
-                  }
-                />
-                <IconButton
-                  className={classes.addButton}
-                  onClick={handleAddGroupClick}
-                  disabled={addGroup === null}
-                >
-                  <GroupAddIcon />
-                </IconButton>
-              </Box>}
-
-              <List dense>
-                {assignedGroups && assignedGroups.map(group => 
-                  <ListItem 
-                    key={group.id}
-                    primary={group.name}
-                    icon={<GroupsIcon />}
-                    action={
-                      <IconButton edge="end" size="small" onClick={handleRemoveGroupClick(group.id)}>
-                        <DeleteIcon fontSize="inherit" />
-                      </IconButton>
-                    }
-                  />  
-                )}
-              </List>
-            </Box> */}
-
             <Box mb={2}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant="subtitle1">Events</Typography>

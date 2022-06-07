@@ -13,7 +13,8 @@ import {
   handleSaveAnswers,
   handleSetQuestion,
   handleToggleAnswer,
-  handleClearChangedQuestions
+  handleClearChangedQuestions,
+  handleSetQuestionAnswered
 } from '../../redux/actions/assessment';
 
 import { Box } from "@mui/material"
@@ -59,7 +60,7 @@ const Assessment = props => {
   return (
     <Box className={classes.root}>
     {/* <ViewLayout style={{ height: 'calc(100vh - 112px)' }}> */}
-      <AssessmentCountdown endDate={endDate}></AssessmentCountdown>
+      <AssessmentCountdown endDate={endDate} />
       <AssessmentQuestion
         index={questionIndex}
         question={question}
@@ -69,17 +70,11 @@ const Assessment = props => {
         handleToggleAnswer={props.onHandleToggleAnswer}
       />
       
-      {/* <Stepper
-        fullWidth
-        steps={12}
-        activeStep={questionIndex}
-        setActiveStep={val => setQuestionIndex(val)}
-      /> */}
       {questions?.length && <AssessmentPagination
         fullWidth
         count={questions.length}
         page={questionIndex + 1}
-        handleChange={(e, val) => changeQuestion(val - 1, id)}
+        handleChange={(_, val) => changeQuestion(val - 1, id)}
         answered={answered}
         flagged={flagged}
       />}
@@ -91,14 +86,16 @@ const Assessment = props => {
 
 const mapStateToProps = state => ({
   flagged: state.assessment.flagged,
-  answered: Object.keys(state.assessment.questions ?? []),
+  answered: state.assessment.answered,
   questionIndex: state.assessment.questionIndex
 })
 
 const mapDispatchToProps = dispatch => ({
   // onSaveQuestions: (testId, questions) => dispatch(handleSaveQuestions(testId, questions)),
   // showSnackbar: data => dispatch(showSnackbar(data))
-  onHandleToggleAnswer: (questionId, answerId, answerTypeId) => dispatch(handleToggleAnswer(questionId, answerId, answerTypeId)),
+  onHandleToggleAnswer: (questionId, answerId, answerTypeId, questionIndex) =>
+    dispatch(handleToggleAnswer(questionId, answerId, answerTypeId))
+    && dispatch(handleSetQuestionAnswered(questionIndex)),
   onHandleFlagQuestion: questionIndex => dispatch(handleFlagQuestion(questionIndex)),
   onHandleSetQuestion: questionIndex => dispatch(handleSetQuestion(questionIndex)),
   changeQuestion: (questionIndex, id) => {

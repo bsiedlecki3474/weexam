@@ -4,7 +4,8 @@ import {
 	SET_QUESTION,
 
 	TOGGLE_ANSWER,
-	FLAG_QUESTION
+	FLAG_QUESTION,
+	SET_ANSWERED
 } from '../types/assessment'
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
 	changedQuestions: [],
 	answers: [],
 	flagged: [],
+	answered: [],
 	questionIndex: 0
 };
 
@@ -61,6 +63,14 @@ const assessment = (state = initialState, action) => {
 			return flagged.includes(questionIndex)
 				? {...state, flagged: flagged.filter(el => el != questionIndex) }
 				: {...state, flagged: [...flagged, questionIndex] }	 
+		}
+
+		case SET_ANSWERED: {
+			const answered = state.answered ?? [];
+			const questionIndex = action.payload;
+			return answered.includes(questionIndex)
+				? {...state }
+				: {...state, answered: [...answered, questionIndex] }	 
 		}
 
 		default:
