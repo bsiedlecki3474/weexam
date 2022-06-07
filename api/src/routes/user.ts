@@ -6,13 +6,13 @@ import {
   single,
   testEvents
 } from '../controller/user';
-import { adminAuthMiddleware } from '../middleware'
+import { authMiddleware, adminAuthMiddleware } from '../middleware'
 
 const router = Router();
 
 router.post('/add', adminAuthMiddleware, add);
 router.get('/list', adminAuthMiddleware, list);
-router.get('/testEvents', adminAuthMiddleware, testEvents);
+router.get('/testEvents', authMiddleware, testEvents);
 router.get('/:id', adminAuthMiddleware, single);
 router.post('/:id/save', adminAuthMiddleware, save);
 
