@@ -49,6 +49,7 @@ const Router = props => {
     ] : [
       { path: '', element: <Dashboard /> },
       { path: 'profile', element: <Profile /> },
+      { path: 'assessments/:id', element: <AssessmentManager /> },
       { path: '*', element: <Navigate to="/" /> },
     ]
 
