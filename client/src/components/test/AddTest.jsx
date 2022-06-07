@@ -37,7 +37,7 @@ class AddTest extends Component {
   state = {
     showErrors: false,
     isLoading: false,
-    data: {}
+    data: { isActive: true, showScores: true }
   }
 
   checkFormValidity = () => this.formRef.current.checkValidity();
@@ -69,12 +69,23 @@ class AddTest extends Component {
         if (this.checkFormValidity()) {
           // tbd check for duplicates
           onHandleAddTest(data).then(res => {
-            showSnackbar({
-              message: lang.tests.snackbar.testAdded,
-              severity: 'success'
-            })
-            // tbd block request spam
-            setTimeout(() => navigate('/tests/' + res.data.id), 1000);
+            try {
+              const id = res.data.id;
+              showSnackbar({
+                message: lang.tests.snackbar.testAdded,
+                severity: 'success'
+              })
+              // tbd block request spam
+              setTimeout(() => navigate('/tests/' + id), 1000);
+            } catch (e) {
+              console.error(e)
+              console.log(res)
+
+              showSnackbar({
+                message: lang.main.validation.genericError,
+                severity: 'error'
+              })
+            }
           })
         } else {
           showSnackbar({
@@ -111,15 +122,13 @@ class AddTest extends Component {
               <Checkbox
                 id="isActive"
                 label="Test active"
-                value={Boolean(data.isActive)}
-                defaultChecked
+                value={data.isActive}
               />
 
               <Checkbox
                 id="showScores"
                 label="Show score after completion"
                 value={data.showScores}
-                defaultChecked
               />
             </Box>
 

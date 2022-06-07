@@ -30,30 +30,31 @@ class AddUser extends Component {
 
   state = {
     showErrors: false,
-    isLoading: false
+    isLoading: false,
+    data: { isActive: true }
   }
 
   checkFormValidity = () => this.formRef.current.checkValidity();
 
   handleInputChange = (e, key) => {
     const value = e.target.value;
-    this.setState({ [key]: value });
+    this.setState({ data: {...this.state.data, [key]: value }});
   }
 
   handleSelectChange = (key, val) => {
     const value = val?.id;
-    this.setState({ [key]: value });
+    this.setState({ data: {...this.state.data, [key]: value }});
   }
 
   handleSelectMultipleChange = (key, vals) => {
     const values = vals ? vals.map(el => el.id) : [];
-    this.setState({ [key]: values });
+    this.setState({ data: {...this.state.data, [key]: values }});
   }
 
   isDataLoading = () => false
 
   render() {
-    const { showErrors, isLoading } = this.state;
+    const { showErrors, isLoading, data } = this.state;
     const { classes } = this.props;
 
     const roles = [
@@ -65,15 +66,26 @@ class AddUser extends Component {
       const { onHandleAddUser, showSnackbar, navigate } = this.props;
       this.setState({ showErrors: true }, () => {
         if (this.checkFormValidity()) {
-          const { showErrors, isLoading, ...data } = this.state;
+          const { showErrors, isLoading } = this.state;
           // tbd check for duplicates
           onHandleAddUser(data).then(res => {
-            showSnackbar({
-              message: lang.users.snackbar.userAdded,
-              severity: 'success'
-            })
-            // tbd block request spam
-            setTimeout(() => navigate('/users/' + res.data.id), 1000);
+            try {
+              const id = res.data.id;
+              showSnackbar({
+                message: lang.users.snackbar.userAdded,
+                severity: 'success'
+              })
+              // tbd block request spam
+              setTimeout(() => navigate('/users/' + id), 1000);
+            } catch (e) {
+              console.error(e)
+              console.log(res)
+
+              showSnackbar({
+                message: lang.main.validation.genericError,
+                severity: 'error'
+              })
+            }
           })
         } else {
           showSnackbar({
@@ -98,32 +110,34 @@ class AddUser extends Component {
             <TextField
               id="username"
               label="Username"
-              value={this.state.username}
+              value={data.username}
               handleChange={this.handleInputChange}
               required
               isLoading={isLoading || this.isDataLoading()}
-              error={showErrors && !this.state.username}
+              error={showErrors && !data.username}
               helperText={lang.main.validation.empty}
             />
 
             <TextField
               id="firstName"
               label="First name"
-              value={this.state.firstName}
+              value={data.firstName}
               handleChange={this.handleInputChange}
               required
               isLoading={isLoading || this.isDataLoading()}
-              error={showErrors && !this.state.firstName}
+              error={showErrors && !data.firstName}
               helperText={lang.main.validation.empty}
             />
 
             <TextField
               id="lastName"
               label="Last name"
-              value={this.state.lastName}
+              value={data.lastName}
               required
               handleChange={this.handleInputChange}
               isLoading={isLoading || this.isDataLoading()}
+              error={showErrors && !data.lastName}
+              helperText={lang.main.validation.empty}
             />
 
             <TextField
@@ -131,32 +145,30 @@ class AddUser extends Component {
               autoComplete="new-password"
               type="password"
               label="Password"
-              value={this.state.password}
+              value={data.password}
               required
               handleChange={this.handleInputChange}
               isLoading={isLoading || this.isDataLoading()}
-            // // error={(showErrors && !enquiry.registrationDate) || enquiry.registrationDate < currentDate}
-            // helperText={enquiry.registrationDate < currentDate ? i18n.main?.validation?.incorrect : i18n.main?.validation?.empty}
+              error={showErrors && !data.password}
+              helperText={lang.main.validation.empty}
             />
 
             <Select
               id="role"
-              value={this.state.role}
+              value={data.role}
               label="Role"
               options={roles}
               handleChange={this.handleInputChange}
               required
-              error={showErrors && !this.state.role}
+              error={showErrors && !data.role}
               helperText={lang.main.validation.empty}
               isLoading={isLoading || this.isDataLoading()}
             />
 
-
             <Checkbox
               id="isActive"
               label="Account active"
-              value={this.state.isActive}
-              defaultChecked
+              checked={data.isActive}
             />
           </Grid>
         </Form>

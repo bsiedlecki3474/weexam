@@ -31,7 +31,7 @@ class AddGroup extends Component {
   state = {
     showErrors: false,
     isLoading: false,
-    data: {}
+    data: { isActive: true }
   }
 
   checkFormValidity = () => this.formRef.current.checkValidity();
@@ -61,14 +61,26 @@ class AddGroup extends Component {
       const { onHandleAddGroup, showSnackbar, navigate } = this.props;
       this.setState({ showErrors: true }, () => {
         if (this.checkFormValidity()) {
+          const { showErrors, isLoading } = this.state;
           // tbd check for duplicates
           onHandleAddGroup(data).then(res => {
-            showSnackbar({
-              message: lang.groups.snackbar.groupAdded,
-              severity: 'success'
-            })
-            // tbd block request spam
-            setTimeout(() => navigate('/groups/' + res.data.id), 1000);
+            try {
+              const id = res.data.id;
+              showSnackbar({
+                message: lang.groups.snackbar.groupAdded,
+                severity: 'success'
+              })
+              // tbd block request spam
+              setTimeout(() => navigate('/groups/' + id), 1000);
+            } catch (e) {
+              console.error(e)
+              console.log(res)
+
+              showSnackbar({
+                message: lang.main.validation.genericError,
+                severity: 'error'
+              })
+            }
           })
         } else {
           showSnackbar({
@@ -105,7 +117,6 @@ class AddGroup extends Component {
               id="isActive"
               label="Group active"
               checked={data.isActive}
-              defaultChecked
             />
 
           </Grid>
