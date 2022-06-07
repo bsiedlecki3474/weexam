@@ -17,7 +17,7 @@ class User {
         isActive
       } = req.body;
 
-      if (!username || !password)
+      if (!username || !password || !firstName || !lastName || !role)
         return res.status(400).send();
 
       const token = req.cookies.jwt;
