@@ -1,16 +1,13 @@
 import { Component, createRef } from "react";
 import { useEffect, useState, useRef } from "react";
 import { connect } from "react-redux"
+import { useNavigate } from 'react-router-dom'
 import { withStyles } from '@mui/styles';
 import withParams from "../../hoc/withParams";
 import ListItem from '../ListItem'
-import { EventDialog } from './'
 
-import GroupsIcon from '@mui/icons-material/Groups';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import DeleteIcon from '@mui/icons-material/Delete';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import SettingsIcon from '@mui/icons-material/Settings';
+import EditIcon from '@mui/icons-material/Edit';
 
 import { format } from 'date-fns'
 
@@ -36,7 +33,7 @@ import {
 import { showSnackbar } from '../../redux/actions/snackbar'
 
 import {  } from "../../api/tests";
-import { getEvents, getSingleTest, getAssignedGroups } from "../../api/tests";
+import { getEvents, getSingleTest } from "../../api/tests";
 import { getGroupList } from "../../api/groups";
 
 import { Form, TextField, Select, Checkbox } from '../form'
@@ -78,6 +75,8 @@ const EditTestDetails = props => {
   const [eventDialogOpen, setEventDialogOpen] = useState(false);
   const [eventDialogData, setEventDialogData] = useState(null);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     getGroupList(id).then(res => setGroups(res));
     getEvents(id).then(res => setEvents(res));
@@ -108,47 +107,9 @@ const EditTestDetails = props => {
 
   const isDataLoading = () => false
 
-  const handleChangeAddGroup = option => {
-    setAddGroup(option)
-  }
-
-  const handleAddGroupClick = e => {
-    const { params, showSnackbar, onHandleAddGroupToTest } = props;
-    const { id } = params;
-
-    onHandleAddGroupToTest(addGroup?.id, id).then(res => {
-      setAddGroup(null);
-      setAddGroupVisible(false);
-      updateGroups(addGroup)
-
-      showSnackbar({
-        message: lang.tests.snackbar.groupAdded,
-        severity: 'success'
-      })
-    })
-  }
-
-  const handleRemoveGroupClick = groupId => e => {
-    if (window.confirm(lang.tests.snackbar.confirmRemoveTestGroup)) {
-      const { params, showSnackbar, onHandleRemoveGroupFromTest } = props;
-      const { id } = params;
-      onHandleRemoveGroupFromTest(groupId, id).then(res => {
-        setAssignedGroups(assignedGroups.filter(el => el.id !== groupId))
-        showSnackbar({
-          message: lang.tests.snackbar.groupRemoved,
-          severity: 'success'
-        })
-      })
-    }
-  }
-
-  const toggleGroupVisible = () => setAddGroupVisible(!addGroupVisible);
-  const handleEventDialogOpen = (data = null) => { setEventDialogOpen(true); setEventDialogData(data) }
-  const handleEventDialogClose = (data = null) => { setEventDialogOpen(false); setEventDialogData(null) }
-
   const { classes, params, onHandleSaveTest, showSnackbar } = props;
   const { id } = params;
-  const assignedGroupIds = assignedGroups ? assignedGroups.map(el => el.id) : [];
+  // const assignedGroupIds = assignedGroups ? assignedGroups.map(el => el.id) : [];
 
   const formSubmit = e => {
     setShowErrors(true);
@@ -168,104 +129,88 @@ const EditTestDetails = props => {
     }
   }
 
-    const testDateComparator = (a, b) => {
-      return a.startDate === b.startDate
-        ? (b.endDate - a.endDate)
-        : (b.startDate - a.startDate);
-    }
+  const formatEvent = event => {
+    const { startDate, endDate, duration } = event;
+    const formattedStartDate = format(new Date(startDate), 'yyyy-MM-dd HH:mm');
+    const formattedEndDate = format(new Date(endDate), 'yyyy-MM-dd HH:mm');
+    return `${formattedStartDate} - ${formattedEndDate} (${duration} mins)`;
+  }
 
-    const groupComparator = (a, b) => b.name < a.name;
+  return (
+    <Box className={classes.root}>
+      <Form
+        formRef={formRef}
+        title="Edit test details"
+        fullHeight
+        submitButton={
+          <Button variant="outlined" size="small" onClick={formSubmit}>save</Button>
+        }
+      >
+        <Grid item xs={12} sm={6} md={6} lg={6}>
+          <TextField
+            id="name"
+            label="Test name"
+            value={data.name}
+            handleChange={handleInputChange}
+            required
+            isLoading={isLoading || isDataLoading()}
+            error={showErrors && !data.name}
+            helperText={lang.main.validation.empty}
+          />
 
-    const updateGroups = (group) => {
-      setAssignedGroups([...assignedGroups.filter(el => el.id !== group?.id), group].sort(groupComparator))
-    }
-
-    const updateEvents = (event, id = null) => {
-      setEvents([...events.filter(el => el.id !== id), event].sort(testDateComparator))
-    }
-
-    const formatEvent = (startDate, endDate, duration) => {
-      const formattedStartDate = format(new Date(startDate), 'yyyy-MM-dd HH:mm');
-      const formattedEndDate = format(new Date(endDate), 'yyyy-MM-dd HH:mm');
-      return `${formattedStartDate} - ${formattedEndDate} (${duration} mins)`;
-    }
-
-    return (
-      <Box className={classes.root}>
-        <Form
-          formRef={formRef}
-          title="Edit test details"
-          fullHeight
-          submitButton={
-            <Button variant="outlined" size="small" onClick={formSubmit}>save</Button>
-          }
-        >
-          <Grid item xs={12} sm={6} md={6} lg={6}>
-            <TextField
-              id="name"
-              label="Test name"
-              value={data.name}
-              handleChange={handleInputChange}
-              required
-              isLoading={isLoading || isDataLoading()}
-              error={showErrors && !data.name}
-              helperText={lang.main.validation.empty}
+          <Box className={classes.checkboxContainer}>
+            <Checkbox
+              id="isActive"
+              label="Test active"
+              checked={Boolean(data.isActive)}
+              onChange={handleCheckboxChange('isActive')}
             />
 
-            <Box className={classes.checkboxContainer}>
-              <Checkbox
-                id="isActive"
-                label="Test active"
-                checked={Boolean(data.isActive)}
-                onChange={handleCheckboxChange('isActive')}
-              />
+            <Checkbox
+              id="showScores"
+              label="Show score after completion"
+              checked={Boolean(data.showScores)}
+              onChange={handleCheckboxChange('showScores')}
+            />
+          </Box>
 
-              <Checkbox
-                id="showScores"
-                label="Show score after completion"
-                checked={Boolean(data.showScores)}
-                onChange={handleCheckboxChange('showScores')}
-              />
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={6} lg={6}>
+          <Box mb={2}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Typography variant="subtitle1">Events</Typography>
+              <Button variant="outlined" size="small" onClick={e => navigate(`/tests/${props?.params?.id}/event/add`)}>add</Button>
             </Box>
 
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={6} lg={6}>
-            <Box mb={2}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Typography variant="subtitle1">Events</Typography>
-                <Button variant="outlined" size="small" onClick={e => handleEventDialogOpen({ testId: props?.params?.id })}>add</Button>
-              </Box>
-
-              <List dense>
-                {events && events.map(event => 
-                  <ListItem 
-                    key={event.id}
-                    primary={formatEvent(event.startDate, event.endDate, event.duration)}
-                    icon={<CalendarTodayIcon />}
-                    action={
-                      <IconButton edge="end" size="small" onClick={e => handleEventDialogOpen(event)}>
-                        <SettingsIcon fontSize="inherit" />
-                      </IconButton>
-                    }
-                  />  
-                )}
-              </List>
-
-              <EventDialog
-                open={eventDialogOpen}
-                data={eventDialogData}
-                groups={groups}
-                title='Event'
-                handleClose={handleEventDialogClose}
-                updateEvents={updateEvents}
-              />
-            </Box>
-          </Grid>
-        </Form>
-      </Box>
-    )
-  // }
+            <List dense>
+              {events && events.map(event => 
+                <ListItem 
+                  key={event.id}
+                  primary={
+                    <Typography variant="body2" color={event.isActive ? 'text.primary' : 'text.secondary'}>
+                      {formatEvent(event)}
+                    </Typography>
+                  }
+                  icon={<CalendarTodayIcon />}
+                  action={
+                    <IconButton
+                      edge="end"
+                      size="small"
+                      disabled={new Date().getTime() >= new Date(event.startDate).getTime()}
+                      onClick={e => navigate(`/tests/${props?.params?.id}/event/${event.id}`)}
+                    >
+                      <EditIcon fontSize="inherit" />
+                    </IconButton>
+                  }
+                />  
+              )}
+            </List>
+          </Box>
+        </Grid>
+      </Form>
+    </Box>
+  )
 }
 
 const mapDispatchToProps = dispatch => ({

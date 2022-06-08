@@ -79,6 +79,10 @@ class EditGroup extends Component {
 
   checkFormValidity = () => this.formRef.current.checkValidity();
 
+  handleCheckboxChange = key => (e, value) => {
+    this.setState({ data: {...this.state.data, [key]: value }});
+  }
+
   handleInputChange = (e, key) => {
     const value = e.target.value;
     this.setState({ data: {...this.state.data, [key]: value }});
@@ -180,7 +184,6 @@ class EditGroup extends Component {
               value={data.name}
               handleChange={this.handleInputChange}
               required
-              value={data.name}
               isLoading={isLoading || this.isDataLoading()}
               error={showErrors && !data.name}
               helperText={lang.main.validation.empty}
@@ -190,6 +193,7 @@ class EditGroup extends Component {
               id="isActive"
               label="Group active"
               checked={Boolean(data.isActive)}
+              onChange={this.handleCheckboxChange('isActive')}
             />
 
           </Grid>

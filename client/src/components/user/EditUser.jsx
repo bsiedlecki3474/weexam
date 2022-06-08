@@ -24,7 +24,7 @@ import { showSnackbar } from '../../redux/actions/snackbar'
 
 import { Form, TextField, Select, Checkbox } from '../form'
 import lang from '../../lang'
-import StaticField from "../form/StaticField";
+import { StaticField } from "../form";
 
 const styles = theme => ({
   addContainer: {
@@ -77,7 +77,6 @@ class EditUser extends Component {
   }
 
   handleCheckboxChange = key => (e, value) => {
-    console.log(key, value)
     this.setState({ data: {...this.state.data, [key]: value }});
   }
 

@@ -1,7 +1,7 @@
 import axios from "../axios/axios";
 
-const addEvent = async (data) => {
-  const res = await axios.post('/event/add', data);
+const addEvent = async (testId, data) => {
+  const res = await axios.post('/event/add', { testId, ...data });
   return res.data;
 }
 
@@ -12,6 +12,11 @@ const saveEvent = async (id, data) => {
 
 const deleteEvent = async (id) => {
   const res = await axios.get(`/event/${id}/events`);
+  return res.data
+}
+
+const getSingleEvent = async (id) => {
+  const res = await axios.get(`/event/${id}`);
   return res.data
 }
 
@@ -34,6 +39,7 @@ export {
   addEvent,
   saveEvent,
   deleteEvent,
+  getSingleEvent,
   getAssignedGroups,
   addGroup,
   removeGroup
