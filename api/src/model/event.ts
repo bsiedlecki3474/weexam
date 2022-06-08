@@ -34,6 +34,48 @@ class Event extends Model /*implements CRUD*/ {
 		}
 	}
 
+	single = async (id: number) => {
+		const sql = `SELECT
+			t.name AS test_name,
+			e.start_date,
+			e.end_date,
+			e.duration,
+			e.is_active,
+			c.first_name AS created_by_first_name,
+			c.last_name AS created_by_last_name,
+			m.first_name AS modified_by_first_name,
+			m.last_name AS modified_by_last_name
+		FROM wee_tests_events e
+		LEFT JOIN wee_tests t ON t.id = e.test_id
+		LEFT JOIN wee_users c ON c.id = t.created_by
+		LEFT JOIN wee_users m ON m.id = t.modified_by
+		WHERE e.id = ?`;
+
+		const data = await this.db.query(sql, [id]);
+
+		if (data && data[0]) {
+			const event = data[0];
+			return {
+				id: event.id,
+				testName: event.test_name,
+				startDate: event.start_date,
+				endDate: event.end_date,
+				duration: event.duration,
+				isActive: event.is_active,
+				recordAdministrator: this.prepareUserDateTime(
+					event.created_by_first_name,
+					event.created_by_last_name,
+					event.created_on
+				),
+				recordModification: this.prepareUserDateTime(
+					event.created_by_first_name,
+					event.created_by_last_name,
+					event.created_on
+				),
+			}
+		}
+	}
+
 	groups = async (id: number) => {
 		const sql = `SELECT
 			g.id,

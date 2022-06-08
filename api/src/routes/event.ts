@@ -3,6 +3,7 @@ import {
   add,
   save,
   _delete,
+  single,
   groups,
   addGroup,
   removeGroup
@@ -14,6 +15,7 @@ const router = Router();
 router.post('/add', adminAuthMiddleware, add);
 router.post('/:id/save', adminAuthMiddleware, save);
 router.post('/:id/delete', adminAuthMiddleware, _delete);
+router.get('/:id', adminAuthMiddleware, single);
 router.get('/:id/groups', adminAuthMiddleware, groups);
 router.post('/:id/addGroup', adminAuthMiddleware, addGroup);
 router.post('/:id/removeGroup', adminAuthMiddleware, removeGroup);
