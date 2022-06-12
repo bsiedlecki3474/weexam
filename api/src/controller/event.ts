@@ -3,7 +3,8 @@ import { event } from '../model';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { format } from 'date-fns';
 
-// import { JWT_SECRET } from '../config'
+import { JWT_SECRET } from '../config'
+import { arrayIntersect } from '../helpers';
 
 class Event {
   add = async (req: Request, res: Response) => {
@@ -98,6 +99,79 @@ class Event {
     }
   }
 
+  report = async (req: Request, res: Response) => {
+    try {
+      // const token = req.cookies.jwt;
+      const id = Number(req.params.id);
+      // const { userId } = jwt.verify(token, JWT_SECRET) as JwtPayload;
+
+      // const score = 0;
+      let totalUserScore = 0;
+      let totalTestScore = 0;
+      let maxScore = 0;
+
+      const participants = await event.getParticipants(id);
+      const totalUsers = await event.getTotalUsers(id);
+      // const userAnswers = await event.getUserAnswers(id, userId);
+      const allUsersAnswers = await event.getAllUsersAnswers(id);
+      const correctAnswers = await event.getCorrectAnswers(id);
+
+      console.log(allUsersAnswers)
+
+      if (allUsersAnswers) {
+        for (const userId of Object.keys(allUsersAnswers)) {
+          const questions = allUsersAnswers[userId];
+          if (questions) {
+            let userMaxScore = 0;
+            for (const questionId of Object.keys(questions)) {
+              const user = questions[questionId];
+              const correct = correctAnswers[questionId];
+              // console.log(user, correct)
+              const intersect = arrayIntersect(user, correct);
+              const score = intersect?.length ?? 0;
+
+              console.log(user, correct, intersect)
+
+              userMaxScore += score;
+              totalUserScore += score;
+              totalTestScore += correct.length;
+            }
+
+            if (userMaxScore > maxScore)
+              maxScore = userMaxScore;
+          }
+        }
+      }
+
+      // if (correctAnswers) {
+      //   for (const questionId of Object.keys(correctAnswers)) {
+      //     console.log(correctAnswers)
+      //     const correct = correctAnswers[Number(questionId)];
+      //     // const user = userAnswers[questionId];
+      //     // const intersect = arrayIntersect(user, correct);
+
+      //     // score += (intersect?.length ?? 0);
+      //     maxScore += (correct.length ?? 0);
+
+      //   }
+      // }
+
+      const data = {
+        participants,
+        totalUsers,
+        maxScore,
+        totalTestScore,
+        averageScore: totalUserScore / (Object.keys(allUsersAnswers)?.length || 1)
+      }
+
+      res.status(200).send(data);
+
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
   addGroup = async (req: Request, res: Response) => {
     try {
       const { groupId } = req.body;
@@ -179,6 +253,7 @@ export const {
   save,
   _delete,
   single,
+  report,
   groups,
   addGroup,
   removeGroup

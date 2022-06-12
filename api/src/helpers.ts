@@ -6,7 +6,15 @@ const getRandomInt = (min: number, max:any): number => {
 
 const getCurrentDate = (): string => new Date().toISOString().split('T')[0];
 
+const arrayIntersect = (a: any[], b: any[]) => {
+    const setA = new Set(a);
+    const setB = new Set(b);
+    const intersection = new Set([...setA].filter(x => setB.has(x)));
+    return Array.from(intersection);
+}
+
 export {
 	getRandomInt,
-    getCurrentDate
+    getCurrentDate,
+    arrayIntersect
 }

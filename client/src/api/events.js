@@ -20,6 +20,11 @@ const getSingleEvent = async (id) => {
   return res.data
 }
 
+const getEventReport = async (id) => {
+  const res = await axios.get(`/event/${id}/report`);
+  return res.data
+}
+
 const getAssignedGroups = async (id) => {
   const res = await axios.get(`/event/${id}/groups`);
   return res.data
@@ -40,6 +45,7 @@ export {
   saveEvent,
   deleteEvent,
   getSingleEvent,
+  getEventReport,
   getAssignedGroups,
   addGroup,
   removeGroup

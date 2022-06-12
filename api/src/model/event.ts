@@ -1,6 +1,6 @@
 import Model from './model'
 import { CRUD } from 'interface/crud';
-import { Event as EventInterface } from '../interface/test'
+import { Answers as AnswersInterface } from '../interface/event'
 import { SimpleGroup as GroupInterface } from '../interface/group'
 import { format } from 'date-fns'
 
@@ -73,6 +73,84 @@ class Event extends Model /*implements CRUD*/ {
 					event.created_on
 				),
 			}
+		}
+	}
+
+	getParticipants = async (id: number) => {
+		const sql = `SELECT COUNT(id) AS participants FROM wee_tests_assessments a WHERE event_id = ?`;
+		const data = await this.db.query(sql, [id]);
+
+		if (data && data[0])
+			return data[0].participants;
+
+	}
+
+	getTotalUsers = async (id: number) => {
+		const sql = `SELECT COUNT(DISTINCT gu.user_id) AS total_users FROM wee_events_groups eg LEFT JOIN wee_groups_users gu ON gu.group_id = eg.group_id WHERE eg.event_id = ?`;
+		const data = await this.db.query(sql, [id]);
+
+		if (data && data[0])
+			return data[0].total_users;
+
+	}
+
+	getCorrectAnswers = async (id: number) => {
+		const sql = `SELECT qa.id AS answer_id, q.id AS question_id FROM wee_tests_questions q LEFT JOIN wee_tests_events e ON q.test_id = e.test_id LEFT JOIN wee_questions_answers qa ON qa.question_id = q.id AND qa.checked = 1 WHERE e.id = ?`;
+		const data = await this.db.query(sql, [id]);
+		const answers: any = {};
+
+		if (data) {
+			for (const row of data) {
+				if (answers[row.question_id]?.length) {
+					answers[row.question_id].push(row.answer_id);
+				} else {
+					answers[row.question_id] = [row.answer_id];
+				}
+
+			}
+
+			return answers;
+		}
+	}
+
+	getAllUsersAnswers = async (id: number) => {
+		const sql = `SELECT a.user_id, ans.question_id, ans.answer_id FROM wee_tests_assessments_answers ans LEFT JOIN wee_tests_assessments a ON a.id = ans.assessment_id WHERE a.event_id = ?`;
+		const data = await this.db.query(sql, [id]);
+		const users: any = {};
+
+ 		if (data) {
+			for (const row of data) {
+				if (users[row.user_id]) {
+						if (users[row.user_id][row.question_id]?.length) {
+						users[row.user_id][row.question_id].push(row.answer_id);
+					} else {
+						users[row.user_id] = {...users[row.user_id], [row.question_id]: [row.answer_id] }
+					}
+				} else {
+					users[row.user_id] = { [row.question_id]: [row.answer_id] };
+				}
+			}
+
+			return users;
+		}
+	}
+
+	getUserAnswers = async (id: number, userId: number) => {
+		const sql = `SELECT ans.answer_id, ans.question_id FROM wee_tests_assessments_answers ans LEFT JOIN wee_tests_assessments a ON a.id = ans.assessment_id WHERE a.event_id = ? AND a.user_id = ?`;
+		const data = await this.db.query(sql, [id, userId]);
+		const answers: any = {};
+
+		if (data) {
+			for (const row of data) {
+				if (answers[row.questionId].length) {
+					answers[row.question_id].push(row.answer_id);
+				} else {
+					answers[row.question_id] = [row.answer_id];
+				}
+
+			}
+
+			return answers;
 		}
 	}
 
