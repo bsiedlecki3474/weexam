@@ -107,7 +107,6 @@ class Event {
 
       // const score = 0;
       let totalUserScore = 0;
-      let totalTestScore = 0;
       let maxScore = 0;
 
       const participants = await event.getParticipants(id);
@@ -115,8 +114,6 @@ class Event {
       // const userAnswers = await event.getUserAnswers(id, userId);
       const allUsersAnswers = await event.getAllUsersAnswers(id);
       const correctAnswers = await event.getCorrectAnswers(id);
-
-      console.log(allUsersAnswers)
 
       if (allUsersAnswers) {
         for (const userId of Object.keys(allUsersAnswers)) {
@@ -130,11 +127,8 @@ class Event {
               const intersect = arrayIntersect(user, correct);
               const score = intersect?.length ?? 0;
 
-              console.log(user, correct, intersect)
-
               userMaxScore += score;
               totalUserScore += score;
-              totalTestScore += correct.length;
             }
 
             if (userMaxScore > maxScore)
@@ -143,18 +137,9 @@ class Event {
         }
       }
 
-      // if (correctAnswers) {
-      //   for (const questionId of Object.keys(correctAnswers)) {
-      //     console.log(correctAnswers)
-      //     const correct = correctAnswers[Number(questionId)];
-      //     // const user = userAnswers[questionId];
-      //     // const intersect = arrayIntersect(user, correct);
-
-      //     // score += (intersect?.length ?? 0);
-      //     maxScore += (correct.length ?? 0);
-
-      //   }
-      // }
+      const totalTestScore = Object.values(correctAnswers)
+        .map((el: number[]) => el.length)
+        .reduce((acc, el) => acc + el, 0);
 
       const data = {
         participants,
