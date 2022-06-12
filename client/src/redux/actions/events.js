@@ -25,7 +25,11 @@ import {
 
   REMOVE_GROUP_PENDING,
   REMOVE_GROUP_SUCCESS,
-  REMOVE_GROUP_ERROR
+  REMOVE_GROUP_ERROR,
+
+  GET_EVENT_REPORT_PENDING,
+  GET_EVENT_REPORT_SUCCESS,
+  GET_EVENT_REPORT_ERROR
 
 } from '../types/events'
 
@@ -34,6 +38,7 @@ import {
   saveEvent,
   deleteEvent,
   getSingleEvent,
+  getEventReport,
   getAssignedGroups,
   addGroup,
   removeGroup,
@@ -79,6 +84,16 @@ const handleGetSingleEvent = (id) => async dispatch => {
   }
 }
 
+const handleGetEventReport = (id) => async dispatch => {
+  dispatch({ type: GET_EVENT_REPORT_PENDING })
+  try {
+    const data = await getEventReport(id)
+    return dispatch({ type: GET_EVENT_REPORT_SUCCESS, data })
+  } catch (e) {
+    return dispatch({ type: GET_EVENT_REPORT_ERROR, payload: e })
+  }
+}
+
 const handleGetAssignedGroups = (id) => async dispatch => {
   dispatch({ type: GET_ASSIGNED_GROUPS_PENDING })
   try {
@@ -114,6 +129,7 @@ export {
   handleSaveEvent,
   handleDeleteEvent,
   handleGetSingleEvent,
+  handleGetEventReport,
   handleGetAssignedGroups,
   handleAddGroup,
   handleRemoveGroup

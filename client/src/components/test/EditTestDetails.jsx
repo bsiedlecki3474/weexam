@@ -8,6 +8,7 @@ import ListItem from '../ListItem'
 
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import EditIcon from '@mui/icons-material/Edit';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 
 import { format } from 'date-fns'
 
@@ -194,14 +195,25 @@ const EditTestDetails = props => {
                   }
                   icon={<CalendarTodayIcon />}
                   action={
-                    <IconButton
-                      edge="end"
-                      size="small"
-                      disabled={new Date().getTime() >= new Date(event.startDate).getTime()}
-                      onClick={e => navigate(`/tests/${props?.params?.id}/event/${event.id}`)}
-                    >
-                      <EditIcon fontSize="inherit" />
-                    </IconButton>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      
+                      <IconButton
+                        edge="end"
+                        size="small"
+                        disabled={new Date().getTime() >= new Date(event.startDate).getTime()}
+                        onClick={e => navigate(`/tests/${props?.params?.id}/event/${event.id}`)}
+                      >
+                        <EditIcon fontSize="inherit" />
+                      </IconButton>
+                      <IconButton
+                        edge="end"
+                        size="small"
+                        onClick={e => navigate(`/tests/${props?.params?.id}/event/${event.id}/report`)}
+                      >
+                        <AssessmentIcon fontSize="inherit" />
+                      </IconButton>
+                    </Box>
+                    
                   }
                 />  
               )}

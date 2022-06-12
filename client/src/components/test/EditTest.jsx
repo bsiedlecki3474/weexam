@@ -1,5 +1,6 @@
 import EditTestDetails from './EditTestDetails';
 import EditTestQuestions from './EditTestQuestions';
+
 import { withStyles } from '@mui/styles';
 import { useLocalStorage } from '../../hooks'
 
@@ -41,7 +42,6 @@ const EditTest = ({ classes }) => {
       >
         <Tab label="Details" />
         <Tab label="Questions" />
-        <Tab label="Reports" />
       </Tabs>
       {tabs[tab]}
     </Box>

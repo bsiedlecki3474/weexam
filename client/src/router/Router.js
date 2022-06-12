@@ -26,7 +26,8 @@ import {
 
 import {
   AddEvent,
-  EditEvent
+  EditEvent,
+  EventReport
 } from '../components/event'
 
 import { AssessmentManager } from "../components/assessment";
@@ -51,6 +52,7 @@ const Router = props => {
       { path: 'tests/:id', element: <EditTest /> },
       { path: 'tests/:testId/event/add', element: <AddEvent /> },
       { path: 'tests/:testId/event/:eventId', element: <EditEvent /> },
+      { path: 'tests/:testId/event/:eventId/report', element: <EventReport /> },
       { path: 'assessments/:id', element: <AssessmentManager /> },
       { path: '*', element: <Navigate to="/" /> },
     ] : [

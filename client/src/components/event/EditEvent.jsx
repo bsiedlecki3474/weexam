@@ -3,27 +3,44 @@ import { connect } from "react-redux"
 import { withStyles } from '@mui/styles';
 import withParams from "../../hoc/withParams";
 import withNavigation from "../../hoc/withNavigation";
+
+import GroupsIcon from '@mui/icons-material/Groups';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 import {
   Box,
   IconButton,
   Button,
   Grid,
-  TextField as MdlTextField
+  List,
+  TextField as MdlTextField,
+  Typography,
+  Autocomplete
 } from "@mui/material"
 
 import {
+  handleAddEvent,
+  handleSaveEvent,
+  handleDeleteEvent,
   handleGetSingleEvent,
-  handleSaveEvent
+  handleGetAssignedGroups,
+  handleAddGroup,
+  handleRemoveGroup
 } from '../../redux/actions/events';
+
+import { handleGetEvents } from '../../redux/actions/tests';
+import { handleGetGroupList } from '../../redux/actions/groups';
 
 import { showSnackbar } from '../../redux/actions/snackbar'
 
+import ListItem from '../ListItem'
 import { Form, TextField, StaticField, Checkbox } from '../form'
 import lang from '../../lang'
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-
 import { format } from 'date-fns'
+import EventReport from "./EventReport";
 
 const styles = theme => ({
   addContainer: {
@@ -48,17 +65,67 @@ class EditEvent extends Component {
   state = {
     showErrors: false,
     isLoading: false,
-    data: {}
+    data: {},
+    addGroup: null,
+    assignedGroups: [],
+    addGroupVisible: false
   }
 
   componentDidMount() {
     console.log(this.props)
     const {
       params,
+      onHandleGetGroupList,
       onHandleGetSingleEvent,
+      onHandleGetAssignedGroups
     } = this.props;
     const { eventId } = params;
-    onHandleGetSingleEvent(eventId).then(res => this.setState(state => ({...state, data: res.data})))
+    onHandleGetGroupList();
+    onHandleGetSingleEvent(eventId)
+      .then(res => this.setState(state => ({...state, data: res.data })))
+    onHandleGetAssignedGroups(eventId)
+      .then(res => this.setState(state => ({...state, assignedGroups: res.data})))
+  }
+
+  handleChangeAddGroup = option => this.setState({ addGroup: option });
+
+  toggleGroupVisible = () => this.setState({ addGroupVisible: !this.state.addGroupVisible })
+
+  handleAddGroupClick = e => {
+    const { addGroup } = this.state;
+    const { params, showSnackbar, onHandleAddGroup } = this.props;
+    const { id } = params;
+
+    onHandleAddGroup(id, addGroup?.id).then(res => {
+      this.setState({
+        assignedGroups: [...this.state.assignedGroups, addGroup],
+        addGroup: null
+      })
+
+      showSnackbar({
+        message: lang.tests.snackbar.groupAdded,
+        severity: 'success'
+      })
+    })
+  }
+
+  handleRemoveGroupClick = groupId => e => {
+    if (window.confirm(lang.tests.snackbar.confirmRemoveGroup)) {
+      const { assignedGroups } = this.state;
+      const { params, showSnackbar, onHandleRemoveGroup } = this.props;
+      const { id } = params;
+
+      onHandleRemoveGroup(id, groupId).then(res => {
+        this.setState({
+          assignedGroups: assignedGroups.filter(el => el.id !== groupId),
+        })
+
+        showSnackbar({
+          message: lang.tests.snackbar.groupRemoved,
+          severity: 'success'
+        })
+      })
+    }
   }
 
   checkFormValidity = () => this.formRef.current.checkValidity();
@@ -85,9 +152,10 @@ class EditEvent extends Component {
   isDataLoading = () => false
 
   render() {
-    const { showErrors, isLoading, data } = this.state;
-    const { classes, navigate, params } = this.props;
+    const { showErrors, isLoading, data, addGroup, addGroupVisible, assignedGroups } = this.state;
+    const { classes, groups, navigate, params } = this.props;
     const { testId, eventId } = params;
+    const assignedGroupsIds = assignedGroups ? assignedGroups.map(el => el.id) : [];
 
     const formSubmit = e => {
       const { onHandleSaveEvent, showSnackbar } = this.props;
@@ -186,6 +254,58 @@ class EditEvent extends Component {
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6}>
 
+            {/* <Typography variant="h6" sx={{ mb: 2 }}>Stats</Typography>
+            <EventReport /> */}
+
+            <Box>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Typography variant="subtitle1">Groups</Typography>
+                <Button variant="outlined" size="small" onClick={this.toggleGroupVisible}>add</Button>
+              </Box>
+
+              {addGroupVisible && <Box className={classes.addContainer}>
+                <Autocomplete
+                  options={groups?.filter(el => !assignedGroupsIds.includes(el.id)) ?? []}
+                  getOptionLabel={option => option.name}
+                  onChange={(e, value) => this.handleChangeAddGroup(value)}
+                  value={addGroup}
+                  fullWidth
+                  renderInput={(params) =>
+                    <MdlTextField
+                      {...params}
+                      fullWidth
+                      variant="standard"
+                      label="Add group"
+                    // value={addUser?.id}
+
+                    />
+                  }
+                />
+                <IconButton
+                  className={classes.addButton}
+                  onClick={this.handleAddGroupClick}
+                  disabled={addGroup === null}
+                >
+                  <GroupAddIcon />
+                </IconButton>
+                {/* <Button variant="outlined" size="small" onClick={this.handleAddUserClick}>add</Button> */}
+              </Box>}
+
+              <List dense>
+                {assignedGroups && assignedGroups.map(group => 
+                  <ListItem
+                    key={group.id}
+                    primary={group.name}
+                    icon={<GroupsIcon />}
+                    action={
+                      <IconButton edge="end" size="small" onClick={this.handleRemoveGroupClick(group.id)}>
+                        <DeleteIcon fontSize="inherit" />
+                      </IconButton>
+                    }
+                  />
+                )}
+              </List>
+            </Box>
           </Grid>
         </Form>
       </Box>
@@ -193,13 +313,24 @@ class EditEvent extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  groups: state.groups.data
+})
+
 const mapDispatchToProps = dispatch => ({
-  onHandleSaveEvent: (id, data) => dispatch(handleSaveEvent(id, data)),
   onHandleGetSingleEvent: id => dispatch(handleGetSingleEvent(id)),
+  onHandleGetEvents: id => dispatch(handleGetEvents(id)),
+  onHandleAddEvent: data => dispatch(handleAddEvent(data)),
+  onHandleSaveEvent: (id, data) => dispatch(handleSaveEvent(id, data)),
+  onHandleDeleteEvent: id => dispatch(handleDeleteEvent(id)),
+  onHandleGetGroupList: () => dispatch(handleGetGroupList()),
+  onHandleGetAssignedGroups: id => dispatch(handleGetAssignedGroups(id)),
+  onHandleAddGroup: (id, groupId) => dispatch(handleAddGroup(id, groupId)),
+  onHandleRemoveGroup: (id, groupId) => dispatch(handleRemoveGroup(id, groupId)),
   showSnackbar: data => dispatch(showSnackbar(data))
 })
 
-export default connect(null, mapDispatchToProps)(
+export default connect(mapStateToProps, mapDispatchToProps)(
   withParams(
     withNavigation(
       withStyles(styles)(EditEvent)
