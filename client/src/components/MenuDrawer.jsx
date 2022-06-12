@@ -39,7 +39,7 @@ const styles = theme => ({
 const drawerWidth = 240;
 
 const MenuDrawer = props => {
-  const { window, classes, children, theme, onHandleSignOut, onHandleToggleTheme, isAdmin } = props;
+  const { window, classes, children, theme, onHandleSignOut, onHandleToggleTheme, isAdmin, user } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -102,8 +102,11 @@ const MenuDrawer = props => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div" onClick={() => navigate('/')}>
+          <Typography variant="h6" noWrap component="div" onClick={() => navigate('/')} width={drawerWidth}>
             weexam
+          </Typography>
+          <Typography variant="body2" color="text.secondary" noWrap component="div" onClick={() => navigate('/')} sx={{ ml: -2 }}>
+            Logged as {user}
           </Typography>
           <Box sx={{ ml: 'auto' }}>
             <IconButton
@@ -178,7 +181,8 @@ const MenuDrawer = props => {
 const mapStateToProps = state => {
   return {
     theme: state.theme,
-    isAdmin: ['root', 'admin'].includes(state?.auth?.data?.role)
+    isAdmin: ['root', 'admin'].includes(state?.auth?.data?.role),
+    user: `${state?.auth?.data?.firstName} ${state?.auth?.data?.lastName}` 
   }
 }
 
