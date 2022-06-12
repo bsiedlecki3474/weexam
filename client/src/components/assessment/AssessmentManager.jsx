@@ -43,7 +43,7 @@ const AssessmentManager = props => {
 
   useEffect(() => {
     getAssessment(id).then(res => setAssessment(res))
-  }, [assessment])
+  }, [id])
 
   // const onHandleStartAssessment = e => handleStartAssessment(id)
 

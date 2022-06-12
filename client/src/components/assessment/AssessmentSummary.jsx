@@ -25,7 +25,10 @@ const AssessmentSummary = ({ assessment, handleStartAssessment }) => {
     isEventActive,
     isActive,
     userFinished,
-    assessmentStarted
+    assessmentStarted,
+
+    totalScore,
+    userScore
   } = assessment;
 
   return (
@@ -73,16 +76,25 @@ const AssessmentSummary = ({ assessment, handleStartAssessment }) => {
                 <TableCell align="center">{administrator}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align="left">Event active</TableCell>
-                <TableCell align="center">{isEventActive}</TableCell>
+                <TableCell align="left">Started at</TableCell>
+                <TableCell align="center">{startDate
+                  ? format(new Date(startDate), "dd-MM-yyyy HH:mm")
+                  : window.DASH}
+                </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align="left">Assessment active</TableCell>
-                <TableCell align="center">{isActive}</TableCell>
+                <TableCell align="left">Submitted at</TableCell>
+                <TableCell align="center">{endDate
+                  ? format(new Date(endDate), "dd-MM-yyyy HH:mm")
+                  : 'not submitted (lang)'}
+                </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align="left">User has finished</TableCell>
-                <TableCell align="center">{userFinished}</TableCell>
+                <TableCell align="left">Finishes at</TableCell>
+                <TableCell align="center">{expectedEndDate
+                  ? format(new Date(expectedEndDate), "dd-MM-yyyy HH:mm")
+                  : window.DASH}
+                </TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -91,22 +103,16 @@ const AssessmentSummary = ({ assessment, handleStartAssessment }) => {
           <Table>
             <TableBody>
               <TableRow>
-                <TableCell align="left">Started at</TableCell>
-                <TableCell align="center">{startDate
-                    ? format(new Date(startDate), "dd-MM-yyyy HH:mm")
-                    : window.DASH}</TableCell>
+                <TableCell align="left">Total score</TableCell>
+                <TableCell align="center">{totalScore}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align="left">Submitted at</TableCell>
-                <TableCell align="center">{endDate
-                    ? format(new Date(endDate), "dd-MM-yyyy HH:mm")
-                    : 'not submitted (lang)'}</TableCell>
+                <TableCell align="left">Your score</TableCell>
+                <TableCell align="center">{userScore}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align="left">Finishes at</TableCell>
-                <TableCell align="center">{expectedEndDate
-                    ? format(new Date(expectedEndDate), "dd-MM-yyyy HH:mm")
-                    : window.DASH}</TableCell>
+                <TableCell align="left">Your %</TableCell>
+                <TableCell align="center">{totalScore ? (userScore / totalScore * 100) + '%' : ''}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
