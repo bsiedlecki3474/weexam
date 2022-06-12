@@ -142,7 +142,7 @@ class Event extends Model /*implements CRUD*/ {
 
 		if (data) {
 			for (const row of data) {
-				if (answers[row.questionId].length) {
+				if (answers[row.questionId]?.length) {
 					answers[row.question_id].push(row.answer_id);
 				} else {
 					answers[row.question_id] = [row.answer_id];

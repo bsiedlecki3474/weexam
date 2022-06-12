@@ -3,6 +3,7 @@ import { assessment, event, test } from '../model';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 import { JWT_SECRET } from '../config'
+import { arrayIntersect } from '../helpers';
 
 class Assessment {
   single = async (req: Request, res: Response) => {
@@ -11,8 +12,27 @@ class Assessment {
       const { userId } = jwt.verify(token, JWT_SECRET) as JwtPayload;
       const eventId = Number(req.params.id);
       const data = await assessment.single(eventId, userId);
+      const userAnswers = await event.getUserAnswers(eventId, userId);
+      const correctAnswers = await event.getCorrectAnswers(eventId);
+
+      let userScore = 0;
+      let totalScore = 0;
+
+      if (correctAnswers) {
+        for (const questionId of Object.keys(correctAnswers)) {
+          const aUser = userAnswers[questionId];
+          const aCorrect = correctAnswers[questionId];
+          console.log(aUser, aCorrect)
+          const intersect = arrayIntersect(aUser, aCorrect);
+          const score = intersect?.length ?? 0;
+
+          userScore += score;
+          totalScore += aCorrect.length;
+        }
+      }
+
       if (data) {
-        res.status(200).send(data);
+        res.status(200).send({...data, userScore, totalScore});
       } else {
         res.status(400).send('no data');
       }
