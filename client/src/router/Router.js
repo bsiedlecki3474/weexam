@@ -27,10 +27,9 @@ import {
 import {
   AddEvent,
   EditEvent,
-  EventReport
+  EventReport,
+  StartAssessment
 } from '../components/event'
-
-import { AssessmentManager } from "../components/assessment";
 
 import Progress from "../components/Progress";
 
@@ -53,12 +52,12 @@ const Router = props => {
       { path: 'tests/:testId/event/add', element: <AddEvent /> },
       { path: 'tests/:testId/event/:eventId', element: <EditEvent /> },
       { path: 'tests/:testId/event/:eventId/report', element: <EventReport /> },
-      { path: 'assessments/:id', element: <AssessmentManager /> },
+      { path: 'events/:id', element: <StartAssessment /> },
       { path: '*', element: <Navigate to="/" /> },
     ] : [
       { path: '', element: <Dashboard /> },
       { path: 'profile', element: <Profile /> },
-      { path: 'assessments/:id', element: <AssessmentManager /> },
+      { path: 'events/:id', element: <StartAssessment /> },
       { path: '*', element: <Navigate to="/" /> },
     ]
 

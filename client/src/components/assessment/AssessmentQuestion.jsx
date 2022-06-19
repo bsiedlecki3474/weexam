@@ -6,7 +6,8 @@ import {
   Paper,
   FormControl,
   RadioGroup,
-  IconButton
+  IconButton,
+  Fab
 } from "@mui/material"
 
 import { withStyles } from '@mui/styles';
@@ -15,6 +16,7 @@ import QuestionControl from "../question/QuestionControl";
 import { connect } from "react-redux"
 
 import FlagIcon from '@mui/icons-material/Flag';
+import CheckIcon from '@mui/icons-material/Check';
 
 const styles = theme => ({
   root: {
@@ -29,15 +31,27 @@ const styles = theme => ({
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2)
   },
-  flagIcon: {
+  flagButton: {
     position: 'absolute !important',
     right: theme.spacing(2),
     top: theme.spacing(2)
-  }
+  },
+  submitButton: {
+    position: 'absolute !important',
+    right: theme.spacing(2),
+    bottom: theme.spacing(2),
+    // '& > svg': {
+      // fill: theme.palette.text.primary
+    // }
+  },
 })
 
+const submitAssessment = e => {
+  
+}
+
 const AssessmentQuestion = props => {
-  const { classes, index, question, questionCount, isFlagged, handleChangeFlagged, checkedAnswers } = props
+  const { classes, index, question, questionCount, isFlagged, handleChangeFlagged, handleSubmitAssessment, checkedAnswers } = props
   const questionNumber = index + 1;
 
   const [answers, setAnswers] = useState([]);
@@ -83,12 +97,30 @@ const AssessmentQuestion = props => {
 
         <IconButton
           size="large"
-          className={classes.flagIcon}
+          className={classes.flagButton}
           color={isFlagged ? 'warning' : 'inherit'}
           onClick={handleChangeFlagged(index)}
         >
           <FlagIcon />
-        </IconButton>    
+        </IconButton>
+
+        {/* <IconButton
+          size="large"
+          className={classes.submitButton}
+          // color={isFlagged ? 'warning' : 'inherit'}
+          // onClick={handleChangeFlagged(index)}
+        >
+          <AssignmentTurnedInIcon />
+        </IconButton> */}
+
+        <Fab
+          color="primary"
+          size="small"
+          className={classes.submitButton}
+          onClick={handleSubmitAssessment}
+        >
+          <CheckIcon />
+        </Fab>
         
       </Paper>
     </Box>

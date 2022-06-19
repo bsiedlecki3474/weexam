@@ -13,7 +13,7 @@ import { format } from "date-fns";
 
 const AssessmentSummary = ({ assessment, handleStartAssessment }) => {
   const {
-    name,
+    testName,
     eventStartDate,
     eventEndDate,
     startDate,
@@ -33,7 +33,7 @@ const AssessmentSummary = ({ assessment, handleStartAssessment }) => {
 
   return (
     <ViewLayout
-      title={name}
+      title={testName}
       actions={userFinished || !isEventActive || assessmentStarted ? [] : [
         <Button
           // sx={{ float: 'right' }}
@@ -49,7 +49,7 @@ const AssessmentSummary = ({ assessment, handleStartAssessment }) => {
             <TableBody>
               <TableRow z>
                 <TableCell align="left">Name</TableCell>
-                <TableCell align="center">{name}</TableCell>
+                <TableCell align="center">{testName}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell align="left">Start date</TableCell>
@@ -112,7 +112,7 @@ const AssessmentSummary = ({ assessment, handleStartAssessment }) => {
               </TableRow>
               <TableRow>
                 <TableCell align="left">Your %</TableCell>
-                <TableCell align="center">{totalScore ? (userScore / totalScore * 100) + '%' : ''}</TableCell>
+                <TableCell align="center">{totalScore ? (userScore / totalScore * 100) + '%' : window.DASH}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

@@ -15,6 +15,11 @@ const startAssessment = async (id) => {
   return res.data
 }
 
+const submitAssessment = async (id) => {
+  const res = await axios.post(`/assessment/${id}/submit`);
+  return res.data
+}
+
 const saveAnswers = async (id, answers) => {
   const res = await axios.post(`/assessment/${id}/saveAnswers`, { answers });
   return res.data
@@ -23,6 +28,7 @@ const saveAnswers = async (id, answers) => {
 export {
   getAssessment,
   startAssessment,
+  submitAssessment,
   getQuestions,
   saveAnswers
 }

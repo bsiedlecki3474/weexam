@@ -24,7 +24,7 @@ import {
   handleAddEvent,
   handleSaveEvent,
   handleDeleteEvent,
-  handleGetSingleEvent,
+  handleGetEvent,
   handleGetAssignedGroups,
   handleAddGroup,
   handleRemoveGroup
@@ -76,12 +76,12 @@ class EditEvent extends Component {
     const {
       params,
       onHandleGetGroupList,
-      onHandleGetSingleEvent,
+      onHandleGetEvent,
       onHandleGetAssignedGroups
     } = this.props;
     const { eventId } = params;
     onHandleGetGroupList();
-    onHandleGetSingleEvent(eventId)
+    onHandleGetEvent(eventId)
       .then(res => this.setState(state => ({...state, data: res.data })))
     onHandleGetAssignedGroups(eventId)
       .then(res => this.setState(state => ({...state, assignedGroups: res.data})))
@@ -94,9 +94,9 @@ class EditEvent extends Component {
   handleAddGroupClick = e => {
     const { addGroup } = this.state;
     const { params, showSnackbar, onHandleAddGroup } = this.props;
-    const { id } = params;
+    const { eventId } = params;
 
-    onHandleAddGroup(id, addGroup?.id).then(res => {
+    onHandleAddGroup(eventId, addGroup?.id).then(res => {
       this.setState({
         assignedGroups: [...this.state.assignedGroups, addGroup],
         addGroup: null
@@ -113,9 +113,9 @@ class EditEvent extends Component {
     if (window.confirm(lang.tests.snackbar.confirmRemoveGroup)) {
       const { assignedGroups } = this.state;
       const { params, showSnackbar, onHandleRemoveGroup } = this.props;
-      const { id } = params;
+      const { eventId } = params;
 
-      onHandleRemoveGroup(id, groupId).then(res => {
+      onHandleRemoveGroup(eventId, groupId).then(res => {
         this.setState({
           assignedGroups: assignedGroups.filter(el => el.id !== groupId),
         })
@@ -318,7 +318,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  onHandleGetSingleEvent: id => dispatch(handleGetSingleEvent(id)),
+  onHandleGetEvent: id => dispatch(handleGetEvent(id)),
   onHandleGetEvents: id => dispatch(handleGetEvents(id)),
   onHandleAddEvent: data => dispatch(handleAddEvent(data)),
   onHandleSaveEvent: (id, data) => dispatch(handleSaveEvent(id, data)),

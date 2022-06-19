@@ -15,8 +15,13 @@ const deleteEvent = async (id) => {
   return res.data
 }
 
-const getSingleEvent = async (id) => {
+const getEvent = async (id) => {
   const res = await axios.get(`/event/${id}`);
+  return res.data
+}
+
+const getEventAssessment = async (id) => {
+  const res = await axios.get(`/event/${id}/assessment`);
   return res.data
 }
 
@@ -44,7 +49,8 @@ export {
   addEvent,
   saveEvent,
   deleteEvent,
-  getSingleEvent,
+  getEvent,
+  getEventAssessment,
   getEventReport,
   getAssignedGroups,
   addGroup,

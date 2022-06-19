@@ -1,8 +1,14 @@
 import {
   CLEAR_ASSESSMENT,
+  START_ASSESSMENT_PENDING,
+  START_ASSESSMENT_SUCCESS,
+  START_ASSESSMENT_ERROR,
   SAVE_ANSWERS_PENDING,
   SAVE_ANSWERS_SUCCESS,
   SAVE_ANSWERS_ERROR,
+  SUBMIT_ASSESSMENT_PENDING,
+  SUBMIT_ASSESSMENT_SUCCESS,
+  SUBMIT_ASSESSMENT_ERROR,
   TOGGLE_ANSWER,
   FLAG_QUESTION,
   SET_QUESTION,
@@ -12,12 +18,30 @@ import {
 
 import {
   startAssessment,
+  submitAssessment,
   saveAnswers
 } from '../../api/assessments'
 
-const handleStartAssessment = id => dispatch => {
-  dispatch({ type: CLEAR_ASSESSMENT });
-  return startAssessment(id);
+const handleStartAssessment = id => async dispatch => {
+  dispatch({ type: CLEAR_ASSESSMENT })
+  dispatch({ type: START_ASSESSMENT_PENDING })
+  try {
+    const data = await startAssessment(id);
+    return dispatch({ type: START_ASSESSMENT_SUCCESS, payload: data })
+  } catch (e) {
+    return dispatch({ type: START_ASSESSMENT_ERROR, payload: e })
+  }
+}
+
+const handleSubmitAssessment = id => async dispatch => {
+  dispatch({ type: SUBMIT_ASSESSMENT_PENDING });
+  await dispatch(handleSaveAnswers(id));
+  try {
+    await submitAssessment(id);
+    return dispatch({ type: SUBMIT_ASSESSMENT_SUCCESS })
+  } catch (e) {
+    return dispatch({ type: SUBMIT_ASSESSMENT_ERROR, payload: e })
+  }
 }
 
 const handleClearChangedQuestions = () => dispatch => {
@@ -62,6 +86,7 @@ export {
   handleSetQuestion,
   handleSetQuestionAnswered,
   handleStartAssessment,
+  handleSubmitAssessment,
   handleSaveAnswers,
   handleClearChangedQuestions
 }

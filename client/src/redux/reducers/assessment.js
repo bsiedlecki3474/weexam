@@ -2,6 +2,8 @@ import {
 	CLEAR_ASSESSMENT,
 	CLEAR_CHANGED_QUESTIONS,
 	SET_QUESTION,
+	START_ASSESSMENT_SUCCESS,
+	SUBMIT_ASSESSMENT_SUCCESS,
 
 	TOGGLE_ANSWER,
 	FLAG_QUESTION,
@@ -20,7 +22,11 @@ const initialState = {
 const assessment = (state = initialState, action) => {
   switch (action.type) {
 		case CLEAR_ASSESSMENT:
-			return {...initialState}
+			return {...initialState };
+		case START_ASSESSMENT_SUCCESS:
+			return {...state, assessmentStarted: true };
+		case SUBMIT_ASSESSMENT_SUCCESS:
+			return {...state, assessmentStarted: false };
 		case CLEAR_CHANGED_QUESTIONS:
 			return {...state, changedQuestions: [] }
 		case SET_QUESTION:

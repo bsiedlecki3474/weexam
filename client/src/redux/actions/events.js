@@ -15,6 +15,10 @@ import {
   GET_EVENT_SUCCESS,
   GET_EVENT_ERROR,
 
+  GET_EVENT_ASSESSMENT_PENDING,
+  GET_EVENT_ASSESSMENT_SUCCESS,
+  GET_EVENT_ASSESSMENT_ERROR,
+
   GET_ASSIGNED_GROUPS_PENDING,
   GET_ASSIGNED_GROUPS_SUCCESS,
   GET_ASSIGNED_GROUPS_ERROR,
@@ -37,7 +41,7 @@ import {
   addEvent,
   saveEvent,
   deleteEvent,
-  getSingleEvent,
+  getEvent,
   getEventReport,
   getAssignedGroups,
   addGroup,
@@ -74,13 +78,23 @@ const handleDeleteEvent = (id, formData) => async dispatch => {
   }
 }
 
-const handleGetSingleEvent = (id) => async dispatch => {
+const handleGetEvent = (id) => async dispatch => {
   dispatch({ type: GET_EVENT_PENDING })
   try {
-    const data = await getSingleEvent(id)
+    const data = await getEvent(id)
     return dispatch({ type: GET_EVENT_SUCCESS, data })
   } catch (e) {
     return dispatch({ type: GET_EVENT_ERROR, payload: e })
+  }
+}
+
+const handleGetEventAssessment = (id) => async dispatch => {
+  dispatch({ type: GET_EVENT_ASSESSMENT_PENDING })
+  try {
+    const data = await getEvent(id)
+    return dispatch({ type: GET_EVENT_ASSESSMENT_SUCCESS, data })
+  } catch (e) {
+    return dispatch({ type: GET_EVENT_ASSESSMENT_ERROR, payload: e })
   }
 }
 
@@ -128,7 +142,7 @@ export {
   handleAddEvent,
   handleSaveEvent,
   handleDeleteEvent,
-  handleGetSingleEvent,
+  handleGetEvent,
   handleGetEventReport,
   handleGetAssignedGroups,
   handleAddGroup,
