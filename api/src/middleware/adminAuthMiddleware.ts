@@ -8,7 +8,7 @@ const adminAuthMiddleware = (req: Request, res: Response, next: NextFunction) =>
     const token = req.cookies.jwt;
     const { role } = jwt.verify(token, JWT_SECRET) as JwtPayload;
     if (!['root', 'admin'].includes(role))
-      return;
+      return res.sendStatus(403);
 
     return next();
   } catch {
