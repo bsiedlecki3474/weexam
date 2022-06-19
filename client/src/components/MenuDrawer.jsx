@@ -19,6 +19,7 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import GroupsIcon from '@mui/icons-material/Groups';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import HomeIcon from '@mui/icons-material/Home';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
@@ -52,12 +53,18 @@ const MenuDrawer = props => {
       <Toolbar />
       <Divider />
       <List>
+        <ListItem button onClick={() => navigate('/')}>
+          <ListItemIcon>
+            <HomeIcon />
+          </ListItemIcon>
+          <ListItemText primary="Home" />
+        </ListItem>
         <ListItem button onClick={() => navigate('/profile')}>
-            <ListItemIcon>
-              <AccountCircleIcon />
-            </ListItemIcon>
-            <ListItemText primary="Profile" />
-          </ListItem>
+          <ListItemIcon>
+            <AccountCircleIcon />
+          </ListItemIcon>
+          <ListItemText primary="Profile" />
+        </ListItem>
         {isAdmin && <>
           <Divider />
           <ListItem button onClick={() => navigate('/tests')}>
@@ -105,7 +112,7 @@ const MenuDrawer = props => {
           <Typography variant="h6" noWrap component="div" onClick={() => navigate('/')} width={drawerWidth}>
             weexam
           </Typography>
-          <Typography variant="body2" color="text.secondary" noWrap component="div" onClick={() => navigate('/')} sx={{ ml: -2 }}>
+          <Typography variant="body2" color="text.light" noWrap component="div" onClick={() => navigate('/')} sx={{ ml: -2 }}>
             Logged as {user}
           </Typography>
           <Box sx={{ ml: 'auto' }}>

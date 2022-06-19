@@ -18,6 +18,9 @@ const ThemeWrapper = props => {
       secondary: {
         main: userTheme === 'light' ? indigo[800] : indigo[300],
       },
+      text: {
+        light: userTheme === 'light' ? '#fff' : '#ccc',
+      }
     },
     components: {
       MuiFormLabel: {
