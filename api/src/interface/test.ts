@@ -18,6 +18,7 @@ export interface Event {
 
 export interface TestEvent {
   id: number,
+  assessment_id: number | null,
   name: string,
   start_date: string,
   end_date: string,

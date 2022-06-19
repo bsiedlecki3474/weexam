@@ -99,6 +99,42 @@ class Event {
     }
   }
 
+  assessment = async (req: Request, res: Response) => {
+    try {
+      const token = req.cookies.jwt;
+      const { userId } = jwt.verify(token, JWT_SECRET) as JwtPayload;
+      const eventId = Number(req.params.id);
+      const data = await event.assessment(eventId, userId);
+      const userAnswers = await event.getUserAnswers(eventId, userId);
+      const correctAnswers = await event.getCorrectAnswers(eventId);
+
+      let userScore = 0;
+      let totalScore = 0;
+
+      if (correctAnswers) {
+        for (const questionId of Object.keys(correctAnswers)) {
+          const aUser = userAnswers[questionId];
+          const aCorrect = correctAnswers[questionId];
+          console.log(aUser, aCorrect)
+          const intersect = arrayIntersect(aUser, aCorrect);
+          const score = intersect?.length ?? 0;
+
+          userScore += score;
+          totalScore += aCorrect.length;
+        }
+      }
+
+      if (data) {
+        res.status(200).send({...data, userScore, totalScore});
+      } else {
+        res.status(400).send('no data');
+      }
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
   report = async (req: Request, res: Response) => {
     try {
       // const token = req.cookies.jwt;
@@ -238,6 +274,7 @@ export const {
   save,
   _delete,
   single,
+  assessment,
   report,
   groups,
   addGroup,

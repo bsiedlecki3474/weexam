@@ -145,18 +145,20 @@ class User extends Model /*implements CRUD*/ {
 	testEvents = async (id: number) => {
 		const sql = `SELECT
 			e.id,
+			-- a.id AS assessment_id,
 			t.name,
 			e.start_date,
 			e.end_date,
 			e.duration,
 			e.is_active,
-			a.first_name,
-			a.last_name
+			adm.first_name,
+			adm.last_name
 		FROM wee_tests_events e
 		LEFT JOIN wee_tests t ON t.id = e.test_id
 		LEFT JOIN wee_events_groups eg ON eg.event_id = e.id
 		LEFT JOIN wee_groups_users gu ON gu.group_id = eg.group_id
-		LEFT JOIN wee_users a ON a.id = t.created_by
+		LEFT JOIN wee_tests_assessments a ON a.event_id = e.id AND a.user_id = gu.user_id
+		LEFT JOIN wee_users adm ON adm.id = t.created_by
 		WHERE gu.user_id = ?
 		ORDER BY e.is_active DESC, e.start_date DESC`;
 
@@ -166,6 +168,7 @@ class User extends Model /*implements CRUD*/ {
 		if (data) {
 			return data.map((row: TestEventInterface) => ({
 				id: row.id,
+				// assessmentId: row.assessment_id,
 				name: row.name,
 				startDate: format(new Date(row.start_date), 'yyyy-MM-dd HH:mm'),
 				endDate: format(new Date(row.end_date), 'yyyy-MM-dd HH:mm'),
