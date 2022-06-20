@@ -76,42 +76,6 @@ class Event extends Model /*implements CRUD*/ {
 		}
 	}
 
-	// single = async (eventId: number, userId: number) => {
-	// 	const sql = `SELECT
-	// 		e.id,
-	// 		t.name,
-	// 		e.start_date,
-	// 		e.end_date,
-	// 		e.duration,
-	// 		e.is_active,
-	// 		COUNT(q.id) AS questions,
-	// 		a.first_name,
-	// 		a.last_name
-	// 	FROM wee_tests_events e
-	// 	LEFT JOIN wee_tests t ON t.id = e.test_id
-	// 	LEFT JOIN wee_tests_groups tg ON tg.test_id = t.id
-	// 	LEFT JOIN wee_groups_users gu ON gu.group_id = tg.group_id
-	// 	LEFT JOIN wee_users a ON a.id = t.created_by
-	// 	LEFT JOIN wee_tests_questions q ON q.test_id = t.id
-	// 	WHERE gu.user_id = ? AND e.id = ?`;
-
-	// 	const data = await this.db.query(sql, [userId, eventId]);
-
-	// 	if (data && data[0]) {
-	// 		const row = data[0];
-	// 		return {
-	// 			id: row.id,
-	// 			name: row.name,
-	// 			startDate: format(new Date(row.start_date), 'yyyy-MM-dd HH:mm'),
-	// 			endDate: format(new Date(row.end_date), 'yyyy-MM-dd HH:mm'),
-	// 			duration: row.duration,
-	// 			questions: row.questions,
-	// 			administrator: row.first_name + ' ' + row.last_name,
-	// 			isActive: row.is_active
-	// 		}
-	// 	}
-	// }
-
 	assessment = async (eventId: number, userId: number) => {
 		const sql = `SELECT
 			e.id,
@@ -201,17 +165,26 @@ class Event extends Model /*implements CRUD*/ {
 
 	}
 
-	getCorrectAnswers = async (id: number) => {
-		const sql = `SELECT qa.id AS answer_id, q.id AS question_id FROM wee_tests_questions q LEFT JOIN wee_tests_events e ON q.test_id = e.test_id LEFT JOIN wee_questions_answers qa ON qa.question_id = q.id AND qa.checked = 1 WHERE e.id = ?`;
-		const data = await this.db.query(sql, [id]);
+	getAnswers = async (id: number, userId?: number) => {
+		const sql = `SELECT
+				qa.id AS answer_id,
+				q.id AS question_id,
+				ans.answer_id IS NOT NULL AS is_correct
+			FROM wee_tests_questions q
+				LEFT JOIN wee_tests_events e ON q.test_id = e.test_id
+				LEFT JOIN wee_questions_answers qa ON qa.question_id = q.id AND qa.checked = 1
+				LEFT JOIN wee_tests_assessments a ON a.event_id = e.id AND a.user_id = ?
+				LEFT JOIN wee_tests_assessments_answers ans ON ans.assessment_id = a.id AND ans.question_id = q.id AND ans.answer_id = qa.id
+			WHERE e.id = ?`;
+		const data = await this.db.query(sql, [userId, id]);
 		const answers: any = {};
 
 		if (data) {
 			for (const row of data) {
 				if (answers[row.question_id]?.length) {
-					answers[row.question_id].push(row.answer_id);
+					answers[row.question_id].push({ answerId: row.answer_id, isCorrect: row.is_correct });
 				} else {
-					answers[row.question_id] = [row.answer_id];
+					answers[row.question_id] = [{ answerId: row.answer_id, isCorrect: row.is_correct }];
 				}
 
 			}
@@ -221,7 +194,15 @@ class Event extends Model /*implements CRUD*/ {
 	}
 
 	getAllUsersAnswers = async (id: number) => {
-		const sql = `SELECT a.user_id, ans.question_id, ans.answer_id FROM wee_tests_assessments_answers ans LEFT JOIN wee_tests_assessments a ON a.id = ans.assessment_id WHERE a.event_id = ?`;
+		const sql = `SELECT
+				a.user_id,
+				ans.question_id,
+				ans.answer_id,
+				qa.id IS NOT NULL AS is_correct
+			FROM wee_tests_assessments_answers ans
+				LEFT JOIN wee_tests_assessments a ON a.id = ans.assessment_id
+				LEFT JOIN wee_questions_answers qa ON qa.id = ans.answer_id AND qa.question_id = ans.question_id AND qa.checked = 1
+			WHERE a.event_id = ?`;
 		const data = await this.db.query(sql, [id]);
 		const users: any = {};
 
@@ -229,35 +210,25 @@ class Event extends Model /*implements CRUD*/ {
 			for (const row of data) {
 				if (users[row.user_id]) {
 						if (users[row.user_id][row.question_id]?.length) {
-						users[row.user_id][row.question_id].push(row.answer_id);
+						users[row.user_id][row.question_id].push({
+							answerId: row.answer_id,
+							isCorrect: row.is_correct
+						});
 					} else {
-						users[row.user_id] = {...users[row.user_id], [row.question_id]: [row.answer_id] }
+						users[row.user_id] = {...users[row.user_id], [row.question_id]: [{
+							answerId: row.answer_id,
+							isCorrect: row.is_correct
+						}] }
 					}
 				} else {
-					users[row.user_id] = { [row.question_id]: [row.answer_id] };
+					users[row.user_id] = { [row.question_id]: [{
+						answerId: row.answer_id,
+						isCorrect: row.is_correct
+					}] };
 				}
 			}
 
 			return users;
-		}
-	}
-
-	getUserAnswers = async (id: number, userId: number) => {
-		const sql = `SELECT ans.answer_id, ans.question_id FROM wee_tests_assessments_answers ans LEFT JOIN wee_tests_assessments a ON a.id = ans.assessment_id WHERE a.event_id = ? AND a.user_id = ?`;
-		const data = await this.db.query(sql, [id, userId]);
-		const answers: any = {};
-
-		if (data) {
-			for (const row of data) {
-				if (answers[row.questionId]?.length) {
-					answers[row.question_id].push(row.answer_id);
-				} else {
-					answers[row.question_id] = [row.answer_id];
-				}
-
-			}
-
-			return answers;
 		}
 	}
 

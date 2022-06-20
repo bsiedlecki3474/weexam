@@ -105,22 +105,18 @@ class Event {
       const { userId } = jwt.verify(token, JWT_SECRET) as JwtPayload;
       const eventId = Number(req.params.id);
       const data = await event.assessment(eventId, userId);
-      const userAnswers = await event.getUserAnswers(eventId, userId);
-      const correctAnswers = await event.getCorrectAnswers(eventId);
+
+      const answers = await event.getAnswers(eventId, userId);
 
       let userScore = 0;
       let totalScore = 0;
 
-      if (correctAnswers) {
-        for (const questionId of Object.keys(correctAnswers)) {
-          const aUser = userAnswers[questionId];
-          const aCorrect = correctAnswers[questionId];
-          console.log(aUser, aCorrect)
-          const intersect = arrayIntersect(aUser, aCorrect);
-          const score = intersect?.length ?? 0;
+      if (answers) {
+        for (const questionId of Object.keys(answers)) {
+          const question = answers[questionId];
 
-          userScore += score;
-          totalScore += aCorrect.length;
+          userScore += question?.filter((el: any) => el.isCorrect).length ?? 0;
+          totalScore += question?.length ?? 0
         }
       }
 
@@ -137,34 +133,30 @@ class Event {
 
   report = async (req: Request, res: Response) => {
     try {
-      // const token = req.cookies.jwt;
       const id = Number(req.params.id);
-      // const { userId } = jwt.verify(token, JWT_SECRET) as JwtPayload;
 
-      // const score = 0;
       let totalUserScore = 0;
+      let totalTestScore = 0;
       let maxScore = 0;
 
       const participants = await event.getParticipants(id);
       const totalUsers = await event.getTotalUsers(id);
-      // const userAnswers = await event.getUserAnswers(id, userId);
+
       const allUsersAnswers = await event.getAllUsersAnswers(id);
-      const correctAnswers = await event.getCorrectAnswers(id);
 
       if (allUsersAnswers) {
         for (const userId of Object.keys(allUsersAnswers)) {
-          const questions = allUsersAnswers[userId];
-          if (questions) {
+          const answers = allUsersAnswers[userId];
+          if (answers) {
             let userMaxScore = 0;
-            for (const questionId of Object.keys(questions)) {
-              const user = questions[questionId];
-              const correct = correctAnswers[questionId];
-              // console.log(user, correct)
-              const intersect = arrayIntersect(user, correct);
-              const score = intersect?.length ?? 0;
+            for (const questionId of Object.keys(answers)) {
 
-              userMaxScore += score;
+              const question = answers[questionId];
+              const score = question?.filter((el: any) => el.isCorrect).length ?? 0;
+
+              userMaxScore += score
               totalUserScore += score;
+              totalTestScore += question?.length ?? 0;
             }
 
             if (userMaxScore > maxScore)
@@ -173,15 +165,11 @@ class Event {
         }
       }
 
-      const totalTestScore = Object.values(correctAnswers)
-        .map((el: number[]) => el.length)
-        .reduce((acc, el) => acc + el, 0);
-
       const data = {
         participants,
         totalUsers,
         maxScore,
-        totalTestScore,
+        totalTestScore: totalTestScore / (participants || 1),
         averageScore: totalUserScore / (Object.keys(allUsersAnswers)?.length || 1)
       }
 

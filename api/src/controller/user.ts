@@ -116,30 +116,26 @@ class User {
 
       if (data.length) {
         for (const test of data) {
-          const userAnswers = await event.getUserAnswers(test.id, userId);
-          const correctAnswers = await event.getCorrectAnswers(test.id);
+          if (test?.showScores) {
+            const answers = await event.getAnswers(test.id, userId);
 
-          let userScore = 0;
-          let totalScore = 0;
+            let userScore = 0;
+            let totalScore = 0;
 
-          if (correctAnswers) {
-            for (const questionId of Object.keys(correctAnswers)) {
-              const aUser = userAnswers[questionId];
-              const aCorrect = correctAnswers[questionId];
+            if (answers) {
+              for (const questionId of Object.keys(answers)) {
+                const question = answers[questionId];
 
-              const intersect = arrayIntersect(aUser, aCorrect);
-              const score = intersect?.length ?? 0;
-
-              userScore += score;
-              totalScore += aCorrect.length;
+                userScore += question?.filter((el: any) => el.isCorrect).length ?? 0;
+                totalScore += question?.length ?? 0
+              }
             }
-          }
 
-          test.userScore = userScore;
-          test.totalScore = totalScore;
+            test.userScore = userScore;
+            test.totalScore = totalScore;
+          }
         }
       }
-
 
       if (data) {
         res.status(200).send(data);

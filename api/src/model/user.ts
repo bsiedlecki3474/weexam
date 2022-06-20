@@ -2,7 +2,7 @@ import Model from './model'
 import { CRUD } from 'interface/crud';
 import { User as UserInterface } from '../interface/user'
 import { TestEvent as TestEventInterface } from '../interface/test'
-import { format } from 'date-fns'
+import { format, addMinutes } from 'date-fns'
 
 class User extends Model /*implements CRUD*/ {
 	add = async (body: any /* interface */) => {
@@ -145,8 +145,8 @@ class User extends Model /*implements CRUD*/ {
 	testEvents = async (id: number) => {
 		const sql = `SELECT
 			e.id,
-			-- a.id AS assessment_id,
 			t.name,
+			a.start_date AS assessment_start_date,
 			e.start_date,
 			e.end_date,
 			e.duration,
@@ -163,19 +163,24 @@ class User extends Model /*implements CRUD*/ {
 		ORDER BY e.is_active DESC, e.start_date DESC`;
 
 		const data = await this.db.query(sql, [id]);
-		console.log(data)
 
 		if (data) {
-			return data.map((row: TestEventInterface) => ({
-				id: row.id,
-				// assessmentId: row.assessment_id,
-				name: row.name,
-				startDate: format(new Date(row.start_date), 'yyyy-MM-dd HH:mm'),
-				endDate: format(new Date(row.end_date), 'yyyy-MM-dd HH:mm'),
-				duration: row.duration,
-				administrator: row.first_name + ' ' + row.last_name,
-				isActive: row.is_active
-			}));
+			return data.map((row: TestEventInterface) => {
+				const nowTimestamp = new Date().getTime();
+				const startDate = new Date(row.assessment_start_date);
+				const expectedEndDate = addMinutes(startDate, Number(row.duration));
+
+				return ({
+					id: row.id,
+					name: row.name,
+					startDate: format(new Date(row.start_date), 'yyyy-MM-dd HH:mm'),
+					endDate: format(new Date(row.end_date), 'yyyy-MM-dd HH:mm'),
+					duration: row.duration,
+					administrator: row.first_name + ' ' + row.last_name,
+					showScores: row.assessment_start_date && expectedEndDate.getTime() < nowTimestamp,
+					isActive: row.is_active
+				})
+			})
 		}
 	}
 }
