@@ -1,47 +1,48 @@
 import {
   Box,
-  Typography
+  Typography,
+  Avatar
 } from "@mui/material"
-// import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
 import { withStyles } from '@mui/styles';
 
 import { connect } from "react-redux"
 
 const styles = theme => ({
-  // userIcon: {
-  //   fontSize: '1rem',
-  //   width: 100,
-  //   height: 100
-  // }
+  avatar: {
+    width: '128px',
+    height: 64
+  },
+  userDataContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginLeft: theme.spacing(2)
+  }
 })
 
 const Profile = props => {
-  const { classes, firstName, lastName, token } = props;
+  const { classes, firstName, lastName, role } = props;
 
   return (
     <Box>
-      <Box mb={2}>
-        <Typography component="h1" variant="h4">
-          {firstName} {lastName}
-        </Typography>
-        <Typography variant="p">{token}</Typography>
+      <Typography variant="h5" mb={2}>My profile</Typography>
+      <Box mt={2} display="flex">
+        <Avatar className={classes.avatar}  sx={{ width: 128, height: 128 }} />
+        <Box className={classes.userDataContainer}>
+          <Typography variant="h6">{firstName} {lastName}</Typography>
+          <Typography variant="p" color="text.light">{role}</Typography>
+        </Box>
       </Box>
-      {/* <Typography component="p">
-        Tests: {13}
-      </Typography>
-      <Typography component="p">
-        Last login: {'2021-12-30'}
-      </Typography> */}
+     
     </Box>
   )
 }
 
 const mapStateToProps = state => {
-  console.log(state)
   return {
     firstName: state.auth?.data?.firstName,
     lastName: state.auth?.data?.lastName,
-    token: state.auth?.data?.token // to be removed
+    role: state.auth?.data?.role
   }
 }
 

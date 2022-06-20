@@ -7,6 +7,8 @@ import {
   Typography
 } from "@mui/material"
 
+import lang from '../../lang'
+
 import {
   MaterialTable
 } from '../'
@@ -32,25 +34,23 @@ const Tests = props => {
 
   const columns = [
     { id: 'name', label: 'Name' },
-    { id: 'groupName', label: 'Group' },
-    { id: 'startDate', label: 'Start date' },
-    { id: 'endDate', label: 'End Date' },
-    { id: 'duration', label: 'Duration' },
+    { id: 'groupName', label: 'Groups' },
+    { id: 'questions', label: 'Questions' },
+    { id: 'showScores', label: 'Scores visible' },
     { id: 'completionRate', label: 'Completion rate' }
   ]
 
   const data = tests && tests.map(row => ({
     id: row.id,
     name: <a onClick={e => navigate('/tests/' + row.id)}>{row.name}</a>,
-    groupName: row.groupName,
-    startDate: row.startDate,
-    endDate: row.endDate,
-    duration: row.duration ? row.duration + ' min' : '-',
-    completionRate: row.participants ? `?/${row.participants} (?%)` : 'No participants',
+    groupName: row.groupName ?? window.DASH,
+    questions: row.questions ?? window.DASH,
+    showScores: row.showScores ? lang.main.yes : lang.main.no,
+    completionRate: row.participants
+      ? `${row.completedUsers}/${row.participants} (${(row.completedUsers / row.participants * 100).toFixed(2)}%)`
+      : 'No participants',
     disabled: !row.isActive
   }));
-
-  console.log(tests)
 
   return (
     <Box>

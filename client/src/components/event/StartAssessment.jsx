@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { connect } from "react-redux"
 import { withStyles } from '@mui/styles';
 import withParams from "../../hoc/withParams";
+import withNavigation from "../../hoc/withNavigation";
 
 import {
   Box
@@ -30,7 +31,7 @@ const styles = theme => ({
 })
 
 const StartAssessment = props => {
-  const { classes, params, assessmentStarted, onHandleStartAssessment } = props;
+  const { classes, params, navigate, assessmentStarted, onHandleStartAssessment } = props;
   const { id } = params;
 
   const [event, setEvent] = useState({});
@@ -43,7 +44,9 @@ const StartAssessment = props => {
   } = event;
 
   useEffect(() => {
-    getEventAssessment(id).then(res => setEvent(res))
+    getEventAssessment(id)
+      .then(res => setEvent(res))
+      .catch(e => navigate(`/`))
   }, [id, assessmentStarted])
 
   return (
@@ -72,5 +75,10 @@ const mapDispatchToProps = dispatch => ({
   onHandleStartAssessment: (id) => dispatch(handleStartAssessment(id))
 })
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(withParams(withStyles(styles)(StartAssessment)));
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withParams(
+    withNavigation(
+      withStyles(styles)(StartAssessment)
+    )
+  )
+);

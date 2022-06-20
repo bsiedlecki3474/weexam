@@ -2,6 +2,9 @@ export interface Test {
   id: number,
   name: string,
   group_name: string,
+  participants: number,
+  completed_users: number,
+  questions: number,
   show_scores: number,
   is_active: number,
   created_on: string

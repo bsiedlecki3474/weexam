@@ -1,4 +1,6 @@
 export default {
+	yes: 'Yes',
+	no: 'No',
 	validation: {
 		fillAllRequired: 'Please fill all required fields.',
 		invalidDates: 'Dates are invalid.',

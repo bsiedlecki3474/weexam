@@ -5,6 +5,7 @@ import { withStyles } from '@mui/styles';
 import {
   Typography,
   Grid,
+  Box,
   Card,
   CardContent,
   CardActions,
@@ -33,7 +34,7 @@ const Dashboard = ({ classes }) => {
     getUserTestEvents().then(res => setEvents(res));
   }, []);
 
-  return <div>
+  return <Box>
     <Typography variant="h5" mb={2}>My tests</Typography>
 
     <Grid container spacing={3}>
@@ -82,8 +83,7 @@ const Dashboard = ({ classes }) => {
         </Grid>
       )}
     </Grid>
-
-  </div>
+  </Box>
 
 }
 

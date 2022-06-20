@@ -36,12 +36,16 @@ class Test extends Model /*implements CRUD*/ {
 			t.show_scores,
 			t.is_active,
 			COUNT(gu.user_id) AS participants,
+			COUNT(DISTINCT a.user_id) AS completed_users,
+			COUNT(DISTINCT q.id) AS questions
 			t.created_on
 		FROM wee_tests t
 		LEFT JOIN wee_tests_events e ON e.test_id = t.id
 		LEFT JOIN wee_events_groups eg ON eg.event_id = e.id
 		LEFT JOIN wee_groups g ON g.id = eg.group_id
 		LEFT JOIN wee_groups_users gu ON gu.group_id = g.id
+		LEFT JOIN wee_tests_assessments a ON a.event_id = e.id
+		LEFT JOIN wee_tests_questions q ON q.test_id = t.id
 		GROUP BY t.id`;
 
 		const data = await this.db.query(sql);
@@ -51,9 +55,9 @@ class Test extends Model /*implements CRUD*/ {
 				id: row.id,
 				name: row.name,
 				groupName: row.group_name,
-				// startDate: format(new Date(row.start_date), 'yyyy-MM-dd HH:mm'),
-				// endDate: format(new Date(row.end_date), 'yyyy-MM-dd HH:mm'),
-				// duration: row.duration,
+				participants: row.participants,
+				completedUsers: row.completed_users,
+				questions: row.questions,
 				showScores: row.show_scores,
 				isActive: row.is_active,
 				createdOn: formatISO(new Date(row.created_on))
