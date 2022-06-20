@@ -62,7 +62,7 @@ const Dashboard = ({ classes }) => {
                     {event.userScore} / {event.totalScore}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {event.userScore / event.totalScore * 100}%
+                    {event.totalScore && (event.userScore / event.totalScore * 100).toFixed(2)}%
                   </Typography>
                 </>}
                 
@@ -73,7 +73,7 @@ const Dashboard = ({ classes }) => {
                 size="small"
                 color="primary"
                 disabled={new Date(event.endDate).getTime() < new Date().getTime()}
-                onClick={e => navigate('/assessments/' + event.id)}
+                onClick={e => navigate('/events/' + event.id)}
               >
                 View
               </Button>

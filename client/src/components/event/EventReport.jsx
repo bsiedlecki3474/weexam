@@ -59,31 +59,31 @@ const EventReport = props => {
           <Grid item lg={4} md={6} xs={12}>
             <Paper sx={{ p: 3 }}>
               <Typography>Completion rate</Typography>
-              <Typography color="text.secondary">{(report.participants / (report.totalUsers || 1)) * 100}%</Typography>
+              <Typography color="text.secondary">{report.participants ? ((report.participants / (report.totalUsers || 1)) * 100).toFixed(2): window.DASH}%</Typography>
             </Paper>
           </Grid>
           <Grid item lg={4} md={6} xs={12}>
             <Paper sx={{ p: 3 }}>
               <Typography>Max test score</Typography>
-              <Typography color="text.secondary">{report.totalTestScore}</Typography>
+              <Typography color="text.secondary">{report.totalTestScore ?? window.DASH}</Typography>
             </Paper>
           </Grid>
           <Grid item lg={4} md={6} xs={12}>
             <Paper sx={{ p: 3 }}>
               <Typography>Max score</Typography>
-              <Typography color="text.secondary">{report.maxScore}</Typography>
+              <Typography color="text.secondary">{report.maxScore ?? window.DASH}</Typography>
             </Paper>
           </Grid>
           <Grid item lg={4} md={6} xs={12}>
             <Paper sx={{ p: 3 }}>
               <Typography>Avg score</Typography>
-              <Typography color="text.secondary">{report.averageScore}</Typography>
+              <Typography color="text.secondary">{report.averageScore ?? window.DASH}</Typography>
             </Paper>
           </Grid>
           <Grid item lg={4} md={6} xs={12}>
             <Paper sx={{ p: 3 }}>
               <Typography>Avg %</Typography>
-              <Typography color="text.secondary">{(report.averageScore / (report.totalTestScore || 1)) * 100}%</Typography>
+              <Typography color="text.secondary">{report.averageScore ? ((report.averageScore / (report.totalTestScore || 1)) * 100).toFixed(2) : window.DASH}%</Typography>
             </Paper>
           </Grid>
         </Grid>}

@@ -83,17 +83,17 @@ const AssessmentSummary = ({ assessment, handleStartAssessment }) => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align="left">Submitted at</TableCell>
-                <TableCell align="center">{endDate
-                  ? format(new Date(endDate), "dd-MM-yyyy HH:mm")
-                  : 'not submitted (lang)'}
-                </TableCell>
-              </TableRow>
-              <TableRow>
                 <TableCell align="left">Finishes at</TableCell>
                 <TableCell align="center">{expectedEndDate
                   ? format(new Date(expectedEndDate), "dd-MM-yyyy HH:mm")
                   : window.DASH}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell align="left">Submitted at</TableCell>
+                <TableCell align="center">{endDate
+                  ? format(new Date(endDate), "dd-MM-yyyy HH:mm")
+                  : 'not submitted (lang)'}
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -103,16 +103,16 @@ const AssessmentSummary = ({ assessment, handleStartAssessment }) => {
           <Table>
             <TableBody>
               <TableRow>
-                <TableCell align="left">Total score</TableCell>
-                <TableCell align="center">{totalScore}</TableCell>
-              </TableRow>
-              <TableRow>
                 <TableCell align="left">Your score</TableCell>
                 <TableCell align="center">{userScore}</TableCell>
               </TableRow>
               <TableRow>
+                <TableCell align="left">Total score</TableCell>
+                <TableCell align="center">{totalScore}</TableCell>
+              </TableRow>
+              <TableRow>
                 <TableCell align="left">Your %</TableCell>
-                <TableCell align="center">{totalScore ? (userScore / totalScore * 100) + '%' : window.DASH}</TableCell>
+                <TableCell align="center">{totalScore ? (userScore / totalScore * 100).toFixed(2) + '%' : window.DASH}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
