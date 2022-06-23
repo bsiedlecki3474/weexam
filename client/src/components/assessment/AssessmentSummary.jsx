@@ -10,6 +10,7 @@ import {
 import { ViewLayout } from '../../layouts';
 
 import { format } from "date-fns";
+import { getPercent } from "../../helpers";
 
 const AssessmentSummary = ({ assessment, handleStartAssessment }) => {
   const {
@@ -112,7 +113,7 @@ const AssessmentSummary = ({ assessment, handleStartAssessment }) => {
               </TableRow>
               <TableRow>
                 <TableCell align="left">Your %</TableCell>
-                <TableCell align="center">{totalScore ? (userScore / totalScore * 100).toFixed(2) + '%' : window.DASH}</TableCell>
+                <TableCell align="center">{getPercent(userScore, totalScore)}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

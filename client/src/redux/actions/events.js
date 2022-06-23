@@ -43,6 +43,7 @@ import {
   deleteEvent,
   getEvent,
   getEventReport,
+  getEventAssessmentList,
   getAssignedGroups,
   addGroup,
   removeGroup,

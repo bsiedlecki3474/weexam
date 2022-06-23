@@ -71,11 +71,12 @@ const EnhancedTableHead = props => {
             onChange={onSelectAllClick}
           />
         </TableCell>}
-        {columns?.map((headCell) => (
+        {columns?.map((headCell, i) => (
           <TableCell
             key={headCell.id}
             // align={headCell.numeric ? 'right' : 'left'}
             padding={dense ? 'none' : 'normal'}
+            sx={i === 0 && dense && { paddingLeft: 2 }}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -136,7 +137,7 @@ const EnhancedTableToolbar = (props) => {
           >
             {title ?? 'Table'}
           </Typography>
-          <Button variant="outlined" size="small" onClick={handleAddNew}>add</Button>
+          {handleAddNew && <Button variant="outlined" size="small" onClick={handleAddNew}>add</Button>}
         </Box>
       )}
 
@@ -277,9 +278,9 @@ const EnhancedTable = props => {
                             checked={isItemSelected}
                           />
                         </TableCell>}
-                        {columns.map(column => 
+                        {columns.map((column, i) => 
                           <TableCell
-                            sx={{ color: 'primary' }}
+                            sx={{ color: 'primary', ...(i === 0 && dense && { paddingLeft: 2 }) }}
                             padding={dense ? 'none' : 'normal'}
                           >
                             {row[column.id]}
