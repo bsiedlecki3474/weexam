@@ -76,7 +76,7 @@ class Event extends Model /*implements CRUD*/ {
 		}
 	}
 
-	assessment = async (eventId: number, userId: number) => {
+	getAssessment = async (eventId: number, userId: number) => {
 		const sql = `SELECT
 			e.id,
 			t.name,
@@ -145,7 +145,6 @@ class Event extends Model /*implements CRUD*/ {
 			}
 		}
 	}
-
 
 	getParticipants = async (id: number) => {
 		const sql = `SELECT COUNT(id) AS participants FROM wee_tests_assessments a WHERE event_id = ?`;

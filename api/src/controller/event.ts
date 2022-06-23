@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { event } from '../model';
+import { event, assessment } from '../model';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { format } from 'date-fns';
 
@@ -99,12 +99,12 @@ class Event {
     }
   }
 
-  assessment = async (req: Request, res: Response) => {
+  eventAssessment = async (req: Request, res: Response) => {
     try {
       const token = req.cookies.jwt;
       const { userId } = jwt.verify(token, JWT_SECRET) as JwtPayload;
       const eventId = Number(req.params.id);
-      const data = await event.assessment(eventId, userId);
+      const data = await event.getAssessment(eventId, userId);
 
       const answers = await event.getAnswers(eventId, userId);
 
@@ -135,46 +135,39 @@ class Event {
     try {
       const id = Number(req.params.id);
 
-      let totalUserScore = 0;
-      let totalTestScore = 0;
-      let maxScore = 0;
-
-      const participants = await event.getParticipants(id);
       const totalUsers = await event.getTotalUsers(id);
+      const list = await assessment.list(id);
 
-      const allUsersAnswers = await event.getAllUsersAnswers(id);
-
-      if (allUsersAnswers) {
-        for (const userId of Object.keys(allUsersAnswers)) {
-          const answers = allUsersAnswers[userId];
-          if (answers) {
-            let userMaxScore = 0;
-            for (const questionId of Object.keys(answers)) {
-
-              const question = answers[questionId];
-              const score = question?.filter((el: any) => el.isCorrect).length ?? 0;
-
-              userMaxScore += score
-              totalUserScore += score;
-              totalTestScore += question?.length ?? 0;
-            }
-
-            if (userMaxScore > maxScore)
-              maxScore = userMaxScore;
-          }
-        }
-      }
+      const participants = list?.length || 0;
+      const totalTestScore = participants ? list[0].countTotal : 0;
+      const averageScore = participants ? (list.reduce((acc: number, el: any) => acc + el.countCorrect, 0) / participants) : 0;
+      const maxScore = participants ? Math.max(...list.map((el: any) => el.countCorrect)) : 0;
 
       const data = {
         participants,
         totalUsers,
         maxScore,
-        totalTestScore: totalTestScore / (participants || 1),
-        averageScore: totalUserScore / (Object.keys(allUsersAnswers)?.length || 1)
+        totalTestScore,
+        averageScore
       }
 
       res.status(200).send(data);
 
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
+  assessmentList = async (req: Request, res: Response) => {
+    try {
+      const eventId = Number(req.params.id);
+      const data = await assessment.list(eventId);
+      if (data) {
+        res.status(200).send(data);
+      } else {
+        res.status(400).send('no data');
+      }
     } catch (e) {
       console.error(e)
       res.status(500).send(e);
@@ -262,7 +255,8 @@ export const {
   save,
   _delete,
   single,
-  assessment,
+  eventAssessment,
+  assessmentList,
   report,
   groups,
   addGroup,

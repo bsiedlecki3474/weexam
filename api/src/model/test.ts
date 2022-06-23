@@ -37,7 +37,7 @@ class Test extends Model /*implements CRUD*/ {
 			t.is_active,
 			COUNT(gu.user_id) AS participants,
 			COUNT(DISTINCT a.user_id) AS completed_users,
-			COUNT(DISTINCT q.id) AS questions
+			COUNT(DISTINCT q.id) AS questions,
 			t.created_on
 		FROM wee_tests t
 		LEFT JOIN wee_tests_events e ON e.test_id = t.id
