@@ -76,7 +76,7 @@ class AddEvent extends Component {
               severity: 'success'
             })
             // tbd block request spam
-            setTimeout(() => navigate(`/tests/${testId}/events/${res.data.id}`), 1000);
+            setTimeout(() => navigate(`/tests/${testId}/event/${res.data.id}`), 1000);
           })
         } else {
           showSnackbar({
