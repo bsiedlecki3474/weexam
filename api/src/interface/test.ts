@@ -22,6 +22,8 @@ export interface Event {
 export interface TestEvent {
   id: number,
   name: string,
+  count_total: number,
+  count_correct: number,
   assessment_start_date: string,
   start_date: string,
   end_date: string,
