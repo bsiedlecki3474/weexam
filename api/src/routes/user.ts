@@ -7,15 +7,15 @@ import {
   testEvents,
   assessmentReport
 } from '../controller/user';
-import { authMiddleware, adminAuthMiddleware } from '../middleware'
+import { authMiddleware, rootAuthMiddleware } from '../middleware'
 
 const router = Router();
 
-router.post('/add', adminAuthMiddleware, add);
-router.get('/list', adminAuthMiddleware, list);
+router.post('/add', rootAuthMiddleware, add);
+router.get('/list', rootAuthMiddleware, list);
 router.get('/testEvents', authMiddleware, testEvents);
-router.get('/:id', adminAuthMiddleware, single);
-router.post('/:id/save', adminAuthMiddleware, save);
-router.get('/:id/assessmentReport/:eventId', adminAuthMiddleware, assessmentReport);
+router.get('/:id', rootAuthMiddleware, single);
+router.post('/:id/save', rootAuthMiddleware, save);
+router.get('/:id/assessmentReport/:eventId', rootAuthMiddleware, assessmentReport);
 
 export default router;

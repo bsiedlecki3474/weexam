@@ -8,16 +8,16 @@ import {
   single,
   users
 } from '../controller/group';
-import { adminAuthMiddleware } from '../middleware'
+import { adminAuthMiddleware, rootAuthMiddleware } from '../middleware'
 
 const router = Router();
 
-router.post('/add', adminAuthMiddleware, add);
-router.post('/addUserToGroup', adminAuthMiddleware, addUserToGroup);
-router.post('/removeUserFromGroup', adminAuthMiddleware, removeUserFromGroup);
+router.post('/add', rootAuthMiddleware, add);
+router.post('/addUserToGroup', rootAuthMiddleware, addUserToGroup);
+router.post('/removeUserFromGroup', rootAuthMiddleware, removeUserFromGroup);
 router.get('/list', adminAuthMiddleware, list);
-router.get('/:id', adminAuthMiddleware, single);
-router.post('/:id/save', adminAuthMiddleware, save);
-router.get('/:id/users', adminAuthMiddleware, users);
+router.get('/:id', rootAuthMiddleware, single);
+router.post('/:id/save', rootAuthMiddleware, save);
+router.get('/:id/users', rootAuthMiddleware, users);
 
 export default router;
