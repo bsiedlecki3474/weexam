@@ -16,6 +16,14 @@ const getSingleUser = async (id) => {
   return res.data
 }
 
+const getUserAssessmentReport = async (eventId, userId = null) => {
+  const url = userId
+    ? `/user/${userId}/assessmentReport/${eventId}`
+    : `/user/assessmentReport/${eventId}`;
+  const res = await axios.get(url);
+  return res.data;
+}
+
 const getUserList = async () => {
   const res = await axios.get('/user/list');
   return res.data;
@@ -31,5 +39,6 @@ export {
   saveUser,
   getSingleUser,
   getUserList,
-  getUserTestEvents
+  getUserTestEvents,
+  getUserAssessmentReport
 }

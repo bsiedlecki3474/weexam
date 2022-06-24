@@ -58,12 +58,12 @@ const Dashboard = ({ classes }) => {
                 {event.duration} min
               </Typography>
               <div className={classes.score}>
-                {event.totalScore && event.userScore != null && <>
+                {event.assessmentStarted && event.countTotal && event.countCorrect != null && <>
                   <Typography variant="body2">
-                    {event.userScore} / {event.totalScore}
+                    {event.countCorrect} / {event.countTotal}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {event.totalScore && (event.userScore / event.totalScore * 100).toFixed(2)}%
+                    {event.countTotal && (event.countCorrect / event.countTotal * 100).toFixed(2)}%
                   </Typography>
                 </>}
                 

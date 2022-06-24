@@ -4,7 +4,7 @@ import { connect } from "react-redux"
 import { withStyles } from '@mui/styles';
 import withNavigation from "../../hoc/withNavigation";
 import withParams from "../../hoc/withParams";
-import { getPercent } from '../../helpers';
+import { getFullScore } from '../../helpers';
 
 import lang from '../../lang'
 
@@ -40,16 +40,13 @@ const EventReportTiles = props => {
     { id: 'score', label: 'Score' },
   ]
 
-  const prepareScore = (correct, total) =>
-    total ? `${correct || 0}/${total} (${(correct/total*100).toFixed(2)}%)` : window.DASH
-
   const data = tableData && tableData.map(row => ({
     id: row.id,
-    name: <a onClick={e => navigate(`/test/${testId}/event/${eventId}/user/${row.id}`)}>{row.firstName} {row.lastName}</a>,
+    name: <a onClick={e => navigate(`/tests/${testId}/event/${eventId}/user/${row.id}`)}>{row.firstName} {row.lastName}</a>,
     startDate: row.startDate ? format(new Date(row.startDate), "dd-MM-yyyy HH:mm") : window.DASH,
     userFinished: row.userFinished ? lang.main.yes : lang.main.no,
     showScores: row.showScores ?? window.DASH,
-    score: prepareScore(row.countCorrect, row.countTotal),
+    score: getFullScore(row.countCorrect, row.countTotal),
   }));
 
   return (
