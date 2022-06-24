@@ -113,29 +113,6 @@ class User {
       const { userId } = jwt.verify(token, JWT_SECRET) as JwtPayload;
       const data = await user.testEvents(userId);
 
-      // if (data.length) {
-      //   for (const test of data) {
-      //     if (test?.showScores) {
-      //       const answers = await event.getAnswers(test.id, userId);
-
-      //       let userScore = 0;
-      //       let totalScore = 0;
-
-      //       if (answers) {
-      //         for (const questionId of Object.keys(answers)) {
-      //           const question = answers[questionId];
-
-      //           userScore += question?.filter((el: any) => el.isCorrect).length ?? 0;
-      //           totalScore += question?.length ?? 0
-      //         }
-      //       }
-
-      //       test.userScore = userScore;
-      //       test.totalScore = totalScore;
-      //     }
-      //   }
-      // }
-
       if (data) {
         res.status(200).send(data);
       } else {
@@ -149,15 +126,13 @@ class User {
 
   assessmentReport = async (req: Request, res: Response) => {
     try {
-      const token = req.cookies.jwt;
-      const { userId } = jwt.verify(token, JWT_SECRET) as JwtPayload;
-      const eventId = req.params.eventId
-
+      const userId = req.params.id;
+      const eventId = req.params.eventId;
 
       if (!eventId)
         return res.status(400).send();
 
-      const data = await user.assessmentReport(Number(eventId), req.params.id ? Number(req.params.id) : userId, );
+      const data = await user.assessmentReport(Number(eventId), Number(userId));
 
       if (data) {
         res.status(200).send(data);

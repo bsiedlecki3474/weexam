@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { event, assessment } from '../model';
+import { event, assessment, user } from '../model';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { format } from 'date-fns';
 
@@ -174,6 +174,28 @@ class Event {
     }
   }
 
+  assessmentReport = async (req: Request, res: Response) => {
+    try {
+      const token = req.cookies.jwt;
+      const { userId } = jwt.verify(token, JWT_SECRET) as JwtPayload;
+      const eventId = req.params.id
+
+      if (!eventId)
+        return res.status(400).send();
+
+      const data = await user.assessmentReport(Number(eventId), userId);
+
+      if (data) {
+        res.status(200).send(data);
+      } else {
+        res.status(400).send(req);
+      }
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
   addGroup = async (req: Request, res: Response) => {
     try {
       const { groupId } = req.body;
@@ -257,6 +279,7 @@ export const {
   single,
   eventAssessment,
   assessmentList,
+  assessmentReport,
   report,
   groups,
   addGroup,
