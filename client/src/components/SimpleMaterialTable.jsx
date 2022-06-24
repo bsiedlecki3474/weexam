@@ -23,11 +23,11 @@ const styles = theme => ({
 })
 
 const SimpleMaterialTable = props => {
-  const { classes, data, columns, dense } = props;
+  const { classes, data, columns, disableHeader, dense } = props;
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
+      <Table>
+        {!disableHeader && <TableHead>
           <TableRow>
             {columns?.map((headCell, i) => (
               <TableCell
@@ -39,7 +39,7 @@ const SimpleMaterialTable = props => {
               </TableCell>
             ))}
           </TableRow>
-        </TableHead>
+        </TableHead>}
         <TableBody>
           {(data ?? []).map((row) => (
             <TableRow
@@ -49,7 +49,11 @@ const SimpleMaterialTable = props => {
             >
               {columns.map((column, i) => 
                 <TableCell
-                  sx={{ color: 'primary', ...(i === 0 && dense && { paddingLeft: 2 }) }}
+                  sx={{
+                    color: 'primary',
+                    ...(i === 0 && dense && { paddingLeft: 2 }),
+                    ...(i === 0 && column.bold && { fontWeight: 'bold' } )
+                  }}
                   padding={dense ? 'none' : 'normal'}
                 >
                   {row[column.id]}

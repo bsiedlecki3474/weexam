@@ -16,11 +16,8 @@ const getSingleUser = async (id) => {
   return res.data
 }
 
-const getUserAssessmentReport = async (eventId, userId = null) => {
-  const url = userId
-    ? `/user/${userId}/assessmentReport/${eventId}`
-    : `/user/assessmentReport/${eventId}`;
-  const res = await axios.get(url);
+const getUserAssessmentReport = async (eventId, userId) => {
+  const res = await axios.get(`/user/${userId}/assessmentReport/${eventId}`);
   return res.data;
 }
 

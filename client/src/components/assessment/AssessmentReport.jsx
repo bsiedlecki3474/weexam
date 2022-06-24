@@ -12,16 +12,16 @@ import {
 } from "@mui/material"
 
 import { SimpleMaterialTable } from '..';
-import { getUserAssessmentReport } from '../../api/users';
+import { getAssessmentReport } from '../../api/events';
 
-const UserAssessmentReport = props => {
+const AssessmentReport = props => {
   const [tableData, setTableData] = useState(null)
   const { navigate, params } = props;
-  const { testId, eventId, userId } = params;
+  const { id } = params;
 
   useEffect(() => {
-    getUserAssessmentReport(eventId, userId).then(res => setTableData(res));
-  }, [userId, eventId])
+    getAssessmentReport(id).then(res => setTableData(res));
+  }, [id])
 
   const columns = [
     { id: 'content', label: 'Question' },
@@ -40,29 +40,16 @@ const UserAssessmentReport = props => {
   }));
 
   return (
-    <Box>
-      <ViewLayout
-        title={
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <IconButton edge="end" size="small" onClick={e => navigate(`/tests/${testId}/event/${eventId}/report`)}>
-              <ArrowBackIcon fontSize="inherit" />
-            </IconButton>
-            User answers
-          </Box>
-        }
-      >
-        <SimpleMaterialTable
-          columns={columns}
-          data={data}
-        />
-      </ViewLayout>
-    </Box>
+    <SimpleMaterialTable
+      columns={columns}
+      data={data}
+    />
   )
 }
 
 export default
   withParams(
     withNavigation(
-      UserAssessmentReport
+      AssessmentReport
     )
   )

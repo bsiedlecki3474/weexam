@@ -8,7 +8,7 @@ import {
   Box
 } from "@mui/material"
 
-import { Assessment, AssessmentSummary } from '../assessment'
+import { Assessment, AssessmentDetails } from '../assessment'
 
 import { getEventAssessment } from "../../api/events";
 import { handleStartAssessment } from '../../redux/actions/assessment';
@@ -58,7 +58,7 @@ const StartAssessment = props => {
             assessmentId={assessmentId}
             endDate={event?.expectedEndDate}
           /> 
-        : <AssessmentSummary
+        : <AssessmentDetails
             assessment={event}
             handleStartAssessment={e => onHandleStartAssessment(id)}
           />
