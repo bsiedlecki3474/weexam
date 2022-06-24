@@ -38,18 +38,18 @@ import {
 import Progress from "../components/Progress";
 
 const Router = props => {
-  const { loggedIn, isAdmin, pending } = props;
+  const { loggedIn, isAdmin, isRoot, pending } = props;
 
-  const children = isAdmin
-    ? [
+  const children = [
+    ...[
       { path: '', element: <Dashboard /> },
       { path: 'profile', element: <Profile /> },
-      { path: 'users', element: <Users />, },
-      { path: 'users/add', element: <AddUser /> },
-      { path: 'users/:id', element: <EditUser /> },
-      { path: 'groups', element: <Groups />, },
-      { path: 'groups/add', element: <AddGroup /> },
-      { path: 'groups/:id', element: <EditGroup /> },
+      { path: 'events/:id', element: <StartAssessment /> },
+      { path: '*', element: <Navigate to="/" /> },
+    ],
+    ...isAdmin ? [
+      { path: '', element: <Dashboard /> },
+      { path: 'profile', element: <Profile /> },
       { path: 'tests', element: <Tests />, },
       { path: 'tests/add', element: <AddTest /> },
       { path: 'tests/:id', element: <EditTest /> },
@@ -57,14 +57,16 @@ const Router = props => {
       { path: 'tests/:testId/event/:eventId', element: <EditEvent /> },
       { path: 'tests/:testId/event/:eventId/report', element: <EventReport /> },
       { path: 'tests/:testId/event/:eventId/user/:userId', element: <UserAssessmentReport /> },
-      { path: 'events/:id', element: <StartAssessment /> },
-      { path: '*', element: <Navigate to="/" /> },
-    ] : [
-      { path: '', element: <Dashboard /> },
-      { path: 'profile', element: <Profile /> },
-      { path: 'events/:id', element: <StartAssessment /> },
-      { path: '*', element: <Navigate to="/" /> },
-    ]
+      { path: 'groups', element: <Groups />, },
+    ] : [],
+    ...isRoot ? [
+      { path: 'users', element: <Users />, },
+      { path: 'users/add', element: <AddUser /> },
+      { path: 'users/:id', element: <EditUser /> },
+      { path: 'groups/add', element: <AddGroup /> },
+      { path: 'groups/:id', element: <EditGroup /> },
+    ] : []
+  ]
 
   const routes = [
     {
@@ -86,7 +88,8 @@ const mapStateToProps = state => {
   return {
     // pending: state.auth.pending,
     loggedIn: !!state.auth.data,
-    isAdmin: ['root', 'admin'].includes(state?.auth?.data?.role)
+    isAdmin: ['root', 'admin'].includes(state?.auth?.data?.role),
+    isRoot: state?.auth?.data?.role === 'root'
   }
 }
 

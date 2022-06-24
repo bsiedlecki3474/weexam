@@ -40,7 +40,7 @@ const styles = theme => ({
 const drawerWidth = 240;
 
 const MenuDrawer = props => {
-  const { window, classes, children, theme, onHandleSignOut, onHandleToggleTheme, isAdmin, user } = props;
+  const { window, classes, children, theme, onHandleSignOut, onHandleToggleTheme, isAdmin, isRoot, user } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -73,17 +73,19 @@ const MenuDrawer = props => {
             </ListItemIcon>
             <ListItemText primary="Tests" />
           </ListItem>
-          <ListItem button onClick={() => navigate('/users')}>
-            <ListItemIcon>
-              <AccountBoxIcon />
-            </ListItemIcon>
-            <ListItemText primary="Users" />
-          </ListItem>
           <ListItem button onClick={() => navigate('/groups')}>
             <ListItemIcon>
               <GroupsIcon />
             </ListItemIcon>
             <ListItemText primary="Groups" />
+          </ListItem>
+        </>}
+        {isRoot && <>
+          <ListItem button onClick={() => navigate('/users')}>
+            <ListItemIcon>
+              <AccountBoxIcon />
+            </ListItemIcon>
+            <ListItemText primary="Users" />
           </ListItem>
         </>}
       </List>
@@ -189,6 +191,7 @@ const mapStateToProps = state => {
   return {
     theme: state.theme,
     isAdmin: ['root', 'admin'].includes(state?.auth?.data?.role),
+    isRoot: state?.auth?.data?.role === 'root',
     user: `${state?.auth?.data?.firstName} ${state?.auth?.data?.lastName}` 
   }
 }

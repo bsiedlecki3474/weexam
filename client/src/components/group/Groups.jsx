@@ -17,9 +17,8 @@ const styles = theme => ({
 })
 
 const Groups = props => {
-  const { classes, groups, onHandleGetGroupList } = props;
+  const { classes, groups, onHandleGetGroupList, isRoot } = props;
   const navigate = useNavigate();
-  console.log(props)
 
   useEffect(() => {
     onHandleGetGroupList();
@@ -33,18 +32,18 @@ const Groups = props => {
 
   const data = groups && groups.map(row => ({
     id: row.id,
-    name: <a onClick={e => navigate('/groups/' + row.id)}>{row.name}</a>,
+    name: isRoot
+      ? <a onClick={e => navigate('/groups/' + row.id)}>{row.name}</a>
+      : row.name,
     members: row.members,
     createdOn: row.createdOn,
     disabled: !row.isActive
   }));
 
-  console.log(groups)
-
   return (
     <Box>
       <MaterialTable
-        handleAddNew={() => navigate('/groups/add')}
+        {...isRoot ? { handleAddNew: navigate('/groups/add') } : {}}
         title="Groups"
         checkboxes
         columns={columns}
@@ -56,7 +55,8 @@ const Groups = props => {
 
 const mapStateToProps = state => {
   return {
-    groups: state.groups?.data
+    groups: state.groups?.data,
+    isRoot: state?.auth?.data?.role === 'root',
   }
 }
 
