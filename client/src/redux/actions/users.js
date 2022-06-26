@@ -7,6 +7,10 @@ import {
   SAVE_USER_SUCCESS,
   SAVE_USER_ERROR,
 
+  DELETE_USER_PENDING,
+  DELETE_USER_SUCCESS,
+  DELETE_USER_ERROR,
+
   GET_USER_PENDING,
   GET_USER_SUCCESS,
   GET_USER_ERROR,
@@ -19,6 +23,7 @@ import {
 import {
   addUser,
   saveUser,
+  deleteUser,
   getSingleUser,
   getUserList,
 } from '../../api/users'
@@ -40,6 +45,16 @@ const handleSaveUser = (id, formData) => async dispatch => {
     return dispatch({ type: SAVE_USER_SUCCESS, data })
   } catch (e) {
     return dispatch({ type: SAVE_USER_ERROR, payload: e })
+  }
+}
+
+const handleDeleteUser = (id) => async dispatch => {
+  dispatch({ type: DELETE_USER_PENDING })
+  try {
+    const data = await deleteUser(id)
+    return dispatch({ type: DELETE_USER_SUCCESS, data })
+  } catch (e) {
+    return dispatch({ type: DELETE_USER_ERROR, payload: e })
   }
 }
 
@@ -67,6 +82,7 @@ const handleGetUserList = () => async dispatch => {
 export {
   handleAddUser,
   handleSaveUser,
+  handleDeleteUser,
   handleGetSingleUser,
   handleGetUserList
 }

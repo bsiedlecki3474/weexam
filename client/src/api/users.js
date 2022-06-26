@@ -6,8 +6,12 @@ const addUser = async (data) => {
 }
 
 const saveUser = async (id, data) => {
-  console.log(id, data)
   const res = await axios.post(`/user/${id}/save`, data);
+  return res.data
+}
+
+const deleteUser = async (id) => {
+  const res = await axios.delete(`/user/${id}/delete`);
   return res.data
 }
 
@@ -34,6 +38,7 @@ const getUserTestEvents = async () => {
 export {
   addUser,
   saveUser,
+  deleteUser,
   getSingleUser,
   getUserList,
   getUserTestEvents,

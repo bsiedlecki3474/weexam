@@ -2,7 +2,7 @@ import { Component, createRef } from "react";
 import { connect } from "react-redux"
 import { withStyles } from '@mui/styles';
 import withParams from "../../hoc/withParams";
-import ListItem from '../ListItem'
+import withNavigation from "../../hoc/withNavigation";
 
 import {
   Box,
@@ -18,6 +18,7 @@ import {
 
 import {
   handleSaveUser,
+  handleDeleteUser,
   handleGetSingleUser,
 } from '../../redux/actions/users';
 import { showSnackbar } from '../../redux/actions/snackbar'
@@ -60,7 +61,6 @@ class EditUser extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props)
     const {
       params,
       onHandleGetSingleUser
@@ -94,7 +94,7 @@ class EditUser extends Component {
 
   render() {
     const { showErrors, isLoading, data } = this.state;
-    const { classes, params } = this.props;
+    const { classes, params, showSnackbar } = this.props;
     const { id } = params;
 
     const roles = [
@@ -103,7 +103,7 @@ class EditUser extends Component {
     ]
 
     const formSubmit = e => {
-      const { onHandleSaveUser, showSnackbar } = this.props;
+      const { onHandleSaveUser } = this.props;
       this.setState({ showErrors: true }, () => {
         if (this.checkFormValidity()) {
           // tbd check for duplicates
@@ -123,15 +123,29 @@ class EditUser extends Component {
       })
     }
 
+    const handleDelete = () => {
+      const { params, isRoot, navigate, onHandleDeleteUser } = this.props;
+      const { id } = params;
+      if (window.confirm(lang.users.confirm.deleteUser)) {
+        isRoot && onHandleDeleteUser(id).then(() => {
+          showSnackbar({
+            message: lang.users.snackbar.userDeleted,
+            severity: 'success'
+          });
+          navigate('/users');
+        });
+      }
+    }
+
     return (
       <Box sx={{ height: 'calc(100vh - 112px)' }}>
         <Form
           formRef={this.formRef}
           title="Edit user"
           fullHeight
-          submitButton={
-            <Button variant="outlined" size="small" onClick={formSubmit}>save</Button>
-          }
+          submitAction={formSubmit}
+          submitButtonText='save'
+          deleteAction={handleDelete}
         >
           <Grid item xs={12} sm={6} md={6} lg={6}>
             <StaticField
@@ -192,14 +206,21 @@ class EditUser extends Component {
 }
 
 const mapStateToProps = state => ({
-  // id: state.addEntry?.data?.id,
-  groups: state.groups.data
+  groups: state.groups.data,
+  isRoot: state?.auth?.data?.role === 'root'
 })
 
 const mapDispatchToProps = dispatch => ({
   onHandleSaveUser: (id, data) => dispatch(handleSaveUser(id, data)),
+  onHandleDeleteUser: id => dispatch(handleDeleteUser(id)),
   onHandleGetSingleUser: id => dispatch(handleGetSingleUser(id)),
   showSnackbar: data => dispatch(showSnackbar(data))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withParams(withStyles(styles)(EditUser)));
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withParams(
+    withNavigation(
+      withStyles(styles)(EditUser)
+    )
+  )
+);
