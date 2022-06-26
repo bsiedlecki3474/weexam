@@ -7,6 +7,10 @@ import {
   SAVE_GROUP_SUCCESS,
   SAVE_GROUP_ERROR,
 
+  DELETE_GROUP_PENDING,
+  DELETE_GROUP_SUCCESS,
+  DELETE_GROUP_ERROR,
+
   GET_GROUP_LIST_PENDING,
   GET_GROUP_LIST_SUCCESS,
   GET_GROUP_LIST_ERROR,
@@ -31,6 +35,7 @@ import {
 import {
   addGroup,
   saveGroup,
+  deleteGroup,
   getGroupList,
   getSingleGroup,
   getAssignedUsers,
@@ -55,6 +60,16 @@ const handleSaveGroup = (id, formData) => async dispatch => {
     return dispatch({ type: SAVE_GROUP_SUCCESS, data })
   } catch (e) {
     return dispatch({ type: SAVE_GROUP_ERROR, payload: e })
+  }
+}
+
+const handleDeleteGroup = (id) => async dispatch => {
+  dispatch({ type: DELETE_GROUP_PENDING })
+  try {
+    const data = await deleteGroup(id)
+    return dispatch({ type: DELETE_GROUP_SUCCESS, data })
+  } catch (e) {
+    return dispatch({ type: DELETE_GROUP_ERROR, payload: e })
   }
 }
 
@@ -112,6 +127,7 @@ const handleRemoveUserFromGroup = (userId, groupId) => async dispatch => {
 export {
   handleAddGroup,
   handleSaveGroup,
+  handleDeleteGroup,
   handleGetGroupList,
   handleGetSingleGroup,
   handleGetAssignedUsers,

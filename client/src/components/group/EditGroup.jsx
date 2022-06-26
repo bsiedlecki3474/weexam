@@ -2,6 +2,7 @@ import { Component, createRef } from "react";
 import { connect } from "react-redux"
 import { withStyles } from '@mui/styles';
 import withParams from "../../hoc/withParams";
+import withNavigation from "../../hoc/withNavigation";
 import ListItem from '../ListItem'
 
 import PersonIcon from '@mui/icons-material/Person';
@@ -22,10 +23,11 @@ import {
 
 import {
   handleSaveGroup,
+  handleDeleteGroup,
   handleGetSingleGroup,
   handleGetAssignedUsers,
   handleAddUserToGroup,
-  handleRemoveUserFromGroup
+  handleRemoveUserFromGroup,
 } from '../../redux/actions/groups';
 import { handleGetUserList } from '../../redux/actions/users';
 
@@ -121,7 +123,7 @@ class EditGroup extends Component {
   }
 
   handleRemoveUserClick = userId => e => {
-    if (window.confirm(lang.groups.snackbar.confirmRemoveGroupUser)) {
+    if (window.confirm(lang.groups.confirm.removeGroupUser)) {
       const { assignedUsers } = this.state;
       const { users, params, showSnackbar, onHandleRemoveUserFromGroup } = this.props;
       const { id } = params;
@@ -142,12 +144,12 @@ class EditGroup extends Component {
 
   render() {
     const { showErrors, isLoading, data, addUser, assignedUsers } = this.state;
-    const { classes, params, users } = this.props;
+    const { classes, params, users, showSnackbar } = this.props;
     const { id } = params;
     const assignedUsersIds = assignedUsers ? assignedUsers.map(el => el.id) : [];
 
     const formSubmit = e => {
-      const { onHandleSaveGroup, showSnackbar } = this.props;
+      const { onHandleSaveGroup } = this.props;
       this.setState({ showErrors: true }, () => {
         if (this.checkFormValidity()) {
           // tbd check for duplicates
@@ -167,15 +169,30 @@ class EditGroup extends Component {
       })
     }
 
+    const handleDelete = () => {
+      const { params, isRoot, navigate, onHandleDeleteGroup } = this.props;
+      const { id } = params;
+      if (window.confirm(lang.groups.confirm.deleteGroup)) {
+        isRoot && onHandleDeleteGroup(id).then(() => {
+          showSnackbar({
+            message: lang.groups.snackbar.groupDeleted,
+            severity: 'success'
+          });
+          navigate('/groups');
+        });
+      }
+     
+    }
+
     return (
       <Box sx={{ height: 'calc(100vh - 112px)' }}>
         <Form
           formRef={this.formRef}
           title="Edit group"
           fullHeight
-          submitButton={
-            <Button variant="outlined" size="small" onClick={formSubmit}>save</Button>
-          }
+          submitAction={formSubmit}
+          submitButtonText='save'
+          deleteAction={handleDelete}
         >
           <Grid item xs={12} sm={6} md={6} lg={6}>
             <TextField
@@ -250,12 +267,14 @@ class EditGroup extends Component {
 }
 
 const mapStateToProps = state => ({
-  users: state.users.data
+  users: state.users.data,
+  isRoot: state?.auth?.data?.role === 'root'
 })
 
 const mapDispatchToProps = dispatch => ({
   onHandleGetUserList: () => dispatch(handleGetUserList()),
   onHandleSaveGroup: (id, data) => dispatch(handleSaveGroup(id, data)),
+  onHandleDeleteGroup: id => dispatch(handleDeleteGroup(id)),
   onHandleGetSingleGroup: id => dispatch(handleGetSingleGroup(id)),
   onHandleGetAssignedUsers: id => dispatch(handleGetAssignedUsers(id)),
   onHandleAddUserToGroup: (userId, groupId) => dispatch(handleAddUserToGroup(userId, groupId)),
@@ -263,4 +282,10 @@ const mapDispatchToProps = dispatch => ({
   showSnackbar: data => dispatch(showSnackbar(data))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withParams(withStyles(styles)(EditGroup)));
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withParams(
+    withNavigation(
+      withStyles(styles)(EditGroup)
+    )
+  )
+);
