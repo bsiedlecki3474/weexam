@@ -43,7 +43,7 @@ const Groups = props => {
   return (
     <Box>
       <MaterialTable
-        {...isRoot ? { handleAddNew: navigate('/groups/add') } : {}}
+        {...isRoot ? { handleAddNew: () => navigate('/groups/add') } : {}}
         title="Groups"
         checkboxes
         columns={columns}
