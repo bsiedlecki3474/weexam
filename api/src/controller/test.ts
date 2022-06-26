@@ -68,7 +68,28 @@ class Test {
   }
 
   _delete = async (req: Request, res: Response) => {
-    return true;
+    try {
+      const testId = Number(req.params.id);
+      const token = req.cookies.jwt;
+      const { role } = jwt.verify(token, JWT_SECRET) as JwtPayload;
+
+      if (role === 'admin') {
+        const startDate = await test.getStartDate(testId);
+        if (startDate && new Date(startDate).getTime() <= new Date().getTime()) {
+          return res.status(403).send();
+        }
+      }
+
+      const data = await test.delete(testId);
+      if (data) {
+        res.status(200).send(data);
+      } else {
+        res.status(400).send('no data');
+      }
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
   }
 
   list = async (req: Request, res: Response) => {
@@ -139,6 +160,7 @@ class Test {
 export const {
   add,
   save,
+  _delete,
   list,
   single,
   events,

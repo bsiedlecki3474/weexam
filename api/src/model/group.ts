@@ -25,6 +25,15 @@ class Group extends Model /*implements CRUD*/ {
 		}
 	}
 
+	delete = async (id: number) => {
+		const sql = `DELETE FROM wee_groups WHERE id = ?`;
+		const data = await this.db.query(sql, [id]);
+
+		if (data) {
+			return true;
+		}
+	}
+
 	addUserToGroup = async (body: any /* interface */) => {
 		const sql = `INSERT INTO wee_groups_users (user_id, group_id) VALUES (?, ?)`;
 		const data = await this.db.query(sql, body);

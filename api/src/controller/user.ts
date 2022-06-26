@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { user, event } from '../model';
+import { user } from '../model';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import bcrypt from "bcryptjs"
 
@@ -107,6 +107,20 @@ class User {
     }
   }
 
+  _delete = async (req: Request, res: Response) => {
+    try {
+      const data = await user.delete(Number(req.params.id));
+      if (data) {
+        res.status(200).send(data);
+      } else {
+        res.status(400).send('no data');
+      }
+    } catch (e) {
+      console.error(e)
+      res.status(500).send(e);
+    }
+  }
+
   testEvents = async (req: Request, res: Response) => {
     try {
       const token = req.cookies.jwt;
@@ -151,6 +165,7 @@ export const {
   save,
   list,
   single,
+  _delete,
   testEvents,
   assessmentReport
 } = new User();

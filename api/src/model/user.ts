@@ -26,6 +26,15 @@ class User extends Model /*implements CRUD*/ {
 		}
 	}
 
+	delete = async (id: number) => {
+		const sql = `DELETE FROM wee_users WHERE id = ?`;
+		const data = await this.db.query(sql, [id]);
+
+		if (data) {
+			return true;
+		}
+	}
+
 	userByUsername = async (username: string) => {
 		const sql = `SELECT
 			u.id,

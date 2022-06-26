@@ -28,6 +28,21 @@ class Test extends Model /*implements CRUD*/ {
 		}
 	}
 
+	delete = async (id: number) => {
+		const sql = `DELETE FROM wee_tests WHERE id = ?`;
+		const data = await this.db.query(sql, [id]);
+
+		if (data) {
+			return true;
+		}
+	}
+
+	getStartDate = async (id: number) => {
+		const sql = 'SELECT MIN(start_date) AS start_date FROM wee_tests_events WHERE test_id = ?';
+		const data = await this.db.query(sql, [id]);
+		return data ? data[0].start_date : null;
+	}
+
 	list = async () => {
 		const sql = `SELECT
 			t.id,
@@ -71,6 +86,7 @@ class Test extends Model /*implements CRUD*/ {
 			t.name,
 			t.is_active,
 			t.show_scores,
+			MIN(e.start_date) AS event_start_date,
 			t.created_on,
 			t.modified_on,
 			c.first_name AS created_by_first_name,
@@ -80,7 +96,9 @@ class Test extends Model /*implements CRUD*/ {
 		FROM wee_tests t
 		LEFT JOIN wee_users c ON c.id = t.created_by
 		LEFT JOIN wee_users m ON m.id = t.modified_by
-		WHERE t.id = ?`;
+		LEFT JOIN wee_tests_events e ON e.test_id = t.id
+		WHERE t.id = ?
+		GROUP BY t.id`;
 
 		const data = await this.db.query(sql, [id]);
 
@@ -89,9 +107,11 @@ class Test extends Model /*implements CRUD*/ {
 			return {
 				id: row.id,
 				name: row.name,
-
 				isActive: row.is_active,
 				showScores: row.show_scores,
+				inProgress: row.event_start_date
+					? new Date(row.event_start_date).getTime() <= new Date().getTime()
+					: false,
 				recordAdministrator: this.prepareUserDateTime(
 					row.created_by_first_name,
 					row.created_by_last_name,
