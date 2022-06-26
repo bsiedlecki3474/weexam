@@ -110,7 +110,7 @@ class EditEvent extends Component {
   }
 
   handleRemoveGroupClick = groupId => e => {
-    if (window.confirm(lang.tests.snackbar.confirmRemoveGroup)) {
+    if (window.confirm(lang.tests.confirm.removeGroup)) {
       const { assignedGroups } = this.state;
       const { params, showSnackbar, onHandleRemoveGroup } = this.props;
       const { eventId } = params;
@@ -192,9 +192,8 @@ class EditEvent extends Component {
             </Box>
           }
           fullHeight
-          submitButton={
-            <Button variant="outlined" size="small" onClick={formSubmit}>save</Button>
-          }
+          submitAction={formSubmit}
+          submitButtonText='save'
         >
           <Grid item xs={12} sm={6} md={6} lg={6}>
             <StaticField

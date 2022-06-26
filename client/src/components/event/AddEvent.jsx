@@ -100,9 +100,8 @@ class AddEvent extends Component {
             </Box>
           }
           fullHeight
-          submitButton={
-            <Button variant="outlined" size="small" onClick={formSubmit}>add</Button>
-          }
+          submitAction={formSubmit}
+          submitButtonText='add'
         >
           <Grid item xs={12} sm={6} md={6} lg={6}>
             <TextField

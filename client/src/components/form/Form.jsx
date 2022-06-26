@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { withStyles } from '@mui/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import {
   Box,
   Typography,
+  IconButton,
   CardContent,
   CardActions,
   Grid,
@@ -13,33 +15,16 @@ import {
 
 const styles = theme => ({
   form: {
-    height: '100%',
-    '& > div': {
-      height: `calc(100% - ${theme.spacing(4)})`
-    }
+    position: 'relative',
+    height: '100%'
   },
-  cardHeader: {
-    height: theme.spacing(4),
-    fontWeight: '500',
-    flexBasis: '100%'
-  },
-  cardContent: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    flexDirection: 'column',
-    flexGrow: 1
-  },
-  // cardBody: {
-  //   padding: theme.spacing(2),
-  // },
-  cardActions: {
-    height: theme.spacing(4),
-    padding: theme.spacing(2) + ' !important'
-  },
+  container: {
+    height: `calc(100% - ${theme.spacing(4)})`
+  }
 })
 
 const Form = props => {
-  const { classes, title, fullHeight, submitButton, formRef, children } = props;
+  const { classes, title, fullHeight, submitAction, submitButtonText, deleteAction, deleteActionText, formRef, children } = props;
 
   return (
     <form
@@ -47,18 +32,14 @@ const Form = props => {
       className={fullHeight && classes.form}
       autoComplete="off"
     >
-      {/* <Paper> */}
-        {/* <CardContent className={classes.cardContent}> */}
-          <Typography variant="h6">{title}</Typography>
-          <Grid container spacing={4}>
-            {children}
-          </Grid>
-        {/* </CardContent> */}
-        {/* <CardActions className={classes.cardActions}> */}
-          {submitButton}
-        {/* </CardActions> */}
-      {/* </Paper> */}
-      
+      <Typography variant="h6">{title}</Typography>
+      <Grid container spacing={4} className={classes.container}>
+        {children}
+      </Grid>
+      <Box sx={{ display: 'flex', gap: 2 }}>
+        {submitAction && <Button variant="outlined" size="small" onClick={submitAction}>{submitButtonText ?? 'save'}</Button>}
+        {deleteAction && <Button variant="outlined" size="small" color="error" onClick={deleteAction}>{deleteActionText ?? 'delete'}</Button>}
+      </Box>
     </form>
   )
 }
