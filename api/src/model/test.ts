@@ -152,14 +152,6 @@ class Test extends Model /*implements CRUD*/ {
 		}
 	}
 
-	addEvent = async () => {
-		return setTimeout(() => true, 100);
-	}
-
-	deleteEvent = async () => {
-		return setTimeout(() => true, 100);
-	}
-
 	questions = async (id: number) => {
 		const sql = `SELECT
 			tq.id,

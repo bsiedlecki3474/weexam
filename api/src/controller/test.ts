@@ -134,14 +134,6 @@ class Test {
     }
   }
 
-  addEvent = () => {
-    return true;
-  }
-
-  deleteEvent = () => {
-    return true;
-  }
-
   questions = async (req: Request, res: Response) => {
     try {
       const data = await test.questions(Number(req.params.id));
@@ -164,7 +156,5 @@ export const {
   list,
   single,
   events,
-  addEvent,
-  deleteEvent,
   questions
 } = new Test();
