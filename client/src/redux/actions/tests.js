@@ -7,6 +7,10 @@ import {
   SAVE_TEST_SUCCESS,
   SAVE_TEST_ERROR,
 
+  DELETE_TEST_PENDING,
+  DELETE_TEST_SUCCESS,
+  DELETE_TEST_ERROR,
+
   GET_TESTS_PENDING,
   GET_TESTS_SUCCESS,
   GET_TESTS_ERROR,
@@ -23,6 +27,7 @@ import {
 import {
   addTest,
   saveTest,
+  deleteTest,
   getTestList,
   getSingleTest,
   getEvents
@@ -45,6 +50,16 @@ const handleSaveTest = (id, formData) => async dispatch => {
     return dispatch({ type: SAVE_TEST_SUCCESS, data })
   } catch (e) {
     return dispatch({ type: SAVE_TEST_ERROR, payload: e })
+  }
+}
+
+const handleDeleteTest = (id) => async dispatch => {
+  dispatch({ type: DELETE_TEST_PENDING })
+  try {
+    const data = await deleteTest(id)
+    return dispatch({ type: DELETE_TEST_SUCCESS, data })
+  } catch (e) {
+    return dispatch({ type: DELETE_TEST_ERROR, payload: e })
   }
 }
 
@@ -81,6 +96,7 @@ const handleGetEvents = (id) => async dispatch => {
 export {
   handleAddTest,
   handleSaveTest,
+  handleDeleteTest,
   handleGetTestList,
   handleGetSingleTest,
   handleGetEvents

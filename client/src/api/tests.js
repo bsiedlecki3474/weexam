@@ -6,8 +6,12 @@ const addTest = async (data) => {
 }
 
 const saveTest = async (id, data) => {
-  console.log(id, data)
   const res = await axios.post(`/test/${id}/save`, data);
+  return res.data
+}
+
+const deleteTest = async (id) => {
+  const res = await axios.delete(`/test/${id}/delete`);
   return res.data
 }
 
@@ -35,6 +39,7 @@ const getQuestions = async (id) => {
 export {
   addTest,
   saveTest,
+  deleteTest,
   getTestList,
   getSingleTest,
   getEvents,

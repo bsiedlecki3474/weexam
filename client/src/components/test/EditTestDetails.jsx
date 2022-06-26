@@ -4,6 +4,7 @@ import { connect } from "react-redux"
 import { useNavigate } from 'react-router-dom'
 import { withStyles } from '@mui/styles';
 import withParams from "../../hoc/withParams";
+import withNavigation from "../../hoc/withNavigation";
 import ListItem from '../ListItem'
 
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -26,6 +27,7 @@ import {
 
 import {
   handleSaveTest,
+  handleDeleteTest,
   handleGetSingleTest,
   handleGetEvents
 } from '../../redux/actions/tests';
@@ -76,6 +78,9 @@ const EditTestDetails = props => {
   const [eventDialogOpen, setEventDialogOpen] = useState(false);
   const [eventDialogData, setEventDialogData] = useState(null);
 
+  const { classes, params, onHandleSaveTest, isAdmin, isRoot, showSnackbar } = props;
+  const { id } = params;
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -83,7 +88,7 @@ const EditTestDetails = props => {
     getEvents(id).then(res => setEvents(res));
     getSingleTest(id).then(res => setData(res));
     // getAssignedGroups(id).then(res => setAssignedGroups(res));
-  }, [])
+  }, [id, events])
 
   const checkFormValidity = () => formRef.current.checkValidity();
 
@@ -108,8 +113,6 @@ const EditTestDetails = props => {
 
   const isDataLoading = () => false
 
-  const { classes, params, onHandleSaveTest, showSnackbar } = props;
-  const { id } = params;
   // const assignedGroupIds = assignedGroups ? assignedGroups.map(el => el.id) : [];
 
   const formSubmit = e => {
@@ -137,17 +140,36 @@ const EditTestDetails = props => {
     return `${formattedStartDate} - ${formattedEndDate} (${duration} mins)`;
   }
 
+  const handleDelete = () => {
+    const { params, navigate, onHandleDeleteTest } = props;
+    const { id } = params;
+    if (window.confirm(lang.tests.confirm.deleteTest)) {
+      onHandleDeleteTest(id)
+        .then(res => {
+          showSnackbar({
+            message: lang.tests.snackbar.testDeleted,
+            severity: 'success'
+          })
+          navigate('/tests');
+        })
+    }
+  }
+
+  const deleteActionVisible = data
+    ? (isAdmin && !data.inProgress) || isRoot
+    : false;
+
   return (
     <Box className={classes.root}>
       <Form
         formRef={formRef}
         title="Edit test details"
         fullHeight
-        submitButton={
-          <Button variant="outlined" size="small" onClick={formSubmit}>save</Button>
-        }
+        submitAction={formSubmit}
+        submitButtonText='save'
+        deleteAction={deleteActionVisible ? handleDelete : null}
       >
-        <Grid item xs={12} sm={6} md={6} lg={6}>
+        <Grid item xs={12} sm={12} md={6} lg={6}>
           <TextField
             id="name"
             label="Test name"
@@ -177,7 +199,7 @@ const EditTestDetails = props => {
 
         </Grid>
 
-        <Grid item xs={12} sm={6} md={6} lg={6}>
+        <Grid item xs={12} sm={12} md={6} lg={6}>
           <Box mb={2}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
               <Typography variant="subtitle1">Events</Typography>
@@ -225,10 +247,24 @@ const EditTestDetails = props => {
   )
 }
 
+const mapStateToProps = state => ({
+  users: state.users.data,
+  isAdmin: ['root', 'admin'].includes(state?.auth?.data?.role),
+  isRoot: state?.auth?.data?.role === 'root'
+})
+
+
 const mapDispatchToProps = dispatch => ({
   onHandleSaveTest: (id, data) => dispatch(handleSaveTest(id, data)),
+  onHandleDeleteTest: id => dispatch(handleDeleteTest(id)),
   onHandleGetSingleTest: id => dispatch(handleGetSingleTest(id)),
   showSnackbar: data => dispatch(showSnackbar(data))
 })
 
-export default connect(null, mapDispatchToProps)(withParams(withStyles(styles)(EditTestDetails)));
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withParams(
+    withNavigation(
+      withStyles(styles)(EditTestDetails)
+    )
+  )
+);
