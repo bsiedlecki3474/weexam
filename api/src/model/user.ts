@@ -6,7 +6,7 @@ import { AssessmentReport as AssessmentReportInterface } from '../interface/asse
 import { format, addMinutes } from 'date-fns'
 
 class User extends Model /*implements CRUD*/ {
-	add = async (body: any /* interface */) => {
+	add = async (body: any[]) => {
 		const sql = `INSERT INTO wee_users (id, username, password, first_name, last_name, role, is_active, created_by, created_on) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())`;
 		const data = await this.db.query(sql, body);
 
@@ -43,7 +43,7 @@ class User extends Model /*implements CRUD*/ {
 			u.last_name,
 			u.role
 		FROM wee_users u
-		WHERE u.username = ?`;
+		WHERE u.is_active = 1 AND u.username = ?`;
 
 		const data = await this.db.query(sql, [username]);
 

@@ -51,6 +51,8 @@ CREATE TABLE `wee_users` (
   `created_by` int(10) unsigned DEFAULT NULL,
   `modified_on` datetime DEFAULT NULL,
   `modified_by` int(10) unsigned DEFAULT NULL,
+  CONSTRAINT `fk_wee_users_created_by` FOREIGN KEY (`created_by`) REFERENCES `wee_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_wee_users_modified_by` FOREIGN KEY (`modified_by`) REFERENCES `wee_users` (`id`) ON DELETE SET NULL,
   PRIMARY KEY (`id`)
 ) DEFAULT CHARSET UTF8;
 
@@ -71,6 +73,8 @@ CREATE TABLE `wee_tests` (
   `created_by` int unsigned DEFAULT NULL,
   `modified_on` datetime DEFAULT NULL,
   `modified_by` int unsigned DEFAULT NULL,
+  CONSTRAINT `fk_wee_tests_created_by` FOREIGN KEY (`created_by`) REFERENCES `wee_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_wee_tests_modified_by` FOREIGN KEY (`modified_by`) REFERENCES `wee_users` (`id`) ON DELETE SET NULL,
   PRIMARY KEY (`id`)
 ) DEFAULT CHARSET UTF8;
 
@@ -120,21 +124,14 @@ INSERT INTO `wee_questions_answer_types` (`id`, `name`) VALUES
 DROP TABLE IF EXISTS `wee_tests_questions`;
 DROP TABLE IF EXISTS `wee_questions_answers`;
 
-CREATE TABLE `wee_questions` (  
-  `id` INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `content` TEXT NOT NULL,
-  `answer_type_id` INT UNSIGNED NOT NULL,
-  CONSTRAINT `fk_wee_questions_answer_type_id` FOREIGN KEY (`answer_type_id`) REFERENCES `wee_questions_answer_types` (`id`) ON DELETE CASCADE
-) DEFAULT CHARSET UTF8;
-
-
 CREATE TABLE `wee_tests_questions` (
   `id` INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `test_id` INT UNSIGNED NOT NULL,
   `content` TEXT NOT NULL,
   `answer_type_id` INT UNSIGNED NOT NULL,
   KEY `fk_wee_tests_questions_test_id` (`test_id`),
-  CONSTRAINT `fk_wee_tests_questions_test_id` FOREIGN KEY (`test_id`) REFERENCES `wee_tests` (`id`) ON DELETE CASCADE
+  CONSTRAINT `fk_wee_tests_questions_test_id` FOREIGN KEY (`test_id`) REFERENCES `wee_tests` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_wee_tests_questions_answer_type_id` FOREIGN KEY (`answer_type_id`) REFERENCES `wee_questions_answer_types` (`id`) ON DELETE CASCADE
 ) DEFAULT CHARSET UTF8;
 
 CREATE TABLE `wee_questions_answers` (

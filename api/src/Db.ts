@@ -31,9 +31,12 @@ class Db {
     }
 
     checkConnection = async () => {
-        const result = await this.query('SELECT 1').catch(e => { throw e; });
-
-        return result;
+        try {
+            const result = await this.query('SELECT 1').catch(e => { throw e; });
+            return result;
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     getInstance = (): this => this;

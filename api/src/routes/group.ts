@@ -17,7 +17,7 @@ router.post('/add', rootAuthMiddleware, add);
 router.post('/:id/save', rootAuthMiddleware, save);
 router.delete('/:id/delete', rootAuthMiddleware, _delete);
 router.post('/addUserToGroup', rootAuthMiddleware, addUserToGroup);
-router.post('/removeUserFromGroup', rootAuthMiddleware, removeUserFromGroup);
+router.delete('/removeUserFromGroup', rootAuthMiddleware, removeUserFromGroup);
 router.get('/list', adminAuthMiddleware, list);
 router.get('/:id', rootAuthMiddleware, single);
 router.get('/:id/users', rootAuthMiddleware, users);

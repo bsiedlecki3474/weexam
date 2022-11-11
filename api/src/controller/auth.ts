@@ -59,21 +59,9 @@ class Auth {
       })
       .status(200).send();
   }
-
-  verifyUser = async (req: Request, res: Response) => {
-    try {
-      const token = req.cookies.jwt;
-      const { userId } = jwt.verify(token, JWT_SECRET) as JwtPayload;
-      const data = await user.userById(userId);
-      return res.status(200).send(data)
-    } catch (e) {
-      return res.status(500).send(e);
-    }
-  }
 }
 
 export const {
   signIn,
-  signOut,
-  verifyUser
+  signOut
 } = new Auth();

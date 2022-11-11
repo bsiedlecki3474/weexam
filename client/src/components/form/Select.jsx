@@ -2,7 +2,6 @@ import React from 'react';
 
 import SelectField from './SelectField';
 import SelectMultiple from './SelectMultiple';
-// import SelectVirtualized from './SelectVirtualized';
 
 import { Skeleton } from '@mui/material';
 
@@ -24,8 +23,6 @@ const Select = props => {
 		? <Skeleton className={classes.skeleton} variant="rect" height={45} />
 		: multiple
       ? <SelectMultiple helper={helper} {...props} />
-		  // : virtualized
-      //   ? <SelectVirtualized helper={helper} {...props} />
       : <SelectField helper={helper} {...props} />
 }
 
